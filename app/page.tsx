@@ -1,101 +1,180 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+import './styles/global.css';
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
-}
+import React, { useState, useMemo } from 'react';
+import ParticipantsTable from './components/Participant/Participant';
+import { Button, Box, styled } from '@mui/material';
+import { jsPDF } from "jspdf";
+import "jspdf-autotable";
+import { initialParticipantsData } from './data/initialParticipants';
+
+export type Participant = {
+  id: number;
+  name: string;
+  year: string;
+  club: string;
+  ranking: string;
+  isPresent: boolean;
+};
+
+const initialParticipants: Participant[] = initialParticipantsData;
+
+function App() {
+  const [participants, setParticipants] = useState<Participant[]>(initialParticipants);
+  const [newParticipant, setNewParticipant] = useState({ name: '', year: '', club: '', ranking: '', isPresent: false });
+  const [editingId, setEditingId] = useState<number | null>(null);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setNewParticipant(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleAddParticipant = () => {
+    const participant: Participant = {
+      id: Date.now(), // Use timestamp as a simple unique id
+      ...newParticipant
+    };
+    setEditingId(participant.id);
+    setParticipants(prev => [participant, ...prev]);
+    setNewParticipant({ name: '', year: '', club: '', ranking: '', isPresent: false });
+  }
+
+    const handlePresentParticipant = (id: number) => {
+      setParticipants(prev => prev.map(p =>
+        p.id === id ? { ...p, isPresent: !p.isPresent } : p
+      ));
+    };
+
+    const handleEditParticipant = (id: number) => {
+      setEditingId(id);
+      const participantToEdit = participants.find(p => p.id === id);
+      if (participantToEdit) {
+        setNewParticipant(participantToEdit);
+      }
+    };
+    const handleSaveEdit = () => {
+      setParticipants(prev => prev.map(p =>
+        p.id === editingId
+          ? { ...newParticipant, id: p.id, isPresent: p.isPresent }
+          : p
+      ));
+      setEditingId(null);
+      setNewParticipant({ name: '', year: '', club: '', ranking: '', isPresent: false });
+    };
+
+    const handleDeleteParticipant = (id: number) => {
+      setParticipants(prev => prev.filter(participant => participant.id !== id));
+    };
+
+    const sortedParticipants = useMemo(() =>
+      [...participants].sort((a, b) => a.name.localeCompare(b.name)),
+      [participants]
+    );
+    const participantsByRanking = useMemo(() =>
+      [...participants].filter((participant) => participant.isPresent).sort((a, b) => Number(a.ranking) - Number(b.ranking)),
+      [participants]
+    );
+
+    function distributeIntoGroups(participants: Participant[], numGroups: number): void {
+      // Sort participants by ranking
+      const sortedParticipants = [...participants].sort((a, b) => Number(a.ranking) - Number(b.ranking));
+
+      // Create initial groups
+      const groups: Participant[][] = Array.from({ length: numGroups }, () => []);
+
+      // Initial snake distribution
+      sortedParticipants.forEach((participant, index) => {
+        const groupIndex = Math.floor(index / numGroups) % 2 === 0
+          ? index % numGroups
+          : numGroups - 1 - (index % numGroups);
+        groups[groupIndex].push(participant);
+      });
+
+      // Optimize club distribution
+      for (let i = 0; i < groups.length; i++) {
+        let group = groups[i];
+        const clubCounts = new Map<string, number>();
+
+        group.forEach(participant => {
+          clubCounts.set(participant.club, (clubCounts.get(participant.club) || 0) + 1);
+        });
+
+        for (const [club, count] of Array.from(clubCounts.entries())) {
+          while (count > 1) {
+            const participantToMove = group.find(p => p.club === club);
+            if (!participantToMove) break;
+
+            let moved = false;
+            for (let j = 0; j < groups.length; j++) {
+              if (i === j) continue;
+
+              const otherGroup = groups[j];
+              if (!otherGroup.some(p => p.club === club)) {
+                otherGroup.push(participantToMove);
+                group = group.filter(p => p !== participantToMove);
+                moved = true;
+                break;
+              }
+            }
+
+            if (!moved) break;
+            clubCounts.set(club, clubCounts.get(club)! - 1);
+          }
+        }
+
+        groups[i] = group;
+      }
+
+      console.log(groups);
+    }
+
+    const generatePDF = (participants: Participant[]) => {
+      const doc = new jsPDF();
+      const tableData = {
+        head: [['Name', 'Year', 'Club', 'Ranking']],
+        body: participants.map(p => [p.name, p.year, p.club, p.ranking]),
+      };
+
+      (doc as any).autoTable(tableData);
+      const pdfOutput = doc.output('blob');
+      const pdfUrl = URL.createObjectURL(pdfOutput);
+      window.open(pdfUrl, '_blank');
+    };
+
+    const StyledButton = styled(Button)(() => ({
+      height: '56px', // Match TextField height
+      marginTop: '16px', // Match TextField's default margin
+      marginBottom: '8px',
+    }));
+
+    return (
+      <div className="App">
+        <Box component="form" sx={{ '& > :not(style)': { m: 1, width: '25ch' } }} noValidate autoComplete="off">
+          <StyledButton variant="contained" onClick={handleAddParticipant}>
+            Add Participant
+          </StyledButton>
+          <StyledButton variant="contained" onClick={() => {generatePDF(sortedParticipants)}}>
+            Registred List
+          </StyledButton>
+          <StyledButton variant="contained" onClick={() => {generatePDF(participantsByRanking)}}>
+            Present List
+          </StyledButton>
+          <StyledButton variant="contained" onClick={() => { distributeIntoGroups(initialParticipantsData, 5) }}>
+            Generate Groups
+          </StyledButton>
+        </Box>
+        <ParticipantsTable
+          participants={sortedParticipants}
+          onPresentParticipant={handlePresentParticipant}
+          onEditParticipant={handleEditParticipant}
+          onDeleteParticipant={handleDeleteParticipant}
+          editingId={editingId}
+          newParticipant={newParticipant}
+          onInputChange={handleInputChange}
+          onSaveEdit={handleSaveEdit} />
+      </div>
+    );
+  }
+
+  export default App;
