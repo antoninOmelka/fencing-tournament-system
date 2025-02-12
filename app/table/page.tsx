@@ -1,4 +1,4 @@
-import ParticipantTable from "../components/ParticipantTable/ParticipantTable";
+import GroupTable from "../components/ParticipantTable/ParticipantTable";
 
 
 const tableData = [
@@ -68,11 +68,11 @@ const tableData = [
     }
 ]
 
-function Table() {
+function GroupsOverview() {
     return (
-        <ParticipantTable participants={tableData}></ParticipantTable>
+        <GroupTable participants={tableData}></GroupTable>
     );
 }
 
-export default Table;
+export default GroupsOverview;
 

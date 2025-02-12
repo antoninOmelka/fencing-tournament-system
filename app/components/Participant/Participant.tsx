@@ -1,3 +1,5 @@
+import './../../styles/global.css';
+
 import React, { useMemo } from 'react';
 import { Table, TableBody, TableCell, TableContainer, TextField, TableHead, TableRow, Paper, IconButton, styled } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -43,18 +45,18 @@ const StyledTableRow = styled(TableRow)<{ ispresent: string }>(({ theme, isprese
 }));
 
 
-function ParticipantsTable({ 
+function ParticipantsTable({
   participants,
-  onPresentParticipant, 
-  onEditParticipant, 
-  onDeleteParticipant, 
-  editingId, 
-  newParticipant, 
-  onInputChange, 
-  onSaveEdit  
+  onPresentParticipant,
+  onEditParticipant,
+  onDeleteParticipant,
+  editingId,
+  newParticipant,
+  onInputChange,
+  onSaveEdit
 }: ParticipantsTableProps) {
 
-  const sortedParticipants = useMemo(() => 
+  const sortedParticipants = useMemo(() =>
     [...participants].sort((a, b) => a.name.localeCompare(b.name)),
     [participants]
   );
@@ -88,30 +90,31 @@ function ParticipantsTable({
                 </>
               ) : (
                 <>
-              <TableCell>{participant.name}</TableCell>
-              <TableCell>{participant.year}</TableCell>
-              <TableCell>{participant.club}</TableCell>
-              <TableCell>{participant.ranking}</TableCell>
-              <TableCell>
-                <IconButton 
-                  onClick={() => onPresentParticipant(participant.id)}
-                >
-                  <CheckCircleIcon />
-                </IconButton>
-                <IconButton
-                  aria-label="edit"
-                  onClick={() => onEditParticipant(participant.id)}
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  aria-label="delete"
-                  onClick={() => onDeleteParticipant(participant.id)}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </TableCell>
-              </>
+                  <TableCell>{participant.name}</TableCell>
+                  <TableCell>{participant.year}</TableCell>
+                  <TableCell>{participant.club}</TableCell>
+                  <TableCell>{participant.ranking}</TableCell>
+                  {/* TODO: fix flex */}
+                  <TableCell sx={{ display: 'flex' }}> 
+                    <IconButton
+                      onClick={() => onPresentParticipant(participant.id)}
+                    >
+                      <CheckCircleIcon />
+                    </IconButton>
+                    <IconButton
+                      aria-label="edit"
+                      onClick={() => onEditParticipant(participant.id)}
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      aria-label="delete"
+                      onClick={() => onDeleteParticipant(participant.id)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </>
               )}
             </StyledTableRow>
           ))}
