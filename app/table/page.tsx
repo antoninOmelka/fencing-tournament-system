@@ -1,76 +1,97 @@
+"use client"
+
+import { useEffect, useState } from "react";
 import GroupTable from "../components/ParticipantTable/ParticipantTable";
+import { getParticipants } from "../page";
+
+const DEFAULT_GROUPS_NUMBER = 5;
+
+// TODO unite with other participants interfaces
+interface Participant {
+    id: number;
+    name: string;
+    club: string;
+    ranking: number;
+    isPresent?: boolean;
+};
+
+interface Group {
+    participants: Participant[];
+}
 
 
-const tableData = [
-    {
-        "id": 5,
-        "name": "ROSSI Isabella",
-        "year": "2022",
-        "club": "HUMANITA",
-        "ranking": 3,
-        "isPresent": false
-    },
-    {
-        "id": 1,
-        "name": "BIANCHI Alessandra",
-        "year": "2023",
-        "club": "Milano Scherma",
-        "ranking": 12,
-        "isPresent": false
-    },
-    {
-        "id": 26,
-        "name": "VAN DER BERG Yara",
-        "year": "2022",
-        "club": "Amsterdam Fencing School",
-        "ranking": 13,
-        "isPresent": false
-    },
-    {
-        "id": 11,
-        "name": "LEFEBVRE Hugo",
-        "year": "2022",
-        "club": "Lyon Fencing Institute",
-        "ranking": 22,
-        "isPresent": false
-    },
-    {
-        "id": 3,
-        "name": "CHEN Sophia",
-        "year": "2024",
-        "club": "Beijing Blades",
-        "ranking": 23,
-        "isPresent": false
-    },
-    {
-        "id": 24,
-        "name": "SANTOS Maria",
-        "year": "2024",
-        "club": "USK",
-        "ranking": 37,
-        "isPresent": false
-    },
-    {
-        "id": 4,
-        "name": "O'CONNOR Liam",
-        "year": "2023",
-        "club": "Dublin Duelists",
-        "ranking": 41,
-        "isPresent": false
-    },
-    {
-        "id": 40,
-        "name": "GUPTA Ravi",
-        "year": "2023",
-        "club": "Delhi Fencing Club",
-        "ranking": 999,
-        "isPresent": false
-    }
-]
+function distributeIntoGroups(participants: Participant[], numGroups: number): Group[] {
+    // Sort participants by ranking
+    const sortedParticipants = [...participants].sort((a, b) => Number(a.ranking) - Number(b.ranking));
+
+    // Create initial groups
+    const groups: Group[] = Array.from({ length: numGroups }, () => ({ participants: [] }));
+
+    // Initial snake distribution
+    sortedParticipants.forEach((participant, index) => {
+        const groupIndex = Math.floor(index / numGroups) % 2 === 0
+            ? index % numGroups
+            : numGroups - 1 - (index % numGroups);
+        groups[groupIndex].participants.push(participant);
+    });
+
+    // Optimize club distribution
+    groups.forEach((group, i) => {
+        const clubCounts = new Map<string, number>();
+        group.participants.forEach(p => clubCounts.set(p.club, (clubCounts.get(p.club) || 0) + 1));
+
+        for (const [club, count] of Array.from(clubCounts.entries())) {
+            while (count > 1) {
+                const participantToMove = group.participants.find(p => p.club === club);
+                if (!participantToMove) break;
+
+                let moved = false;
+                for (let j = 0; j < groups.length; j++) {
+                    if (i === j) continue;
+
+                    const otherGroup = groups[j];
+                    if (!otherGroup.participants.some(p => p.club === club)) {
+                        otherGroup.participants.push(participantToMove);
+                        group.participants = group.participants.filter(p => p !== participantToMove);
+                        moved = true;
+                        break;
+                    }
+                }
+
+                if (!moved) break;
+                clubCounts.set(club, clubCounts.get(club)! - 1);
+            }
+        }
+        groups[i] = group;
+    });
+
+    return groups;
+}
 
 function GroupsOverview() {
+    const [participants, setParticipants] = useState<Participant[]>([]);
+    const [groups, setGroups] = useState<Group[]>([]);
+
+    useEffect(() => {
+        async function fetchParticipants() {
+            const data = await getParticipants();
+            setParticipants(data);
+        }
+
+        fetchParticipants();
+    }, []);
+
+    useEffect(() => {
+        setGroups(distributeIntoGroups(participants, DEFAULT_GROUPS_NUMBER));
+    }, [participants]);
+
     return (
-        <GroupTable participants={tableData}></GroupTable>
+        <div className="groups-overview">
+            {groups.map((group, index) => {
+                return <GroupTable key={index} participants={group.participants}></GroupTable>
+            })}
+        </div>
+
     );
 }
 

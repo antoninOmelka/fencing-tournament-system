@@ -17,7 +17,7 @@ export type Participant = {
   isPresent: boolean;
 };
 
-async function getParticipants() {
+export async function getParticipants() {
   try {
     const response = await fetch("api/participants");
     const data = await response.json();
@@ -124,6 +124,8 @@ function App() {
       body: participants.map(p => [p.name, p.year, p.club, p.ranking]),
     };
 
+    // TODO fix any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (doc as any).autoTable(tableData);
     const pdfOutput = doc.output('blob');
     const pdfUrl = URL.createObjectURL(pdfOutput);
@@ -137,7 +139,7 @@ function App() {
   }));
 
   return (
-    <div className="App">
+    <div className="app">
       <Box component="form" sx={{ '& > :not(style)': { m: 1, width: '25ch' } }} noValidate autoComplete="off">
         <StyledButton variant="contained" onClick={handleAddParticipant}>
           Add Participant

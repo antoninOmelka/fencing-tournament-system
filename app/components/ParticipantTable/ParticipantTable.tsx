@@ -1,7 +1,6 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-
-const DEFAULT_GROUPS_NUMBER = 5;
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, tableCellClasses  } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
 interface Participant {
   id: number;
@@ -15,83 +14,44 @@ interface ParticipantTableProps {
   participants: Participant[];
 }
 
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
 
-function distributeIntoGroups(participants: Participant[], numGroups: number): Participant[][] {
-  // Sort participants by ranking
-  const sortedParticipants = [...participants].sort((a, b) => Number(a.ranking) - Number(b.ranking));
-
-  // Create initial groups
-  const groups: Participant[][] = Array.from({ length: numGroups }, () => []);
-
-  // Initial snake distribution
-  sortedParticipants.forEach((participant, index) => {
-    const groupIndex = Math.floor(index / numGroups) % 2 === 0
-      ? index % numGroups
-      : numGroups - 1 - (index % numGroups);
-    groups[groupIndex].push(participant);
-  });
-
-  // Optimize club distribution
-  for (let i = 0; i < groups.length; i++) {
-    let group = groups[i];
-    const clubCounts = new Map<string, number>();
-
-    group.forEach(participant => {
-      clubCounts.set(participant.club, (clubCounts.get(participant.club) || 0) + 1);
-    });
-
-    for (const [club, count] of Array.from(clubCounts.entries())) {
-      while (count > 1) {
-        const participantToMove = group.find(p => p.club === club);
-        if (!participantToMove) break;
-
-        let moved = false;
-        for (let j = 0; j < groups.length; j++) {
-          if (i === j) continue;
-
-          const otherGroup = groups[j];
-          if (!otherGroup.some(p => p.club === club)) {
-            otherGroup.push(participantToMove);
-            group = group.filter(p => p !== participantToMove);
-            moved = true;
-            break;
-          }
-        }
-
-        if (!moved) break;
-        clubCounts.set(club, clubCounts.get(club)! - 1);
-      }
-    }
-
-    groups[i] = group;
-  }
-
-  return groups;
-}
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
 
 function GroupTable({ participants }: ParticipantTableProps) {
-
-  distributeIntoGroups(participants, DEFAULT_GROUPS_NUMBER);
-  console.log(participants);
   return (
-    <TableContainer component={Paper}>
-      <Table>
+    <TableContainer className="group-table" component={Paper} >
+      <Table size="medium">
         <TableHead>
-          <TableRow>
-            <TableCell>ID</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Club</TableCell>
-            <TableCell>Ranking</TableCell>
-          </TableRow>
+          <StyledTableRow>
+            <StyledTableCell>Name</StyledTableCell>
+            <StyledTableCell>Club</StyledTableCell>
+            <StyledTableCell>Ranking</StyledTableCell>
+          </StyledTableRow>
         </TableHead>
         <TableBody>
           {participants.map((participant: Participant) => (
-            <TableRow key={participant.id}>
-              <TableCell>{participant.id}</TableCell>
-              <TableCell>{participant.name}</TableCell>
-              <TableCell>{participant.club}</TableCell>
-              <TableCell>{participant.ranking}</TableCell>
-            </TableRow>
+            <StyledTableRow key={participant.id}>
+              <StyledTableCell>{participant.name}</StyledTableCell>
+              <StyledTableCell>{participant.club}</StyledTableCell>
+              <StyledTableCell>{participant.ranking}</StyledTableCell>
+            </StyledTableRow>
           ))}
         </TableBody>
       </Table>
