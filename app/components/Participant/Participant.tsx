@@ -6,15 +6,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
-
-export type Participant = {
-  id: number;
-  name: string;
-  year: string;
-  club: string;
-  ranking: string;
-  isPresent: boolean;
-};
+import { Participant } from '../../types/participant';
 
 type ParticipantsTableProps = {
   participants: Participant[];
@@ -79,9 +71,15 @@ function ParticipantsTable({
               {editingId === participant.id ? (
                 <>
                   <TableCell><TextField name="name" value={newParticipant.name} onChange={onInputChange} /></TableCell>
-                  <TableCell><TextField name="year" value={newParticipant.year} onChange={onInputChange} /></TableCell>
+                  <TableCell><TextField type="number" name="year" value={newParticipant.year} onChange={onInputChange} inputProps={{
+                    min: 0,
+                    step: 1
+                  }} /></TableCell>
                   <TableCell><TextField name="club" value={newParticipant.club} onChange={onInputChange} /></TableCell>
-                  <TableCell><TextField name="ranking" value={newParticipant.ranking} onChange={onInputChange} /></TableCell>
+                  <TableCell><TextField type="number" name="ranking" value={newParticipant.ranking} onChange={onInputChange} inputProps={{
+                    min: 0,
+                    step: 1
+                  }} /></TableCell>
                   <TableCell>
                     <IconButton aria-label="save" onClick={onSaveEdit}>
                       <SaveIcon />
@@ -95,7 +93,7 @@ function ParticipantsTable({
                   <TableCell>{participant.club}</TableCell>
                   <TableCell>{participant.ranking}</TableCell>
                   {/* TODO: fix flex */}
-                  <TableCell sx={{ display: 'flex' }}> 
+                  <TableCell sx={{ display: 'flex' }}>
                     <IconButton
                       onClick={() => onPresentParticipant(participant.id)}
                     >

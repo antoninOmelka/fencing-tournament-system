@@ -4,18 +4,10 @@ import './styles/global.css';
 
 import React, { useState, useMemo, useEffect } from 'react';
 import ParticipantsTable from './components/Participant/Participant';
+import { Participant } from './types/participant';
 import { Button, Box, styled } from '@mui/material';
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-
-export type Participant = {
-  id: number;
-  name: string;
-  year: string;
-  club: string;
-  ranking: string;
-  isPresent: boolean;
-};
 
 export async function getParticipants() {
   try {
@@ -31,7 +23,7 @@ export async function getParticipants() {
 
 function App() {
   const [participants, setParticipants] = useState<Participant[]>([]);
-  const [newParticipant, setNewParticipant] = useState({ name: '', year: '', club: '', ranking: '', isPresent: false });
+  const [newParticipant, setNewParticipant] = useState({ name: '', year: 0, club: '', ranking: 0, isPresent: false });
   const [editingId, setEditingId] = useState<number | null>(null);
 
 
@@ -77,7 +69,7 @@ function App() {
     };
     setEditingId(participant.id);
     setParticipants(prev => [participant, ...prev]);
-    setNewParticipant({ name: '', year: '', club: '', ranking: '', isPresent: false });
+    setNewParticipant({ name: '', year: 0, club: '', ranking: 0, isPresent: false });
   }
 
   const handlePresentParticipant = (id: number) => {
@@ -101,7 +93,7 @@ function App() {
         : p
     ));
     setEditingId(null);
-    setNewParticipant({ name: '', year: '', club: '', ranking: '', isPresent: false });
+    setNewParticipant({ name: '', year: 0, club: '', ranking: 0, isPresent: false });
   };
 
   const handleDeleteParticipant = (id: number) => {

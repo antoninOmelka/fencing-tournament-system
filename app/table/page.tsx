@@ -3,22 +3,10 @@
 import { useEffect, useState } from "react";
 import GroupTable from "../components/ParticipantTable/ParticipantTable";
 import { getParticipants } from "../page";
+import { Participant } from "../types/participant";
+import { Group } from "../types/group";
 
 const DEFAULT_GROUPS_NUMBER = 5;
-
-// TODO unite with other participants interfaces
-interface Participant {
-    id: number;
-    name: string;
-    club: string;
-    ranking: number;
-    isPresent?: boolean;
-};
-
-interface Group {
-    participants: Participant[];
-}
-
 
 function distributeIntoGroups(participants: Participant[], numGroups: number): Group[] {
     // Sort participants by ranking

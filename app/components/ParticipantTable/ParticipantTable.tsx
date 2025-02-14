@@ -1,18 +1,8 @@
 import React from 'react';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, tableCellClasses  } from '@mui/material';
 import { styled } from '@mui/material/styles';
-
-interface Participant {
-  id: number;
-  name: string;
-  club: string;
-  ranking: number;
-  isPresent?: boolean;
-}
-
-interface ParticipantTableProps {
-  participants: Participant[];
-}
+import { Participant } from '../../types/participant';
+import { ParticipantTableProps } from '../../types/props';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
