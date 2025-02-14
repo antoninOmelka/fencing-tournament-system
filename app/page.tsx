@@ -20,6 +20,18 @@ export async function getParticipants() {
   }
 };
 
+export async function postParticipants(participants: Participant[]) {
+  try {
+    await fetch('/api/participants', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ participants: participants }),
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 
 function App() {
   const [participants, setParticipants] = useState<Participant[]>([]);
@@ -39,23 +51,6 @@ function App() {
   
     fetchParticipants();
   }, []);
-
-  useEffect(() => {
-    // TODO: fix first unnecessary POST request 
-    const postParticipants = async () => {
-      try {
-        await fetch('/api/participants', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ participants }),
-        });
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    postParticipants();    
-  }, [participants]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -86,18 +81,22 @@ function App() {
     }
   };
 
-  const handleSaveEdit = () => {
-    setParticipants(prev => prev.map(p =>
+  const handleSaveEdit = async() => {
+    const updatedParticipants = participants.map(p =>
       p.id === editingId
         ? { ...newParticipant, id: p.id, isPresent: p.isPresent }
         : p
-    ));
+    );
+    setParticipants(updatedParticipants);
+    await postParticipants(updatedParticipants);
     setEditingId(null);
     setNewParticipant({ name: '', year: 0, club: '', ranking: 0, isPresent: false });
   };
 
-  const handleDeleteParticipant = (id: number) => {
-    setParticipants(prev => prev.filter(participant => participant.id !== id));
+  const handleDeleteParticipant = async(id: number) => {
+    const updatedParticipants = participants.filter(participant => participant.id !== id);
+    setParticipants(updatedParticipants);
+    await postParticipants(updatedParticipants);
   };
 
   const sortedParticipants = useMemo(() =>

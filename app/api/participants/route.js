@@ -17,11 +17,7 @@ export async function GET() {
 
 export async function POST(request) {
   const data = await request.json();
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
-  // TODO remove condition when fist call is fixed.
-  if (data.participants.length) {
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-  }
-  
   return new Response(JSON.stringify({ message: "Participant added", data }), { status: 200 });
 }
