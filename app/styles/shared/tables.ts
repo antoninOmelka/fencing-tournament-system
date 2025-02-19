@@ -1,10 +1,23 @@
 import { TableCell, tableCellClasses, TableContainer, TableRow } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
+const CELL_HEIGHT = '57px';
+const CELL_WIDTHS = {
+  name: '250px',
+  year: '150px',
+  club: '250px',
+  ranking: '150px',
+  actions: '150px',
+};
+
+const TOTAL_WIDTH = Object.values(CELL_WIDTHS).reduce(
+  (sum, width) => sum + parseInt(width), 0
+);
+
 export const StyledTableContainer = styled(TableContainer, {
     shouldForwardProp: (prop) => prop !== 'component'
   })<{ component?: React.ElementType }>(({ theme }) => ({
-    maxWidth: 800,
+    width: `${TOTAL_WIDTH}px`,
     margin: 'auto',
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(3),
@@ -14,20 +27,18 @@ export const StyledTableContainer = styled(TableContainer, {
   export const StyledTableRow = styled(TableRow, {
     shouldForwardProp: (prop) => prop !== 'ispresent'
   })<{ ispresent?: string }>(({ theme, ispresent }) => ({
-    // Base styles
+    height: CELL_HEIGHT,
     '&:nth-of-type(odd)': {
       backgroundColor: ispresent === 'true' 
         ? theme.palette.info.light 
         : theme.palette.action.hover,
     },
-    // Present participant styles
     backgroundColor: ispresent === 'true' ? theme.palette.info.light : 'inherit',
     '&:hover': {
       backgroundColor: ispresent === 'true' 
         ? theme.palette.info.main 
         : theme.palette.action.selected,
     },
-    // Hide last border
     '&:last-child td, &:last-child th': {
       border: 0,
     },
@@ -37,6 +48,16 @@ export const StyledTableContainer = styled(TableContainer, {
   }));
 
   export const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    height: CELL_HEIGHT,
+    padding: theme.spacing(2),
+    lineHeight: '1.5',
+    verticalAlign: 'middle',
+    borderBottom: `1px solid ${theme.palette.divider}`,
+    boxSizing: 'border-box',
+    whiteSpace: 'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
       color: theme.palette.common.white,
@@ -44,4 +65,46 @@ export const StyledTableContainer = styled(TableContainer, {
     [`&.${tableCellClasses.body}`]: {
       fontSize: 14,
     },
+    '&.name': {
+      width: CELL_WIDTHS.name,
+      minWidth: CELL_WIDTHS.name,
+      maxWidth: CELL_WIDTHS.name,
+    },
+    '&.year': {
+      width: CELL_WIDTHS.year,
+      minWidth: CELL_WIDTHS.year,
+      maxWidth: CELL_WIDTHS.year,
+    },
+    '&.club': {
+      width: CELL_WIDTHS.club,
+      minWidth: CELL_WIDTHS.club,
+      maxWidth: CELL_WIDTHS.club,
+    },
+    '&.ranking': {
+      width: CELL_WIDTHS.ranking,
+      minWidth: CELL_WIDTHS.ranking,
+      maxWidth: CELL_WIDTHS.ranking,
+    },
+    '&.actions': {
+      display: 'table-cell',
+      textAlign: 'center',
+      width: CELL_WIDTHS.actions,
+      minWidth: CELL_WIDTHS.actions,
+      maxWidth: CELL_WIDTHS.actions,
+      '& .action-buttons': {
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: theme.spacing(1),
+      }
+    },
+    '& .MuiTextField-root': {
+      margin: 0,
+      width: '95%',
+      '& .MuiInputBase-root': {
+        height: '40px',
+      },
+      '& .MuiOutlinedInput-input': {
+        padding: '8px 14px',
+      }
+    }
   }));

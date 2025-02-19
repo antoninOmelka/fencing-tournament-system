@@ -1,7 +1,7 @@
 import './../../styles/global/global.css';
 
 import React, { useMemo } from 'react';
-import { Table, TableBody, TextField, TableHead, TableRow, Paper, IconButton} from '@mui/material';
+import { Table, TableBody, TextField, TableHead, TableRow, Paper, IconButton } from '@mui/material';
 import { StyledTableContainer, StyledTableRow, StyledTableCell } from './../../styles/shared/tables';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -41,11 +41,11 @@ function ParticipantsTable({
       <Table>
         <TableHead>
           <TableRow>
-            <StyledTableCell>Name</StyledTableCell>
-            <StyledTableCell>Year</StyledTableCell>
-            <StyledTableCell>Club</StyledTableCell>
-            <StyledTableCell>Ranking</StyledTableCell>
-            <StyledTableCell>Actions</StyledTableCell>
+            <StyledTableCell className="name">Name</StyledTableCell>
+            <StyledTableCell className="year">Year</StyledTableCell>
+            <StyledTableCell className="club">Club</StyledTableCell>
+            <StyledTableCell className="ranking">Ranking</StyledTableCell>
+            <StyledTableCell className="actions">Actions</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -53,17 +53,17 @@ function ParticipantsTable({
             <StyledTableRow key={participant.id} ispresent={participant.isPresent.toString()}>
               {editingId === participant.id ? (
                 <>
-                  <StyledTableCell><TextField name="name" value={newParticipant.name} onChange={onInputChange} /></StyledTableCell>
-                  <StyledTableCell><TextField type="number" name="year" value={newParticipant.year} onChange={onInputChange} inputProps={{
+                  <StyledTableCell className="name"><TextField name="name" value={newParticipant.name} onChange={onInputChange} /></StyledTableCell>
+                  <StyledTableCell className="year"><TextField type="number" name="year" value={newParticipant.year} onChange={onInputChange} inputProps={{
                     min: 0,
                     step: 1
                   }} /></StyledTableCell>
-                  <StyledTableCell><TextField name="club" value={newParticipant.club} onChange={onInputChange} /></StyledTableCell>
-                  <StyledTableCell><TextField type="number" name="ranking" value={newParticipant.ranking} onChange={onInputChange} inputProps={{
+                  <StyledTableCell className="club"><TextField name="club" value={newParticipant.club} onChange={onInputChange} /></StyledTableCell>
+                  <StyledTableCell className="ranking"><TextField type="number" name="ranking" value={newParticipant.ranking} onChange={onInputChange} inputProps={{
                     min: 0,
                     step: 1
                   }} /></StyledTableCell>
-                  <StyledTableCell>
+                  <StyledTableCell className="actions">
                     <IconButton aria-label="save" onClick={onSaveEdit}>
                       <SaveIcon />
                     </IconButton>
@@ -71,29 +71,30 @@ function ParticipantsTable({
                 </>
               ) : (
                 <>
-                  <StyledTableCell>{participant.name}</StyledTableCell>
-                  <StyledTableCell>{participant.year}</StyledTableCell>
-                  <StyledTableCell>{participant.club}</StyledTableCell>
-                  <StyledTableCell>{participant.ranking}</StyledTableCell>
-                  {/* TODO: fix flex */}
-                  <StyledTableCell sx={{ display: 'flex' }}>
-                    <IconButton
-                      onClick={() => onPresentParticipant(participant.id)}
-                    >
-                      <CheckCircleIcon />
-                    </IconButton>
-                    <IconButton
-                      aria-label="edit"
-                      onClick={() => onEditParticipant(participant.id)}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      aria-label="delete"
-                      onClick={() => onDeleteParticipant(participant.id)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
+                  <StyledTableCell className="name">{participant.name}</StyledTableCell>
+                  <StyledTableCell className="year">{participant.year}</StyledTableCell>
+                  <StyledTableCell className="club">{participant.club}</StyledTableCell>
+                  <StyledTableCell className="ranking">{participant.ranking}</StyledTableCell>
+                  <StyledTableCell className="actions">
+                    <div className="action-buttons">
+                      <IconButton
+                        onClick={() => onPresentParticipant(participant.id)}
+                      >
+                        <CheckCircleIcon />
+                      </IconButton>
+                      <IconButton
+                        aria-label="edit"
+                        onClick={() => onEditParticipant(participant.id)}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => onDeleteParticipant(participant.id)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </div>
                   </StyledTableCell>
                 </>
               )}
