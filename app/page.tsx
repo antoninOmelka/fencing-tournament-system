@@ -1,12 +1,13 @@
 "use client"
 
-import './styles/global.css';
+import './styles/global/global.css';
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { getParticipants, postParticipants } from './services/participants';
 import ParticipantsTable from './components/Participant/Participant';
 import { Participant } from './types/participant';
-import { Button, Box, styled } from '@mui/material';
+import { Box } from '@mui/material';
+import { StyledButton } from './styles/shared/buttons';
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 
@@ -99,12 +100,6 @@ function ParticipantsOverview() {
     const pdfUrl = URL.createObjectURL(pdfOutput);
     window.open(pdfUrl, '_blank');
   };
-
-  const StyledButton = styled(Button)(() => ({
-    height: '56px', // Match TextField height
-    marginTop: '16px', // Match TextField's default margin
-    marginBottom: '8px',
-  }));
 
   return (
     <div className="app">

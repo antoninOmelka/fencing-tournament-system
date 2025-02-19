@@ -1,5 +1,6 @@
 "use client"
 
+import './../styles/global/global.css';
 import { useEffect, useState } from "react";
 import GroupTable from "../components/ParticipantTable/ParticipantTable";
 import { getParticipants } from "../services/participants";

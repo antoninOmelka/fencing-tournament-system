@@ -1,7 +1,8 @@
-import './../../styles/global.css';
+import './../../styles/global/global.css';
 
 import React, { useMemo } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TextField, TableHead, TableRow, Paper, IconButton, styled } from '@mui/material';
+import { Table, TableBody, TextField, TableHead, TableRow, Paper, IconButton} from '@mui/material';
+import { StyledTableContainer, StyledTableRow, StyledTableCell } from './../../styles/shared/tables';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -18,24 +19,6 @@ type ParticipantsTableProps = {
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSaveEdit: () => void;
 };
-
-const StyledTableContainer = styled(TableContainer, {
-  shouldForwardProp: (prop) => prop !== 'component'
-})<{ component?: React.ElementType }>(({ theme }) => ({
-  maxWidth: 800,
-  margin: 'auto',
-  marginTop: theme.spacing(3),
-  marginBottom: theme.spacing(3),
-  boxShadow: theme.shadows[3],
-}));
-
-const StyledTableRow = styled(TableRow)<{ ispresent: string }>(({ theme, ispresent }) => ({
-  backgroundColor: ispresent === 'true' ? theme.palette.info.light : 'inherit',
-  '&:hover': {
-    backgroundColor: ispresent === 'true' ? theme.palette.info.main : theme.palette.action.hover,
-  },
-}));
-
 
 function ParticipantsTable({
   participants,
@@ -58,11 +41,11 @@ function ParticipantsTable({
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Year</TableCell>
-            <TableCell>Club</TableCell>
-            <TableCell>Ranking</TableCell>
-            <TableCell>Actions</TableCell>
+            <StyledTableCell>Name</StyledTableCell>
+            <StyledTableCell>Year</StyledTableCell>
+            <StyledTableCell>Club</StyledTableCell>
+            <StyledTableCell>Ranking</StyledTableCell>
+            <StyledTableCell>Actions</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -70,30 +53,30 @@ function ParticipantsTable({
             <StyledTableRow key={participant.id} ispresent={participant.isPresent.toString()}>
               {editingId === participant.id ? (
                 <>
-                  <TableCell><TextField name="name" value={newParticipant.name} onChange={onInputChange} /></TableCell>
-                  <TableCell><TextField type="number" name="year" value={newParticipant.year} onChange={onInputChange} inputProps={{
+                  <StyledTableCell><TextField name="name" value={newParticipant.name} onChange={onInputChange} /></StyledTableCell>
+                  <StyledTableCell><TextField type="number" name="year" value={newParticipant.year} onChange={onInputChange} inputProps={{
                     min: 0,
                     step: 1
-                  }} /></TableCell>
-                  <TableCell><TextField name="club" value={newParticipant.club} onChange={onInputChange} /></TableCell>
-                  <TableCell><TextField type="number" name="ranking" value={newParticipant.ranking} onChange={onInputChange} inputProps={{
+                  }} /></StyledTableCell>
+                  <StyledTableCell><TextField name="club" value={newParticipant.club} onChange={onInputChange} /></StyledTableCell>
+                  <StyledTableCell><TextField type="number" name="ranking" value={newParticipant.ranking} onChange={onInputChange} inputProps={{
                     min: 0,
                     step: 1
-                  }} /></TableCell>
-                  <TableCell>
+                  }} /></StyledTableCell>
+                  <StyledTableCell>
                     <IconButton aria-label="save" onClick={onSaveEdit}>
                       <SaveIcon />
                     </IconButton>
-                  </TableCell>
+                  </StyledTableCell>
                 </>
               ) : (
                 <>
-                  <TableCell>{participant.name}</TableCell>
-                  <TableCell>{participant.year}</TableCell>
-                  <TableCell>{participant.club}</TableCell>
-                  <TableCell>{participant.ranking}</TableCell>
+                  <StyledTableCell>{participant.name}</StyledTableCell>
+                  <StyledTableCell>{participant.year}</StyledTableCell>
+                  <StyledTableCell>{participant.club}</StyledTableCell>
+                  <StyledTableCell>{participant.ranking}</StyledTableCell>
                   {/* TODO: fix flex */}
-                  <TableCell sx={{ display: 'flex' }}>
+                  <StyledTableCell sx={{ display: 'flex' }}>
                     <IconButton
                       onClick={() => onPresentParticipant(participant.id)}
                     >
@@ -111,7 +94,7 @@ function ParticipantsTable({
                     >
                       <DeleteIcon />
                     </IconButton>
-                  </TableCell>
+                  </StyledTableCell>
                 </>
               )}
             </StyledTableRow>
