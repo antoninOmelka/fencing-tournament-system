@@ -7,7 +7,7 @@ const CELL_WIDTHS = {
   year: '150px',
   club: '250px',
   ranking: '150px',
-  actions: '150px',
+  actions: '200px',
 };
 
 const TOTAL_WIDTH = Object.values(CELL_WIDTHS).reduce(
