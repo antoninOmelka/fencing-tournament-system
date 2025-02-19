@@ -33,7 +33,7 @@ export async function postParticipants(participants: Participant[]) {
 };
 
 
-function App() {
+function ParticipantsOverview() {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [newParticipant, setNewParticipant] = useState({ name: '', year: 0, club: '', ranking: 0, isPresent: false });
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -99,7 +99,7 @@ function App() {
     await postParticipants(updatedParticipants);
   };
 
-  const sortedParticipants = useMemo(() =>
+  const participantsByAlphabet = useMemo(() =>
     [...participants].sort((a, b) => a.name.localeCompare(b.name)),
     [participants]
   );
@@ -135,7 +135,7 @@ function App() {
         <StyledButton variant="contained" onClick={handleAddParticipant}>
           Add Participant
         </StyledButton>
-        <StyledButton variant="contained" onClick={() => {generatePDF(sortedParticipants)}}>
+        <StyledButton variant="contained" onClick={() => {generatePDF(participantsByAlphabet)}}>
           Registred List
         </StyledButton>
         <StyledButton variant="contained" onClick={() => {generatePDF(participantsByRanking)}}>
@@ -146,7 +146,7 @@ function App() {
         </StyledButton>
       </Box>
       <ParticipantsTable
-        participants={sortedParticipants}
+        participants={participantsByAlphabet}
         onPresentParticipant={handlePresentParticipant}
         onEditParticipant={handleEditParticipant}
         onDeleteParticipant={handleDeleteParticipant}
@@ -158,4 +158,4 @@ function App() {
   );
 }
 
-export default App;
+export default ParticipantsOverview;
