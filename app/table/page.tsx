@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import GroupTable from "../components/ParticipantTable/ParticipantTable";
-import { getParticipants } from "../page";
+import { getParticipants } from "../services/participants";
 import { Participant } from "../types/participant";
 import { Group } from "../types/group";
 

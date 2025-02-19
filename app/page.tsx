@@ -3,35 +3,12 @@
 import './styles/global.css';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import { getParticipants, postParticipants } from './services/participants';
 import ParticipantsTable from './components/Participant/Participant';
 import { Participant } from './types/participant';
 import { Button, Box, styled } from '@mui/material';
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-
-export async function getParticipants() {
-  try {
-    const response = await fetch("api/participants");
-    const data = await response.json();
-    return data.participants; 
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
-};
-
-export async function postParticipants(participants: Participant[]) {
-  try {
-    await fetch('/api/participants', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ participants: participants }),
-    });
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 
 function ParticipantsOverview() {
   const [participants, setParticipants] = useState<Participant[]>([]);
