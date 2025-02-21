@@ -7,52 +7,40 @@ import { getParticipants } from "../services/participants";
 import { Participant } from "../types/participant";
 import { Group } from "../types/group";
 
-const DEFAULT_GROUPS_NUMBER = 5;
 
-function distributeIntoGroups(participants: Participant[], numGroups: number): Group[] {
-    // Sort participants by ranking
+function distributeIntoGroups(participants: Participant[]): Group[] {
+    if (participants.length === 0) return [];
+
     const sortedParticipants = [...participants].sort((a, b) => Number(a.ranking) - Number(b.ranking));
 
-    // Create initial groups
-    const groups: Group[] = Array.from({ length: numGroups }, () => ({ participants: [] }));
+    let bestNumGroups = Math.round(participants.length / 6);
+    if (participants.length % bestNumGroups === 1) bestNumGroups++;
+    if (participants.length % bestNumGroups === bestNumGroups - 1) bestNumGroups--;
 
-    // Initial snake distribution
-    sortedParticipants.forEach((participant, index) => {
-        const groupIndex = Math.floor(index / numGroups) % 2 === 0
-            ? index % numGroups
-            : numGroups - 1 - (index % numGroups);
-        groups[groupIndex].participants.push(participant);
-    });
+    const baseSize = Math.floor(participants.length / bestNumGroups);
+    const extraParticipants = participants.length % bestNumGroups;
 
-    // Optimize club distribution
-    groups.forEach((group, i) => {
-        const clubCounts = new Map<string, number>();
-        group.participants.forEach(p => clubCounts.set(p.club, (clubCounts.get(p.club) || 0) + 1));
+    const groups: Group[] = Array.from({ length: bestNumGroups }, () => ({ participants: [] }));
 
-        for (const [club, count] of Array.from(clubCounts.entries())) {
-            while (count > 1) {
-                const participantToMove = group.participants.find(p => p.club === club);
-                if (!participantToMove) break;
+    const clubMap = new Map<string, Participant[]>();
+    for (const participant of sortedParticipants) {
+        if (!clubMap.has(participant.club)) clubMap.set(participant.club, []);
+        clubMap.get(participant.club)!.push(participant);
+    }
 
-                let moved = false;
-                for (let j = 0; j < groups.length; j++) {
-                    if (i === j) continue;
+    let groupIndex = 0;
+    for (const [, clubParticipants] of clubMap.entries()) {
+        for (const participant of clubParticipants) {
+            const groupSize = baseSize + (groupIndex < extraParticipants ? 1 : 0);
 
-                    const otherGroup = groups[j];
-                    if (!otherGroup.participants.some(p => p.club === club)) {
-                        otherGroup.participants.push(participantToMove);
-                        group.participants = group.participants.filter(p => p !== participantToMove);
-                        moved = true;
-                        break;
-                    }
-                }
-
-                if (!moved) break;
-                clubCounts.set(club, clubCounts.get(club)! - 1);
+            if (groups[groupIndex].participants.length >= groupSize) {
+                groupIndex = (groupIndex + 1) % bestNumGroups;
             }
+
+            groups[groupIndex].participants.push(participant);
+            groupIndex = (groupIndex + 1) % bestNumGroups;
         }
-        groups[i] = group;
-    });
+    }
 
     return groups;
 }
@@ -71,7 +59,7 @@ function GroupsOverview() {
     }, []);
 
     useEffect(() => {
-        setGroups(distributeIntoGroups(participants, DEFAULT_GROUPS_NUMBER));
+        setGroups(distributeIntoGroups(participants));
     }, [participants]);
 
     return (
