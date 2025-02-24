@@ -113,7 +113,7 @@ function ParticipantsOverview() {
         <StyledButton variant="contained" onClick={() => {generatePDF(participantsByRanking)}}>
           Present List
         </StyledButton>
-        <StyledButton variant="contained" href="/table">
+        <StyledButton variant="contained" href="/groups-overview">
           Generate Groups
         </StyledButton>
       </Box>

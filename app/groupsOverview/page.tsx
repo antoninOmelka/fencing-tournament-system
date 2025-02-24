@@ -6,6 +6,8 @@ import GroupTable from "../components/ParticipantTable/ParticipantTable";
 import { getParticipants } from "../services/participants";
 import { Participant } from "../types/participant";
 import { Group } from "../types/group";
+import { StyledButton } from '../styles/shared/buttons';
+import { postGroups } from '../services/groups';
 
 
 function distributeIntoGroups(participants: Participant[]): Group[] {
@@ -42,6 +44,12 @@ function distributeIntoGroups(participants: Participant[]): Group[] {
         }
     }
 
+    groups.forEach((group => {
+        const groupSize = group.participants.length;        
+        group.results = Array.from({ length: groupSize }, () => Array(groupSize));
+    }));
+    
+    postGroups(groups);
     return groups;
 }
 
@@ -63,12 +71,16 @@ function GroupsOverview() {
     }, [participants]);
 
     return (
-        <div className="groups-overview">
-            {groups.map((group, index) => {
-                return <GroupTable key={index} participants={group.participants}></GroupTable>
-            })}
-        </div>
-
+        <>
+            <StyledButton variant="contained" href="/group-matches-overview">
+                Generate Group Matches
+            </StyledButton>
+            <div className="groups-overview">
+                {groups.map((group, index) => {
+                    return <GroupTable key={index} participants={group.participants}></GroupTable>
+                })}
+            </div>
+        </>
     );
 }
 
