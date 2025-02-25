@@ -8,8 +8,8 @@ import ParticipantsTable from './components/Participant/Participant';
 import { Participant } from './types/participant';
 import { Box } from '@mui/material';
 import { StyledButton } from './styles/shared/buttons';
-import { jsPDF } from "jspdf";
-import "jspdf-autotable";
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 function ParticipantsOverview() {
   const [participants, setParticipants] = useState<Participant[]>([]);
@@ -93,9 +93,7 @@ function ParticipantsOverview() {
       body: participants.map(p => [p.name, p.year, p.club, p.ranking]),
     };
 
-    // TODO fix any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (doc as any).autoTable(tableData);
+    doc.autoTable(tableData);
     const pdfOutput = doc.output('blob');
     const pdfUrl = URL.createObjectURL(pdfOutput);
     window.open(pdfUrl, '_blank');
