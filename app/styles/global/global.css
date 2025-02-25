@@ -13,3 +13,19 @@
 .group-table {
   max-width: 900px;
 }
+
+.matches-overview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.match-list {
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  width: 900px;
+  flex-wrap: wrap;
+  margin-top: 30px;
+  margin-left: 20px;
+}

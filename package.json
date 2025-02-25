@@ -17,7 +17,8 @@
     "jspdf-autotable": "^3.8.4",
     "next": "15.1.6",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "roundrobin": "^2.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

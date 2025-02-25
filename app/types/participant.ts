@@ -4,5 +4,6 @@ export interface Participant {
     year: number;
     club: string;
     ranking: number;
+    groupRanking?: number;
     isPresent: boolean;
   };

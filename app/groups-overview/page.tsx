@@ -22,7 +22,7 @@ function distributeIntoGroups(participants: Participant[]): Group[] {
     const baseSize = Math.floor(participants.length / bestNumGroups);
     const extraParticipants = participants.length % bestNumGroups;
 
-    const groups: Group[] = Array.from({ length: bestNumGroups }, () => ({ participants: [] }));
+    const groups: Group[] = Array.from({ length: bestNumGroups }, () => ({ participants: [], results:[] }));
 
     const clubMap = new Map<string, Participant[]>();
     for (const participant of sortedParticipants) {
@@ -47,6 +47,10 @@ function distributeIntoGroups(participants: Participant[]): Group[] {
     groups.forEach((group => {
         const groupSize = group.participants.length;        
         group.results = Array.from({ length: groupSize }, () => Array(groupSize));
+        group.participants.sort((a, b) => a.ranking - b.ranking);
+        group.participants.forEach((participant, index) => {
+            participant.groupRanking = index + 1;
+        });
     }));
     
     postGroups(groups);
