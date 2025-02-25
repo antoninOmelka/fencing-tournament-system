@@ -5,6 +5,7 @@ import { Participant } from '../../types/participant';
 import { Paper, Table, TableBody, TableContainer, TableHead } from "@mui/material";
 import roundRobin from "roundrobin";
 import "./../../styles/global/global.css";
+import { StyledButton } from "@/app/styles/shared/buttons";
 
 async function generateMatchOrder(participants: Participant[]): Promise<string[]> {
     const participantNames = participants.map(participant => participant.name);
@@ -12,7 +13,7 @@ async function generateMatchOrder(participants: Participant[]): Promise<string[]
     return matches.flat();
 }
 
-function MatchesTable({ participants, results }: Group) {
+function MatchesTable({id, participants, results }: Group) {
     const [matchesOrder, setMatchesOrder] = useState<string[]>([]);
 
     useEffect(() => {
@@ -25,7 +26,12 @@ function MatchesTable({ participants, results }: Group) {
     }, [participants]);
 
     return (
-        <>
+        <div className="group-table">
+            <div className="table-header">
+                <h2 className="group-title">Group {id}</h2>
+                <StyledButton variant="contained" href="/">Edit</StyledButton>
+            </div>
+
             <TableContainer className="group-table" component={Paper}>
                 <Table size="medium">
                     <TableHead>
@@ -66,7 +72,7 @@ function MatchesTable({ participants, results }: Group) {
                         );
                 })}
             </div>
-        </>
+        </div>
     );
 }
 

@@ -1,8 +1,7 @@
 import { Participant } from "./participant";
 
 export interface Group {
-    // TODO ID required
-    id?: string;
+    id: number;
     participants: Participant[];
     results: string[][];
 } 

@@ -29,3 +29,14 @@
   margin-top: 30px;
   margin-left: 20px;
 }
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.group-title {
+  font-size: 24px;
+}

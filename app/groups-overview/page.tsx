@@ -22,7 +22,11 @@ function distributeIntoGroups(participants: Participant[]): Group[] {
     const baseSize = Math.floor(participants.length / bestNumGroups);
     const extraParticipants = participants.length % bestNumGroups;
 
-    const groups: Group[] = Array.from({ length: bestNumGroups }, () => ({ participants: [], results:[] }));
+    const groups: Group[] = Array.from({ length: bestNumGroups }, (_, index) => ({
+        id: index + 1,
+        participants: [],
+        results: [],
+    }));
 
     const clubMap = new Map<string, Participant[]>();
     for (const participant of sortedParticipants) {

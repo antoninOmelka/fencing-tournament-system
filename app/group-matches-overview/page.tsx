@@ -25,7 +25,7 @@ function GroupMatchesOverview() {
     return (
         <div className="matches-overview">
             {groups.map((group) => (
-                <MatchesTable key={group.participants.map(p => p.id).join('-')} participants={group.participants} results={group.results}></MatchesTable>
+                <MatchesTable key={group.participants.map(p => p.id).join('-')} id={group.id} participants={group.participants} results={group.results}></MatchesTable>
             ))}
         </div>
     );
