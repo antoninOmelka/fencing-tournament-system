@@ -8,8 +8,8 @@ import "./../../styles/global/global.css";
 import { StyledButton } from "@/app/styles/shared/buttons";
 
 async function generateMatchOrder(participants: Participant[]): Promise<string[]> {
-    const participantNames = participants.map(participant => participant.name);
-    const matches = roundRobin(participants.length, participantNames);
+    const participantNames = participants?.map(participant => participant.name);
+    const matches = roundRobin(participants?.length, participantNames);
     return matches.flat();
 }
 
@@ -29,7 +29,7 @@ function MatchesTable({id, participants, results }: Group) {
         <div className="group-table">
             <div className="table-header">
                 <h2 className="group-title">Group {id}</h2>
-                <StyledButton variant="contained" href="/">Edit</StyledButton>
+                <StyledButton variant="contained" href={`/groups/${id}`}>Edit</StyledButton>
             </div>
 
             <TableContainer className="group-table" component={Paper}>
@@ -38,13 +38,13 @@ function MatchesTable({id, participants, results }: Group) {
                         <StyledTableRow>
                             <StyledTableCell>Fencer</StyledTableCell>
                             <StyledTableCell></StyledTableCell>
-                            {participants.map((participant: Participant) => (
+                            {participants?.map((participant: Participant) => (
                                 <StyledTableCell key={participant.id}>{participant.groupRanking}</StyledTableCell>
                             ))}
                         </StyledTableRow>
                     </TableHead>
                     <TableBody>
-                        {participants.map((participant: Participant, participantIndex: number) => (
+                        {participants?.map((participant: Participant, participantIndex: number) => (
                             <StyledTableRow key={participant.id}>
                                 <StyledTableCell>{participant.name}</StyledTableCell>
                                 <StyledTableCell>{participantIndex + 1}</StyledTableCell>
