@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { getGroups } from "../services/groups";
 import { Group } from "../types/group";
 import MatchesTable from "../components/MatchesTable/page";
+import { StyledButton } from "../styles/shared/buttons";
 
 
 function GroupMatchesOverview() {
@@ -23,11 +24,14 @@ function GroupMatchesOverview() {
     }, []);
 
     return (
-        <div className="matches-overview">
-            {groups.map((group) => (
-                <MatchesTable key={group.participants.map(p => p.id).join('-')} id={group.id} participants={group.participants} results={group.results}></MatchesTable>
-            ))}
-        </div>
+        <>
+            <StyledButton variant="contained" href="/results-overview">Generate Results</StyledButton>
+            <div className="matches-overview">
+                {groups.map((group) => (
+                    <MatchesTable key={group.participants.map(p => p.id).join('-')} id={group.id} participants={group.participants} results={group.results}></MatchesTable>
+                ))}
+            </div>
+        </>
     );
 }
 

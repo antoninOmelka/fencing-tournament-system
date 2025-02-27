@@ -41,6 +41,11 @@ function MatchesTable({id, participants, results }: Group) {
                             {participants?.map((participant: Participant) => (
                                 <StyledTableCell key={participant.id}>{participant.groupRanking}</StyledTableCell>
                             ))}
+                            <StyledTableCell>Wins</StyledTableCell>
+                            <StyledTableCell>Wins Rate</StyledTableCell>
+                            <StyledTableCell>Scored</StyledTableCell>
+                            <StyledTableCell>Recieved</StyledTableCell>
+                            <StyledTableCell>Index</StyledTableCell>
                         </StyledTableRow>
                     </TableHead>
                     <TableBody>
@@ -48,11 +53,16 @@ function MatchesTable({id, participants, results }: Group) {
                             <StyledTableRow key={participant.id}>
                                 <StyledTableCell>{participant.name}</StyledTableCell>
                                 <StyledTableCell>{participantIndex + 1}</StyledTableCell>
-                                {results.map((result: string[], resultIndex: number) => (
+                                {results.map((result: string[], resultIndex: number) => (                                    
                                     <StyledTableCell key={`${participant.id}-${resultIndex}`}>
-                                        {participantIndex === resultIndex ? 'X' : ''}
+                                        {participantIndex === resultIndex ? 'X' : results[participantIndex]?.[resultIndex]}
                                     </StyledTableCell>
                                 ))}
+                                <StyledTableCell>{participant.wins}</StyledTableCell>
+                                <StyledTableCell>{participant.winsRate}</StyledTableCell>
+                                <StyledTableCell>{participant.pointsScored}</StyledTableCell>
+                                <StyledTableCell>{participant.pointsReceived}</StyledTableCell>
+                                <StyledTableCell>{participant.index}</StyledTableCell>
                             </StyledTableRow>
                         ))}
                     </TableBody>

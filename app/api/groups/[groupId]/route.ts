@@ -21,6 +21,63 @@ const validateGroupId = (groupId: string): number | null => {
   return isNaN(groupIdNumber) ? null : groupIdNumber;
 };
 
+function calculateStats({participants, results}: Group ) {
+  const stats = participants.map((participant) => ({
+    id: participant.id,
+    wins: 0,
+    matches: 0,
+    pointsScored: 0,
+    pointsReceived: 0,
+    index: 0,
+  }));
+
+  results.forEach((row, rowIndex) => {
+    row.forEach((score, colIndex) => {
+      if (rowIndex >= colIndex || !score) return; // Upper triangle only
+
+      const current = stats[rowIndex];
+      const opponent = stats[colIndex];
+
+      const isVictory = score.startsWith('V');
+      const pointsScored = parseInt(score.slice(1), 10);
+      const opponentScore = results[colIndex][rowIndex]?.slice(1);
+      const pointsReceived = parseInt(opponentScore || "0", 10);
+
+      current.matches++;
+      opponent.matches++;
+
+      if (isVictory) {
+        current.wins++;
+      } else {
+        opponent.wins++;
+      }
+
+      current.pointsScored += pointsScored;
+      current.pointsReceived += pointsReceived;
+
+      opponent.pointsScored += pointsReceived;
+      opponent.pointsReceived += pointsScored;
+    });
+  });
+
+  stats.forEach((stat) => {
+    stat.index = stat.pointsScored - stat.pointsReceived;
+  });
+
+  return participants.map((participant) => {
+    const stat = stats.find((s) => s.id === participant.id);
+    return {
+      ...participant,
+      wins: stat?.wins ?? 0,
+      winsRate: stat?.matches ? (stat.wins / stat.matches).toFixed(2) : "0.00",
+      pointsScored: stat?.pointsScored ?? 0,
+      pointsReceived: stat?.pointsReceived ?? 0,
+      index: stat?.index ?? 0,
+    };
+  });
+}
+
+
 export async function GET(req: NextRequest, { params }: { params: { groupId: string } }) {
   const { groupId } = await params;
   const groupIdNumber = validateGroupId(groupId);
@@ -66,7 +123,9 @@ export async function PATCH(req: NextRequest, { params }: { params: { groupId: s
     return NextResponse.json({ message: "Group not found" }, { status: 404 });
   }
 
-  groups[groupIndex] = { ...groups[groupIndex], ...groupData };
+  const updatedGroup = { ...groups[groupIndex], ...groupData };
+  updatedGroup.participants = calculateStats(updatedGroup);
+  groups[groupIndex] = updatedGroup;
 
   try {
     writeGroups(groups);
@@ -75,5 +134,5 @@ export async function PATCH(req: NextRequest, { params }: { params: { groupId: s
     return NextResponse.json({ message: "Failed to update group" }, { status: 500 });
   }
 
-  return NextResponse.json({ message: "Group updated successfully" }, { status: 200 });
+  return NextResponse.json({ message: "Group updated successfully", group: updatedGroup }, { status: 200 });
 }
