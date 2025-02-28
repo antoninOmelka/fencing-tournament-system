@@ -28,6 +28,8 @@ function ParticipantsTable({
   onSaveEdit
 }: ParticipantsTableProps) {
 
+  const isActionDisabled = (editingId: number | null) => Number.isInteger(editingId);
+
   const sortedParticipants = useMemo(() =>
     [...participants].sort((a, b) => a.name.localeCompare(b.name)),
     [participants]
@@ -76,12 +78,14 @@ function ParticipantsTable({
                     <div className="action-buttons">
                       <IconButton
                         aria-label="edit"
+                        disabled={isActionDisabled(editingId)}
                         onClick={() => onEditParticipant(participant.id)}
                       >
                         <EditIcon />
                       </IconButton>
                       <IconButton
                         aria-label="delete"
+                        disabled={isActionDisabled(editingId)}
                         onClick={() => onDeleteParticipant(participant.id)}
                       >
                         <DeleteIcon />
