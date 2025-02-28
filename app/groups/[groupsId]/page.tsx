@@ -12,6 +12,7 @@ import { useParams } from "next/navigation";
 function GroupTableView() {
     const [group, setGroup] = useState<Group | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
     const params = useParams();
     const groupId = params?.groupsId;
 
@@ -45,13 +46,16 @@ function GroupTableView() {
     }
 
 
-    function handleSaveButton() {
+    async function handleSaveButton() {
         if (group) {
             try {
-                updateGroup(group.id, group);
+                setIsSaving(true);
+                await updateGroup(group.id, group);
             } catch (error) {
                 console.error(error);
                 throw new Error("Failed to save group.");
+            } finally {
+                setIsSaving(false);
             }
         }
     }
@@ -63,7 +67,9 @@ function GroupTableView() {
     return (
         <div>
             <div className="button-container">
-                <StyledButton variant="contained" onClick={() => handleSaveButton()}>Save</StyledButton>
+                <StyledButton variant="contained" onClick={() => handleSaveButton()} disabled={isSaving}>
+                    {isSaving ? "Saving..." : "Save"}
+                </StyledButton>
             </div>
             <div className="matches-overview">
                 <GroupTable group={group} onGroupChange={handleGroupChange} />

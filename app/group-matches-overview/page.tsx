@@ -23,6 +23,7 @@ async function fetchParticipants(): Promise<Participant[]> {
 
 function GroupMatchesOverview() {
     const [groups, setGroups] = useState<Group[]>([]);
+    const [isSaving, setIsSaving] = useState<boolean>(false);
 
     useEffect(() => {
         async function fetchGroups() {
@@ -38,6 +39,7 @@ function GroupMatchesOverview() {
     }, []);
 
     async function distributeIntoGroups(): Promise<void> {
+        setIsSaving(true);
         const participants = await fetchParticipants();
         if (participants.length === 0) return;
 
@@ -87,11 +89,14 @@ function GroupMatchesOverview() {
 
         await postGroups(groups);
         setGroups(groups);
+        setIsSaving(false);
     }
 
     return (
         <>
-            <StyledButton variant="contained" onClick={() => distributeIntoGroups()}>Generate Groups</StyledButton>
+            <StyledButton variant="contained" onClick={() => distributeIntoGroups()} disabled={isSaving}>
+                {isSaving ? "Generating..." : "Generate Groups"}
+            </StyledButton>
             <div className="matches-overview">
                 {groups.map((group) => (
                     <MatchesTable key={group.participants.map(p => p.id).join('-')} id={group.id} participants={group.participants} results={group.results}></MatchesTable>
