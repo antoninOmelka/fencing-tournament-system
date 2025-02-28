@@ -31,12 +31,6 @@ export const StyledTableContainer = styled(TableContainer, {
     },
     '&.present': {
       backgroundColor: theme.palette.info.light,
-      '&:hover': {
-        backgroundColor: theme.palette.info.main,
-      },
-    },
-    '&:hover': {
-      backgroundColor: theme.palette.action.selected,
     },
     '&:last-child td, &:last-child th': {
       border: 0,
