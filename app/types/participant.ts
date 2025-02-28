@@ -6,9 +6,9 @@ export interface Participant {
     ranking: number;
     groupRanking?: number;
     isPresent: boolean;
-    wins: number;
-    winsRate: number;
-    pointsScored: number;
-    pointsReceived: number;
-    index: number;
+    wins?: number;
+    winsRate?: number;
+    pointsScored?: number;
+    pointsReceived?: number;
+    index?: number;
   };
