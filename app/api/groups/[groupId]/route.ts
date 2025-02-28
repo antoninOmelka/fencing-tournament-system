@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 import { Group } from "@/app/types/group";
 
 const groupsFilePath = path.join(process.cwd(), "app/data/groups.json");
@@ -38,7 +38,7 @@ function calculateStats({participants, results}: Group ) {
       const current = stats[rowIndex];
       const opponent = stats[colIndex];
 
-      const isVictory = score.startsWith('V');
+      const isVictory = score.startsWith("V");
       const pointsScored = parseInt(score.slice(1), 10);
       const opponentScore = results[colIndex][rowIndex]?.slice(1);
       const pointsReceived = parseInt(opponentScore || "0", 10);

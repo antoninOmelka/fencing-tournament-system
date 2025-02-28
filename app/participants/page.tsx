@@ -2,19 +2,19 @@
 
 import "@/app/styles/global/global.css";
 
-import React, { useState, useMemo, useEffect } from 'react';
-import { getParticipants, postParticipants } from '../services/participants';
-import ParticipantsTable from '../components/ParticipantsTable/ParticipantsTable';
-import Loading from '../components/Loading/Loading';
-import { Participant } from '../types/participant';
-import { Box } from '@mui/material';
-import { StyledButton } from '../styles/shared/buttons';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import React, { useState, useMemo, useEffect } from "react";
+import { getParticipants, postParticipants } from "../services/participants";
+import ParticipantsTable from "../components/ParticipantsTable/ParticipantsTable";
+import Loading from "../components/Loading/Loading";
+import { Participant } from "../types/participant";
+import { Box } from "@mui/material";
+import { StyledButton } from "../styles/shared/buttons";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 function ParticipantsView() {
   const [participants, setParticipants] = useState<Participant[]>([]);
-  const [newParticipant, setNewParticipant] = useState({ name: '', year: 0, club: '', ranking: 0 });
+  const [newParticipant, setNewParticipant] = useState({ name: "", year: 0, club: "", ranking: 0 });
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -46,7 +46,7 @@ function ParticipantsView() {
     };
     setEditingId(participant.id);
     setParticipants(prev => [participant, ...prev]);
-    setNewParticipant({ name: '', year: 0, club: '', ranking: 0 });
+    setNewParticipant({ name: "", year: 0, club: "", ranking: 0 });
   }
 
   const handleEditParticipant = (id: number) => {
@@ -66,7 +66,7 @@ function ParticipantsView() {
     setParticipants(updatedParticipants);
     await postParticipants(updatedParticipants);
     setEditingId(null);
-    setNewParticipant({ name: '', year: 0, club: '', ranking: 0 });
+    setNewParticipant({ name: "", year: 0, club: "", ranking: 0 });
   };
 
   const handleDeleteParticipant = async(id: number) => {
@@ -83,14 +83,14 @@ function ParticipantsView() {
   const generatePDF = (participants: Participant[]) => {
     const doc = new jsPDF();
     const tableData = {
-      head: [['Name', 'Year', 'Club', 'Ranking']],
+      head: [["Name", "Year", "Club", "Ranking"]],
       body: participants.map(p => [p.name, p.year, p.club, p.ranking]),
     };
 
     doc.autoTable(tableData);
-    const pdfOutput = doc.output('blob');
+    const pdfOutput = doc.output("blob");
     const pdfUrl = URL.createObjectURL(pdfOutput);
-    window.open(pdfUrl, '_blank');
+    window.open(pdfUrl, "_blank");
   };
 
   if (isLoading) {
@@ -99,7 +99,7 @@ function ParticipantsView() {
 
   return (
     <div className="participants-container">
-      <Box component="form" sx={{ '& > :not(style)': { m: 1, width: '25ch' } }} noValidate autoComplete="off">
+      <Box component="form" sx={{ "& > :not(style)": { m: 1, width: "25ch" } }} noValidate autoComplete="off">
         <StyledButton variant="contained" onClick={handleAddParticipant}>
           Add Participant
         </StyledButton>

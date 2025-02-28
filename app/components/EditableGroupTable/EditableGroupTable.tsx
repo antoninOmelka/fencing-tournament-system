@@ -41,8 +41,8 @@ function EditableGroupTable({ group, onGroupChange }: EditableGroupTableProps) {
                             <StyledTableCell>{participantIndex + 1}</StyledTableCell>
                             {results.map((result: string[], resultIndex: number) => (
                                 <StyledTableCell key={`${participant.id}-${resultIndex}`}>
-                                    {participantIndex === resultIndex ? 'X' :
-                                        <TextField value={results[participantIndex]?.[resultIndex] || ''} onChange={(e) => handleResultChange(e.target.value, participantIndex, resultIndex)}></TextField>
+                                    {participantIndex === resultIndex ? "X" :
+                                        <TextField value={results[participantIndex]?.[resultIndex] || ""} onChange={(e) => handleResultChange(e.target.value, participantIndex, resultIndex)}></TextField>
                                     }
                                 </StyledTableCell>
                             ))}

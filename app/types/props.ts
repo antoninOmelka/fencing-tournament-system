@@ -5,7 +5,7 @@ export interface ParticipantTableProps {
 }
 
 export interface ParticipantFormProps {
-    newParticipant: Omit<Participant, 'id'>;
+    newParticipant: Omit<Participant, "id">;
     onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onSaveEdit: () => void;
 } 

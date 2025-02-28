@@ -13,9 +13,9 @@ export async function getParticipants() {
   
   export async function postParticipants(participants: Participant[]) {
     try {
-      await fetch('/api/participants', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      await fetch("/api/participants", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ participants: participants }),
       });
     } catch (error) {

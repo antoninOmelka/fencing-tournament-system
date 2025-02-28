@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import "@/app/styles/global/global.css";
 
@@ -107,7 +107,7 @@ function GroupTablesView() {
             </StyledButton>
             <div>
                 {groups.map((group) => (
-                    <GroupTable key={group.participants.map(p => p.id).join('-')} id={group.id} participants={group.participants} results={group.results} />
+                    <GroupTable key={group.participants.map(p => p.id).join("-")} id={group.id} participants={group.participants} results={group.results} />
                 ))}
             </div>
         </div>

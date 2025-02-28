@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyledTableCell, StyledTableRow } from "@/app/styles/shared/tables";
 import { Group } from "@/app/types/group";
-import { Participant } from '../../types/participant';
+import { Participant } from "../../types/participant";
 import { Paper, Table, TableBody, TableContainer, TableHead } from "@mui/material";
 import roundRobin from "roundrobin";
 import "./../../styles/global/global.css";
@@ -55,7 +55,7 @@ function GroupTable({id, participants, results }: Group) {
                                 <StyledTableCell>{participantIndex + 1}</StyledTableCell>
                                 {results.map((result: string[], resultIndex: number) => (                                    
                                     <StyledTableCell key={`${participant.id}-${resultIndex}`}>
-                                        {participantIndex === resultIndex ? 'X' : results[participantIndex]?.[resultIndex]}
+                                        {participantIndex === resultIndex ? "X" : results[participantIndex]?.[resultIndex]}
                                     </StyledTableCell>
                                 ))}
                                 <StyledTableCell>{participant.wins}</StyledTableCell>

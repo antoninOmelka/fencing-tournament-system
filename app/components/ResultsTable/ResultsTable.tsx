@@ -1,10 +1,10 @@
 import "@/app/styles/global/global.css";
 
-import React from 'react';
-import { Table, TableBody, TableContainer, TableHead, Paper } from '@mui/material';
-import { StyledTableRow, StyledTableCell } from '@/app/styles/shared/tables';
-import { Participant } from '../../types/participant';
-import { ParticipantTableProps } from '../../types/props';
+import React from "react";
+import { Table, TableBody, TableContainer, TableHead, Paper } from "@mui/material";
+import { StyledTableRow, StyledTableCell } from "@/app/styles/shared/tables";
+import { Participant } from "../../types/participant";
+import { ParticipantTableProps } from "../../types/props";
 
 function ResultsTable({ participants }: ParticipantTableProps) {
     return (

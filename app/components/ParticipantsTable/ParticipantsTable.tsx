@@ -1,19 +1,19 @@
-import './../../styles/global/global.css';
+import "./../../styles/global/global.css";
 
-import React, { useMemo } from 'react';
-import { Table, TableBody, TextField, TableHead, TableRow, Paper, IconButton } from '@mui/material';
-import { StyledTableContainer, StyledTableRow, StyledTableCell } from '../../styles/shared/tables';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import SaveIcon from '@mui/icons-material/Save';
-import { Participant } from '../../types/participant';
+import React, { useMemo } from "react";
+import { Table, TableBody, TextField, TableHead, TableRow, Paper, IconButton } from "@mui/material";
+import { StyledTableContainer, StyledTableRow, StyledTableCell } from "../../styles/shared/tables";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from "@mui/icons-material/Save";
+import { Participant } from "../../types/participant";
 
 type ParticipantsTableProps = {
   participants: Participant[];
   onDeleteParticipant: (id: number) => void;
   onEditParticipant: (id: number) => void;
   editingId: number | null;
-  newParticipant: Omit<Participant, 'id'>;
+  newParticipant: Omit<Participant, "id">;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSaveEdit: () => void;
 };
