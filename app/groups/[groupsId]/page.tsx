@@ -1,24 +1,23 @@
 "use client";
 
 import "@/app/styles/global/global.css";
-
 import { getGroup, updateGroup } from "@/app/services/groups";
 import { Group } from "@/app/types/group";
 import React, { useEffect, useState } from "react";
 import GroupTable from "@/app/components/GroupTable/page";
+import Loading from "@/app/components/Loading/page";
 import { StyledButton } from "@/app/styles/shared/buttons";
 import { useParams } from "next/navigation";
 
 function GroupTableView() {
     const [group, setGroup] = useState<Group | null>(null);
-    const [loading, setLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const params = useParams();
     const groupId = params?.groupsId;
 
     useEffect(() => {
         if (!groupId) {
-            setLoading(false); // když není groupId, ukonči loading
             return;
         }
 
@@ -26,25 +25,24 @@ function GroupTableView() {
             try {
                 const data = await getGroup(Number(groupId));
                 setGroup(data ?? null);
-              } catch (error) {
+            } catch (error) {
                 console.error("Failed to fetch group:", error);
                 throw new Error("Failed to load group data.");
-              } finally {
-                setLoading(false);
-              }
-            };
-        
-            fetchGroup();
-          }, [groupId]);
+            } finally {
+                setIsLoading(false);
+            }
+        }
 
-    if (loading) {
-        return <p>Loading...</p>;
+        fetchGroup();
+    }, [groupId]);
+
+    if (isLoading) {
+        return <Loading />;
     }
 
     if (!group) {
         return <p>Group not found</p>;
     }
-
 
     async function handleSaveButton() {
         if (group) {
@@ -67,7 +65,7 @@ function GroupTableView() {
     return (
         <div>
             <div className="button-container">
-                <StyledButton variant="contained" onClick={() => handleSaveButton()} disabled={isSaving}>
+                <StyledButton variant="contained" onClick={handleSaveButton} disabled={isSaving}>
                     {isSaving ? "Saving..." : "Save"}
                 </StyledButton>
             </div>

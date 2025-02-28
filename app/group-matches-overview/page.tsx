@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { getGroups, postGroups } from "../services/groups";
 import { Group } from "../types/group";
 import MatchesTable from "../components/MatchesTable/page";
+import Loading from "../components/Loading/page";
 import { StyledButton } from "../styles/shared/buttons";
 import { Participant } from "../types/participant";
 import { getParticipants } from "../services/participants";
-
 
 
 async function fetchParticipants(): Promise<Participant[]> {
@@ -20,9 +20,9 @@ async function fetchParticipants(): Promise<Participant[]> {
     }
 }
 
-
 function GroupMatchesOverview() {
     const [groups, setGroups] = useState<Group[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isSaving, setIsSaving] = useState<boolean>(false);
 
     useEffect(() => {
@@ -32,6 +32,8 @@ function GroupMatchesOverview() {
                 setGroups(data);
             } catch (error) {
                 console.error(error);
+            } finally {
+                setIsLoading(false);
             }
         };
 
@@ -90,6 +92,10 @@ function GroupMatchesOverview() {
         await postGroups(groups);
         setGroups(groups);
         setIsSaving(false);
+    }
+
+    if (isLoading) {
+        return <Loading />
     }
 
     return (

@@ -5,6 +5,7 @@ import './styles/global/global.css';
 import React, { useState, useMemo, useEffect } from 'react';
 import { getParticipants, postParticipants } from './services/participants';
 import ParticipantsTable from './components/Participant/Participant';
+import Loading from './components/Loading/page';
 import { Participant } from './types/participant';
 import { Box } from '@mui/material';
 import { StyledButton } from './styles/shared/buttons';
@@ -15,6 +16,7 @@ function ParticipantsOverview() {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [newParticipant, setNewParticipant] = useState({ name: '', year: 0, club: '', ranking: 0 });
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
 
   useEffect(() => {
@@ -24,6 +26,8 @@ function ParticipantsOverview() {
         setParticipants(data);
       } catch(error) {
         console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     }
   
@@ -88,6 +92,10 @@ function ParticipantsOverview() {
     const pdfUrl = URL.createObjectURL(pdfOutput);
     window.open(pdfUrl, '_blank');
   };
+
+  if (isLoading) {
+    return <Loading />
+  }
 
   return (
     <div className="app">
