@@ -81,10 +81,6 @@ function ParticipantsOverview() {
     [...participants].sort((a, b) => a.name.localeCompare(b.name)),
     [participants]
   );
-  const participantsByRanking = useMemo(() =>
-    [...participants].filter((participant) => participant.isPresent).sort((a, b) => Number(a.ranking) - Number(b.ranking)),
-    [participants]
-  );
 
   const generatePDF = (participants: Participant[]) => {
     const doc = new jsPDF();
@@ -106,13 +102,7 @@ function ParticipantsOverview() {
           Add Participant
         </StyledButton>
         <StyledButton variant="contained" onClick={() => {generatePDF(participantsByAlphabet)}}>
-          Registred List
-        </StyledButton>
-        <StyledButton variant="contained" onClick={() => {generatePDF(participantsByRanking)}}>
-          Present List
-        </StyledButton>
-        <StyledButton variant="contained" href="/groups-overview">
-          Generate Groups
+          Print Participants
         </StyledButton>
       </Box>
       <ParticipantsTable
