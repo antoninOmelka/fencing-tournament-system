@@ -3,7 +3,6 @@ import './../../styles/global/global.css';
 import React, { useMemo } from 'react';
 import { Table, TableBody, TextField, TableHead, TableRow, Paper, IconButton } from '@mui/material';
 import { StyledTableContainer, StyledTableRow, StyledTableCell } from './../../styles/shared/tables';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
@@ -11,7 +10,6 @@ import { Participant } from '../../types/participant';
 
 type ParticipantsTableProps = {
   participants: Participant[];
-  onPresentParticipant: (id: number) => void;
   onDeleteParticipant: (id: number) => void;
   onEditParticipant: (id: number) => void;
   editingId: number | null;
@@ -22,7 +20,6 @@ type ParticipantsTableProps = {
 
 function ParticipantsTable({
   participants,
-  onPresentParticipant,
   onEditParticipant,
   onDeleteParticipant,
   editingId,
@@ -50,7 +47,7 @@ function ParticipantsTable({
         </TableHead>
         <TableBody>
           {sortedParticipants.map((participant) => (
-            <StyledTableRow key={participant.id} ispresent={participant.isPresent.toString()}>
+            <StyledTableRow key={participant.id}>
               {editingId === participant.id ? (
                 <>
                   <StyledTableCell className="name"><TextField name="name" value={newParticipant.name} onChange={onInputChange} /></StyledTableCell>
@@ -77,11 +74,6 @@ function ParticipantsTable({
                   <StyledTableCell className="ranking">{participant.ranking}</StyledTableCell>
                   <StyledTableCell className="actions">
                     <div className="action-buttons">
-                      <IconButton
-                        onClick={() => onPresentParticipant(participant.id)}
-                      >
-                        <CheckCircleIcon />
-                      </IconButton>
                       <IconButton
                         aria-label="edit"
                         onClick={() => onEditParticipant(participant.id)}

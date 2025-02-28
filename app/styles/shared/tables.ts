@@ -24,20 +24,19 @@ export const StyledTableContainer = styled(TableContainer, {
     boxShadow: theme.shadows[3],
   }));
   
-  export const StyledTableRow = styled(TableRow, {
-    shouldForwardProp: (prop) => prop !== 'ispresent'
-  })<{ ispresent?: string }>(({ theme, ispresent }) => ({
+  export const StyledTableRow = styled(TableRow)(({ theme }) => ({
     height: CELL_HEIGHT,
     '&:nth-of-type(odd)': {
-      backgroundColor: ispresent === 'true' 
-        ? theme.palette.info.light 
-        : theme.palette.action.hover,
+      backgroundColor: theme.palette.action.hover,
     },
-    backgroundColor: ispresent === 'true' ? theme.palette.info.light : 'inherit',
+    '&.present': {
+      backgroundColor: theme.palette.info.light,
+      '&:hover': {
+        backgroundColor: theme.palette.info.main,
+      },
+    },
     '&:hover': {
-      backgroundColor: ispresent === 'true' 
-        ? theme.palette.info.main 
-        : theme.palette.action.selected,
+      backgroundColor: theme.palette.action.selected,
     },
     '&:last-child td, &:last-child th': {
       border: 0,

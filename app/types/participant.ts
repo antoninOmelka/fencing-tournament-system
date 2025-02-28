@@ -5,7 +5,6 @@ export interface Participant {
     club: string;
     ranking: number;
     groupRanking?: number;
-    isPresent: boolean;
     wins?: number;
     winsRate?: number;
     pointsScored?: number;

@@ -13,7 +13,7 @@ import 'jspdf-autotable';
 
 function ParticipantsOverview() {
   const [participants, setParticipants] = useState<Participant[]>([]);
-  const [newParticipant, setNewParticipant] = useState({ name: '', year: 0, club: '', ranking: 0, isPresent: false });
+  const [newParticipant, setNewParticipant] = useState({ name: '', year: 0, club: '', ranking: 0 });
   const [editingId, setEditingId] = useState<number | null>(null);
 
 
@@ -42,14 +42,8 @@ function ParticipantsOverview() {
     };
     setEditingId(participant.id);
     setParticipants(prev => [participant, ...prev]);
-    setNewParticipant({ name: '', year: 0, club: '', ranking: 0, isPresent: false });
+    setNewParticipant({ name: '', year: 0, club: '', ranking: 0 });
   }
-
-  const handlePresentParticipant = (id: number) => {
-    setParticipants(prev => prev.map(p =>
-      p.id === id ? { ...p, isPresent: !p.isPresent } : p
-    ));
-  };
 
   const handleEditParticipant = (id: number) => {
     setEditingId(id);
@@ -62,13 +56,13 @@ function ParticipantsOverview() {
   const handleSaveEdit = async() => {
     const updatedParticipants = participants.map(p =>
       p.id === editingId
-        ? { ...newParticipant, id: p.id, isPresent: p.isPresent }
+        ? { ...newParticipant, id: p.id }
         : p
     );
     setParticipants(updatedParticipants);
     await postParticipants(updatedParticipants);
     setEditingId(null);
-    setNewParticipant({ name: '', year: 0, club: '', ranking: 0, isPresent: false });
+    setNewParticipant({ name: '', year: 0, club: '', ranking: 0 });
   };
 
   const handleDeleteParticipant = async(id: number) => {
@@ -107,7 +101,6 @@ function ParticipantsOverview() {
       </Box>
       <ParticipantsTable
         participants={participantsByAlphabet}
-        onPresentParticipant={handlePresentParticipant}
         onEditParticipant={handleEditParticipant}
         onDeleteParticipant={handleDeleteParticipant}
         editingId={editingId}
