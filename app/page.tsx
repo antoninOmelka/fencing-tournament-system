@@ -4,15 +4,15 @@ import './styles/global/global.css';
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { getParticipants, postParticipants } from './services/participants';
-import ParticipantsTable from './components/Participant/Participant';
-import Loading from './components/Loading/page';
+import ParticipantsTable from './components/ParticipantsTable/ParticipantsTable';
+import Loading from './components/Loading/Loading';
 import { Participant } from './types/participant';
 import { Box } from '@mui/material';
 import { StyledButton } from './styles/shared/buttons';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 
-function ParticipantsOverview() {
+function ParticipantsView() {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [newParticipant, setNewParticipant] = useState({ name: '', year: 0, club: '', ranking: 0 });
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -119,4 +119,4 @@ function ParticipantsOverview() {
   );
 }
 
-export default ParticipantsOverview;
+export default ParticipantsView;

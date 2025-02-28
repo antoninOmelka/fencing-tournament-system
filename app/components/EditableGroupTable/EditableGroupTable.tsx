@@ -4,12 +4,12 @@ import { Group } from "@/app/types/group";
 import { Participant } from "@/app/types/participant";
 import { Paper, Table, TableBody, TableContainer, TableHead, TextField } from "@mui/material";
 
-type GroupTableProps = {
+type EditableGroupTableProps = {
     group: Group;
     onGroupChange: (updatedGroup: Group) => void;
   };
 
-function GroupTable({ group, onGroupChange }: GroupTableProps) {
+function EditableGroupTable({ group, onGroupChange }: EditableGroupTableProps) {
     const { participants, results } = group;
 
     const handleResultChange = (value: string, rowIndex: number, colIndex: number) => {
@@ -54,4 +54,4 @@ function GroupTable({ group, onGroupChange }: GroupTableProps) {
     );
 }
 
-export default GroupTable;
+export default EditableGroupTable;

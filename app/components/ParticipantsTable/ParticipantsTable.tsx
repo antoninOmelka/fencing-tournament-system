@@ -2,7 +2,7 @@ import './../../styles/global/global.css';
 
 import React, { useMemo } from 'react';
 import { Table, TableBody, TextField, TableHead, TableRow, Paper, IconButton } from '@mui/material';
-import { StyledTableContainer, StyledTableRow, StyledTableCell } from './../../styles/shared/tables';
+import { StyledTableContainer, StyledTableRow, StyledTableCell } from '../../styles/shared/tables';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';

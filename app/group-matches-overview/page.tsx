@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { getGroups, postGroups } from "../services/groups";
 import { Group } from "../types/group";
-import MatchesTable from "../components/MatchesTable/page";
-import Loading from "../components/Loading/page";
+import GroupTable from "../components/GroupTable/GroupTable";
+import Loading from "../components/Loading/Loading";
 import { StyledButton } from "../styles/shared/buttons";
 import { Participant } from "../types/participant";
 import { getParticipants } from "../services/participants";
@@ -20,7 +20,7 @@ async function fetchParticipants(): Promise<Participant[]> {
     }
 }
 
-function GroupMatchesOverview() {
+function GroupTablesView() {
     const [groups, setGroups] = useState<Group[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -105,11 +105,11 @@ function GroupMatchesOverview() {
             </StyledButton>
             <div className="matches-overview">
                 {groups.map((group) => (
-                    <MatchesTable key={group.participants.map(p => p.id).join('-')} id={group.id} participants={group.participants} results={group.results}></MatchesTable>
+                    <GroupTable key={group.participants.map(p => p.id).join('-')} id={group.id} participants={group.participants} results={group.results} />
                 ))}
             </div>
         </>
     );
 }
 
-export default GroupMatchesOverview;
+export default GroupTablesView;

@@ -13,7 +13,7 @@ async function generateMatchOrder(participants: Participant[]): Promise<string[]
     return matches.flat();
 }
 
-function MatchesTable({id, participants, results }: Group) {
+function GroupTable({id, participants, results }: Group) {
     const [matchesOrder, setMatchesOrder] = useState<string[]>([]);
 
     useEffect(() => {
@@ -86,4 +86,4 @@ function MatchesTable({id, participants, results }: Group) {
     );
 }
 
-export default MatchesTable;
+export default GroupTable;

@@ -6,9 +6,9 @@ import { Participant } from "../types/participant";
 import { getGroups } from "../services/groups";
 import { Group } from "../types/group";
 import ResultsTable from "../components/ResultsTable/ResultsTable";
-import Loading from "../components/Loading/page";
+import Loading from "../components/Loading/Loading";
 
-function ResultsOverview() {
+function ResultsView() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [sortedFencers, setSortedFencers] = useState<Participant[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -84,4 +84,4 @@ function ResultsOverview() {
   )
 }
 
-export default ResultsOverview;
+export default ResultsView;

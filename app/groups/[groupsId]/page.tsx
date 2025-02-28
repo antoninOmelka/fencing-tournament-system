@@ -4,12 +4,12 @@ import "@/app/styles/global/global.css";
 import { getGroup, updateGroup } from "@/app/services/groups";
 import { Group } from "@/app/types/group";
 import React, { useEffect, useState } from "react";
-import GroupTable from "@/app/components/GroupTable/page";
-import Loading from "@/app/components/Loading/page";
+import EditableGroupTable from "@/app/components/EditableGroupTable/EditableGroupTable";
+import Loading from "@/app/components/Loading/Loading";
 import { StyledButton } from "@/app/styles/shared/buttons";
 import { useParams } from "next/navigation";
 
-function GroupTableView() {
+function EditableGroupTableView() {
     const [group, setGroup] = useState<Group | null>(null);
     const [isSaving, setIsSaving] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -70,10 +70,10 @@ function GroupTableView() {
                 </StyledButton>
             </div>
             <div className="matches-overview">
-                <GroupTable group={group} onGroupChange={handleGroupChange} />
+                <EditableGroupTable group={group} onGroupChange={handleGroupChange} />
             </div>
         </div>
     );
 }
 
-export default GroupTableView;
+export default EditableGroupTableView;
