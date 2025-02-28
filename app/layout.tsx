@@ -1,6 +1,7 @@
+import "./styles/global/global.css";
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./styles/global/global.css";
 import Link from "next/link";
 
 const geistSans = Geist({
@@ -33,9 +34,9 @@ export default function RootLayout({
         </header>
         <nav className="navbar">
           <ul>
-            <li><Link href="/">Participants</Link></li>
-            <li><Link href="/group-matches-overview">Groups</Link></li>
-            <li><Link href="/results-overview">Results</Link></li>
+            <li><Link href="/participants">Participants</Link></li>
+            <li><Link href="/groups">Groups</Link></li>
+            <li><Link href="/results">Results</Link></li>
           </ul>
         </nav>
         <main>

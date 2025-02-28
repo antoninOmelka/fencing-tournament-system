@@ -1,6 +1,7 @@
 "use client";
 
 import "@/app/styles/global/global.css";
+
 import { getGroup, updateGroup } from "@/app/services/groups";
 import { Group } from "@/app/types/group";
 import React, { useEffect, useState } from "react";
@@ -63,15 +64,13 @@ function EditableGroupTableView() {
     }
 
     return (
-        <div>
+        <div className="editable-group-container">
             <div className="button-container">
                 <StyledButton variant="contained" onClick={handleSaveButton} disabled={isSaving}>
                     {isSaving ? "Saving..." : "Save"}
                 </StyledButton>
             </div>
-            <div className="matches-overview">
-                <EditableGroupTable group={group} onGroupChange={handleGroupChange} />
-            </div>
+            <EditableGroupTable group={group} onGroupChange={handleGroupChange} />
         </div>
     );
 }

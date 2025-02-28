@@ -1,6 +1,7 @@
 "use client"
 
 import "@/app/styles/global/global.css";
+
 import { useEffect, useState } from "react";
 import { Participant } from "../types/participant";
 import { getGroups } from "../services/groups";
@@ -78,7 +79,7 @@ function ResultsView() {
   }
 
   return (
-    <div className="matches-overview">
+    <div className="groups-container">
       <ResultsTable participants={sortedFencers}></ResultsTable>
     </div>
   )

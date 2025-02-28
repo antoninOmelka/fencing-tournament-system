@@ -87,7 +87,7 @@ main {
   font-size: 16px;
 }
 
-.app {
+.participants-container {
   text-align: center;
 }
 
@@ -97,7 +97,7 @@ main {
   justify-content: flex-end;
 }
 
-.groups-overview {
+.editable-group-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -108,7 +108,7 @@ main {
   max-width: 900px;
 }
 
-.matches-overview {
+.groups-container {
   display: flex;
   flex-direction: column;
   align-items: center;

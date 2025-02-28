@@ -1,5 +1,7 @@
 'use client'
 
+import "@/app/styles/global/global.css";
+
 import { useEffect, useState } from "react";
 import { getGroups, postGroups } from "../services/groups";
 import { Group } from "../types/group";
@@ -99,16 +101,16 @@ function GroupTablesView() {
     }
 
     return (
-        <>
+        <div className="groups-container">
             <StyledButton variant="contained" onClick={() => distributeIntoGroups()} disabled={isSaving}>
                 {isSaving ? "Generating..." : "Generate Groups"}
             </StyledButton>
-            <div className="matches-overview">
+            <div>
                 {groups.map((group) => (
                     <GroupTable key={group.participants.map(p => p.id).join('-')} id={group.id} participants={group.participants} results={group.results} />
                 ))}
             </div>
-        </>
+        </div>
     );
 }
 
