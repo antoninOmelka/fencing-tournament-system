@@ -5,10 +5,14 @@ import { Group } from "@/app/types/group";
 
 const groupsFilePath = path.join(process.cwd(), "app/data/groups.json");
 
-const readGroups = (): Group[] => {
+function ensureFileExists() {
   if (!fs.existsSync(groupsFilePath)) {
     throw new Error("Groups data file not found");
   }
+}
+
+const readGroups = (): Group[] => {
+  ensureFileExists();
   return JSON.parse(fs.readFileSync(groupsFilePath, "utf8"));
 };
 
@@ -78,24 +82,24 @@ function calculateStats({participants, results}: Group ) {
 }
 
 
-export async function GET(req: NextRequest, { params }: { params: { groupId: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { groupId: string } }): Promise<NextResponse> {
   const { groupId } = await params;
   const groupIdNumber = validateGroupId(groupId);
   if (groupIdNumber === null) {
-    return NextResponse.json({ message: "Invalid group ID" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid group ID" }, { status: 400 });
   }
 
   let groups;
   try {
     groups = readGroups();
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: error }, { status: 500 });
+    console.error(`Failed to read groups: ${error}`);
+    return NextResponse.json({ error: `Failed to read groups: ${error}` }, { status: 500 });
   }
 
   const group = groups.find((group) => group.id === groupIdNumber);
   if (!group) {
-    return NextResponse.json({ message: "Group not found" }, { status: 404 });
+    return NextResponse.json({ error: "Group not found" }, { status: 404 });
   }
 
   return NextResponse.json(group);
@@ -105,7 +109,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { groupId: s
   const { groupId } = await params;
   const groupIdNumber = validateGroupId(groupId);
   if (groupIdNumber === null) {
-    return NextResponse.json({ message: "Invalid group ID" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid group ID" }, { status: 400 });
   }
 
   const groupData = await req.json();
@@ -114,13 +118,13 @@ export async function PATCH(req: NextRequest, { params }: { params: { groupId: s
   try {
     groups = readGroups();
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ message: error }, { status: 500 });
+    console.error(`Failed to read groups: ${error}`);
+    return NextResponse.json({ error: `Failed to read groups: ${error}` }, { status: 500 });
   }
 
   const groupIndex = groups.findIndex((group) => group.id === groupIdNumber);
   if (groupIndex === -1) {
-    return NextResponse.json({ message: "Group not found" }, { status: 404 });
+    return NextResponse.json({ error: "Group not found" }, { status: 404 });
   }
 
   const updatedGroup = { ...groups[groupIndex], ...groupData };
@@ -130,8 +134,8 @@ export async function PATCH(req: NextRequest, { params }: { params: { groupId: s
   try {
     writeGroups(groups);
   } catch (error) {
-    console.error("Failed to write groups:", error);
-    return NextResponse.json({ message: "Failed to update group" }, { status: 500 });
+    console.error(`Failed to write group: ${error}`);
+    return NextResponse.json({ error: `Failed to write group: ${error}` }, { status: 500 });
   }
 
   return NextResponse.json({ message: "Group updated successfully", group: updatedGroup }, { status: 200 });
