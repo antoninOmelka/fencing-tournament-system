@@ -29,8 +29,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <header className="header">
-          <h1>DuelBoard</h1>
+        <header className="header-container">
+          <Link href="/"><h1 className="header-logo">⚔️ DuelBoard</h1></Link>
         </header>
         <nav className="navbar">
           <ul>
