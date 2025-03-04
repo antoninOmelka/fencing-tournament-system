@@ -7,7 +7,6 @@ import { getParticipants, postParticipants } from "../services/participants";
 import ParticipantsTable from "../components/ParticipantsTable/ParticipantsTable";
 import Loading from "../components/Loading/Loading";
 import { Participant } from "../types/participant";
-import { Box } from "@mui/material";
 import { StyledButton } from "../styles/shared/buttons";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
@@ -24,13 +23,13 @@ function ParticipantsView() {
       try {
         const data = await getParticipants();
         setParticipants(data);
-      } catch(error) {
+      } catch (error) {
         console.error(error);
       } finally {
         setIsLoading(false);
       }
     }
-  
+
     fetchParticipants();
   }, []);
 
@@ -57,7 +56,7 @@ function ParticipantsView() {
     }
   };
 
-  const handleSaveEdit = async() => {
+  const handleSaveEdit = async () => {
     const updatedParticipants = participants.map(p =>
       p.id === editingId
         ? { ...newParticipant, id: p.id }
@@ -69,7 +68,7 @@ function ParticipantsView() {
     setNewParticipant({ name: "", year: 0, club: "", ranking: 0 });
   };
 
-  const handleDeleteParticipant = async(id: number) => {
+  const handleDeleteParticipant = async (id: number) => {
     const updatedParticipants = participants.filter(participant => participant.id !== id);
     setParticipants(updatedParticipants);
     await postParticipants(updatedParticipants);
@@ -98,24 +97,28 @@ function ParticipantsView() {
   }
 
   return (
-    <div className="participants-container">
-      <Box component="form" sx={{ "& > :not(style)": { m: 1, width: "25ch" } }} noValidate autoComplete="off">
-        <StyledButton variant="contained" onClick={handleAddParticipant}>
-          Add Participant
-        </StyledButton>
-        <StyledButton variant="contained" onClick={() => {generatePDF(participantsByAlphabet)}}>
+    <>
+      <div className="secondary-actions-container">
+        <StyledButton variant="contained" onClick={() => { generatePDF(participantsByAlphabet) }}>
           Print Participants
         </StyledButton>
-      </Box>
-      <ParticipantsTable
-        participants={participantsByAlphabet}
-        onEditParticipant={handleEditParticipant}
-        onDeleteParticipant={handleDeleteParticipant}
-        editingId={editingId}
-        newParticipant={newParticipant}
-        onInputChange={handleInputChange}
-        onSaveEdit={handleSaveEdit} />
-    </div>
+      </div>
+      <div className="group-table">
+        <div className="table-button-container">
+          <StyledButton variant="contained" onClick={handleAddParticipant}>
+            Add New
+          </StyledButton>
+        </div>
+        <ParticipantsTable
+          participants={participantsByAlphabet}
+          onEditParticipant={handleEditParticipant}
+          onDeleteParticipant={handleDeleteParticipant}
+          editingId={editingId}
+          newParticipant={newParticipant}
+          onInputChange={handleInputChange}
+          onSaveEdit={handleSaveEdit} />
+      </div>
+    </>
   );
 }
 

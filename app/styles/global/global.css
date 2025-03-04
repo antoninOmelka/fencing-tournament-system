@@ -65,13 +65,13 @@ body {
 }
 
 main {
-  padding: 32px;
   background-color: #f4f4f4;
   color: #333;
   min-height: calc(100vh - 140px);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  align-items: center;
 }
 
 .page-container {
@@ -110,25 +110,22 @@ main {
   font-size: 16px;
 }
 
-.participants-container {
-  text-align: center;
+.secondary-actions-container {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  padding-right: 30px;
+  padding-bottom: 30px;
 }
 
-.button-container {
-  max-width: 90%;
+.table-button-container {
   display: flex;
+  width: 100%;
   justify-content: flex-end;
 }
 
-.editable-group-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 55px;
-}
-
 .group-table {
-  max-width: 900px;
+  width: 1000px;
 }
 
 .groups-container {

@@ -19,7 +19,6 @@ export const StyledTableContainer = styled(TableContainer, {
   })<{ component?: React.ElementType }>(({ theme }) => ({
     width: `${TOTAL_WIDTH}px`,
     margin: "auto",
-    marginTop: theme.spacing(3),
     marginBottom: theme.spacing(3),
     boxShadow: theme.shadows[3],
   }));

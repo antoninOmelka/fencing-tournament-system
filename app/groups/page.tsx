@@ -101,16 +101,20 @@ function GroupTablesView() {
     }
 
     return (
-        <div className="groups-container">
-            <StyledButton variant="contained" onClick={() => distributeIntoGroups()} disabled={isSaving}>
-                {isSaving ? "Generating..." : "Generate Groups"}
-            </StyledButton>
-            <div>
-                {groups.map((group) => (
-                    <GroupTable key={group.participants.map(p => p.id).join("-")} id={group.id} participants={group.participants} results={group.results} />
-                ))}
+        <>
+            <div className="secondary-actions-container">
+                <StyledButton variant="contained" onClick={() => distributeIntoGroups()} disabled={isSaving}>
+                    {isSaving ? "Generating..." : "Generate Groups"}
+                </StyledButton>
             </div>
-        </div>
+            <div className="groups-container">
+                <div>
+                    {groups.map((group) => (
+                        <GroupTable key={group.participants.map(p => p.id).join("-")} id={group.id} participants={group.participants} results={group.results} />
+                    ))}
+                </div>
+            </div>
+        </>
     );
 }
 

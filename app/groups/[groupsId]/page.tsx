@@ -64,8 +64,8 @@ function EditableGroupTableView() {
     }
 
     return (
-        <div className="editable-group-container">
-            <div className="button-container">
+        <div className="group-table">
+            <div className="table-button-container">
                 <StyledButton variant="contained" onClick={handleSaveButton} disabled={isSaving}>
                     {isSaving ? "Saving..." : "Save"}
                 </StyledButton>
