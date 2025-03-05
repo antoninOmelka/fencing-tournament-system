@@ -14,6 +14,7 @@ function EditableGroupTableView() {
     const [group, setGroup] = useState<Group | null>(null);
     const [isSaving, setIsSaving] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isValid, setIsValid] = useState<boolean>(true);
     const params = useParams();
     const groupId = params?.groupsId;
 
@@ -66,11 +67,11 @@ function EditableGroupTableView() {
     return (
         <div className="group-table">
             <div className="table-button-container">
-                <StyledButton variant="contained" onClick={handleSaveButton} disabled={isSaving}>
+                <StyledButton variant="contained" onClick={handleSaveButton} disabled={isSaving || !isValid}>
                     {isSaving ? "Saving..." : "Save"}
                 </StyledButton>
             </div>
-            <EditableGroupTable group={group} onGroupChange={handleGroupChange} />
+            <EditableGroupTable group={group} onGroupChange={handleGroupChange} setIsValid={setIsValid}/>
         </div>
     );
 }
