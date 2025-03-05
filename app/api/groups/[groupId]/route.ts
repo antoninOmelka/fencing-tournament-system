@@ -3,6 +3,8 @@ import path from "path";
 import { NextRequest, NextResponse } from "next/server";
 import { Group } from "@/app/types/group";
 
+const RESULTS_URL = "http://localhost:3000/api/results";
+
 const groupsFilePath = path.join(process.cwd(), "app/data/groups.json");
 
 function ensureFileExists() {
@@ -136,6 +138,16 @@ export async function PATCH(req: NextRequest, { params }: { params: { groupId: s
   } catch (error) {
     console.error(`Failed to write group: ${error}`);
     return NextResponse.json({ error: `Failed to write group: ${error}` }, { status: 500 });
+  }
+
+  try {
+    const response = await fetch(RESULTS_URL, {method: "POST"});
+    if (!response.ok) {
+      throw new Error(`Failed with status: ${response.status}`);
+    }
+  } catch (error) {
+    console.log(`Failed to trigger results recalculation: ${error}`);
+    return NextResponse.json({ error: `Failed to regenerate results: ${error}` }, { status: 500 });
   }
 
   return NextResponse.json({ message: "Group updated successfully", group: updatedGroup }, { status: 200 });

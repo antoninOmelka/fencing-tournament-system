@@ -9,7 +9,7 @@ const resultsFilePath = path.join(process.cwd(), "app/data/results.json");
 
 async function ensureFileExists() {
     if (!fs.existsSync(resultsFilePath)) {
-        generateResults();
+        await generateResults();
     }
 }
 
@@ -66,5 +66,15 @@ export async function GET(): Promise<NextResponse> {
     } catch (error) {
         console.error(`Failed to read results: ${error}`);
         return NextResponse.json({ error: `Failed to read results: ${error}` }, { status: 500 });
+    }
+}
+
+export async function POST(): Promise<NextResponse> {
+    try {
+        await generateResults();
+        return NextResponse.json({message: "Results recalculated successfully."}, {status: 200})
+    } catch (error) {
+        console.error(`Failed to generate results: ${error}`);
+        return NextResponse.json({ error: `Failed to generate results: ${error}` }, { status: 500 });
     }
 }
