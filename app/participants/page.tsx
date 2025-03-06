@@ -3,7 +3,7 @@
 import "@/app/styles/global/global.css";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { getParticipants, postParticipants } from "../services/participants";
+import { deleteParticipant, getParticipants, postParticipants } from "../services/participants";
 import ParticipantsTable from "../components/ParticipantsTable/ParticipantsTable";
 import Loading from "../components/Loading/Loading";
 import { Participant } from "../types/participant";
@@ -69,13 +69,19 @@ function ParticipantsView() {
   };
 
   const handleDeleteParticipant = async (id: number) => {
-    const updatedParticipants = participants.filter(participant => participant.id !== id);
-    setParticipants(updatedParticipants);
-    await postParticipants(updatedParticipants);
+    try {
+      await deleteParticipant(String(id));
+      const updatedParticipants = participants.filter(participant => participant.id !== id);
+      setParticipants(updatedParticipants);
+    } catch (error) {
+      console.error(error);
+      throw new Error("Failed to delete participant");
+    }
   };
-
+  
   const participantsByAlphabet = useMemo(() =>
-    [...participants].sort((a, b) => a.name.localeCompare(b.name)),
+    participants.length > 0 ?
+      [...participants].sort((a, b) => a.name.localeCompare(b.name)) : [],
     [participants]
   );
 

@@ -7,7 +7,7 @@ const participantsFilePath = path.join(process.cwd(), "app/data/participants.jso
 function ensureFileExists() {
   if (!fs.existsSync(participantsFilePath)) {
     console.log("File doesn't exist, creating it...");
-    fs.writeFileSync(participantsFilePath, JSON.stringify({ participants: [] }, null, 2));
+    fs.writeFileSync(participantsFilePath, JSON.stringify([], null, 2));
   }
 }
 
