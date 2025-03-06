@@ -3,7 +3,7 @@
 import "@/app/styles/global/global.css";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { deleteParticipant, getParticipants, postParticipants } from "../services/participants";
+import { deleteParticipant, getParticipants, updateParticipant } from "../services/participants";
 import ParticipantsTable from "../components/ParticipantsTable/ParticipantsTable";
 import Loading from "../components/Loading/Loading";
 import { Participant } from "../types/participant";
@@ -57,15 +57,22 @@ function ParticipantsView() {
   };
 
   const handleSaveEdit = async () => {
-    const updatedParticipants = participants.map(p =>
-      p.id === editingId
-        ? { ...newParticipant, id: p.id }
-        : p
-    );
-    setParticipants(updatedParticipants);
-    await postParticipants(updatedParticipants);
-    setEditingId(null);
-    setNewParticipant({ name: "", year: 0, club: "", ranking: 0 });
+    try {
+      const updatedParticipants = participants.map(p =>
+        p.id === editingId ? { ...newParticipant, id: p.id } : p
+      );
+  
+      const participantToSave = updatedParticipants.find(p => p.id === editingId);
+      if (participantToSave) {
+        await updateParticipant(participantToSave);
+      }
+  
+      setParticipants(updatedParticipants);
+      setEditingId(null);
+      setNewParticipant({ name: "", year: 0, club: "", ranking: 0 });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleDeleteParticipant = async (id: number) => {
@@ -111,7 +118,7 @@ function ParticipantsView() {
       </div>
       <div className="group-table">
         <div className="table-button-container">
-          <StyledButton variant="contained" onClick={handleAddParticipant}>
+          <StyledButton variant="contained" onClick={handleAddParticipant} disabled={editingId ? true : false }>
             Add New
           </StyledButton>
         </div>

@@ -21,39 +21,69 @@ const writeParticipants = (participants: Participant[]): void => {
 };
 
 const validatParticipantId = (participantId: string): number | null => {
-    const participantIdNumber = Number(participantId);
-    return isNaN(participantIdNumber) ? null : participantIdNumber;
-  };
-  
+  const participantIdNumber = Number(participantId);
+  return isNaN(participantIdNumber) ? null : participantIdNumber;
+};
+
+export async function PUT(req: NextRequest, { params }: { params: { participantId: string } }) {
+  const { participantId } = await params;
+  const participantIdNumber = validatParticipantId(participantId);
+
+  if (participantIdNumber === null) {
+    return NextResponse.json({ error: "Invalid participant ID" }, { status: 400 });
+  }
+
+  const participantData = await req.json();
+  participantData.id = participantIdNumber;
+
+  let participants;
+  try {
+    participants = readParticipants();
+  } catch (error) {
+    console.error(`Failed to read participants: ${error}`);
+    return NextResponse.json({ error: `Failed to read participants: ${error}` }, { status: 500 });
+  }
+
+  const participantIndex = participants.findIndex((participant) => participant.id === participantIdNumber);
+
+  if (participantIndex === -1) {
+    participants.push(participantData);
+    writeParticipants(participants);
+    return NextResponse.json({ message: "Participant created", participant: participantData }, { status: 201 });
+  } else {
+    participants[participantIndex] = { ...participants[participantIndex], ...participantData };
+    writeParticipants(participants);
+    return NextResponse.json({ message: "Participant updated", participant: participants[participantIndex] }, { status: 200 });
+  }
+}
 
 export async function DELETE(req: NextRequest, { params }: { params: { participantId: string } }) {
-    const { participantId } = await params;
-    const participantIdNumber = validatParticipantId(participantId);
-    if (participantIdNumber === null)
-    {
-        return NextResponse.json({ error: "Invalid participant ID"}, { status: 400 });
-    }
+  const { participantId } = await params;
+  const participantIdNumber = validatParticipantId(participantId);
+  if (participantIdNumber === null) {
+    return NextResponse.json({ error: "Invalid participant ID" }, { status: 400 });
+  }
 
-    let participants;
-    try {
-        participants = readParticipants();
-    } catch (error) {
-        console.error(`Failed to read participants: ${error}`);
-        return NextResponse.json({ error: `Failed to read participants: ${error}` }, { status: 500 });
-    }
+  let participants;
+  try {
+    participants = readParticipants();
+  } catch (error) {
+    console.error(`Failed to read participants: ${error}`);
+    return NextResponse.json({ error: `Failed to read participants: ${error}` }, { status: 500 });
+  }
 
-    const participantToDelete = participants.find((participant) => participant.id === Number(participantId));
-    if (!participantToDelete) {
-        return NextResponse.json({ error: "Participant not found" }, { status: 404 });
-    }
-    
-    try {
-        const filteredParticipants =  participants.filter((participant) => participant.id !== participantToDelete.id);
-        writeParticipants(filteredParticipants);
-    } catch (error) {
-        console.error(`Failed to write participants: ${error}`);
-        return NextResponse.json({ error: `Failed to write participants: ${error}` }, { status: 500 });
-      }
-      return NextResponse.json({ message: "Participant deleted successfully"}, { status: 200 });
+  const participantToDelete = participants.find((participant) => participant.id === Number(participantId));
+  if (!participantToDelete) {
+    return NextResponse.json({ error: "Participant not found" }, { status: 404 });
+  }
+
+  try {
+    const filteredParticipants = participants.filter((participant) => participant.id !== participantToDelete.id);
+    writeParticipants(filteredParticipants);
+  } catch (error) {
+    console.error(`Failed to write participants: ${error}`);
+    return NextResponse.json({ error: `Failed to write participants: ${error}` }, { status: 500 });
+  }
+  return NextResponse.json({ message: "Participant deleted successfully" }, { status: 200 });
 }
 
