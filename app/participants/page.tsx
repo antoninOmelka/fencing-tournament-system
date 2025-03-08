@@ -10,13 +10,21 @@ import { Participant } from "../types/participant";
 import { StyledButton } from "../styles/shared/buttons";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { z } from "zod";
+
+const participantSchema = z.object({
+  name: z.string().min(1).max(25),
+  year: z.coerce.number().min(1900).max(2025).refine(val => Number.isInteger(val)),
+  club: z.string().min(1).max(25),
+  ranking: z.coerce.number().min(1).max(999).refine(val => Number.isInteger(val)),
+});
 
 function ParticipantsView() {
   const [participants, setParticipants] = useState<Participant[]>([]);
-  const [newParticipant, setNewParticipant] = useState({ name: "", year: 0, club: "", ranking: 0 });
+  const [newParticipant, setNewParticipant] = useState({ name: "", year: "", club: "", ranking: '' });
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     async function fetchParticipants() {
@@ -45,7 +53,8 @@ function ParticipantsView() {
     };
     setEditingId(participant.id);
     setParticipants(prev => [participant, ...prev]);
-    setNewParticipant({ name: "", year: 0, club: "", ranking: 0 });
+    setNewParticipant({ name: "", year: "", club: "", ranking: "" });
+    setErrors({});
   }
 
   const handleEditParticipant = (id: number) => {
@@ -61,17 +70,27 @@ function ParticipantsView() {
       const updatedParticipants = participants.map(p =>
         p.id === editingId ? { ...newParticipant, id: p.id } : p
       );
-  
+
       const participantToSave = updatedParticipants.find(p => p.id === editingId);
       if (participantToSave) {
+        participantSchema.parse(participantToSave);
         await updateParticipant(participantToSave);
       }
-  
+
       setParticipants(updatedParticipants);
       setEditingId(null);
-      setNewParticipant({ name: "", year: 0, club: "", ranking: 0 });
+      setNewParticipant({ name: "", year: "", club: "", ranking: "" });
+      setErrors({});
     } catch (error) {
-      console.error(error);
+      if (error instanceof z.ZodError) {
+        const newErrors = error.errors.reduce((acc, err) => {
+          acc[err.path.join(".")] = err.message;
+          return acc;
+        }, {} as Record<string, string>);
+        setErrors(newErrors);
+      } else {
+        console.error(error);
+      }
     }
   };
 
@@ -129,7 +148,8 @@ function ParticipantsView() {
           editingId={editingId}
           newParticipant={newParticipant}
           onInputChange={handleInputChange}
-          onSaveEdit={handleSaveEdit} />
+          onSaveEdit={handleSaveEdit}
+          errors={errors} />
       </div>
     </>
   );

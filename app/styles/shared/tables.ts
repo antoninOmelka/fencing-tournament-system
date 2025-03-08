@@ -1,7 +1,7 @@
 import { TableCell, tableCellClasses, TableContainer, TableRow } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-const CELL_HEIGHT = "57px";
+const CELL_HEIGHT = "80px";
 const CELL_WIDTHS = {
   name: "250px",
   year: "150px",
@@ -49,7 +49,7 @@ export const StyledTableContainer = styled(TableContainer, {
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    
+      
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
       color: theme.palette.common.white,
@@ -90,13 +90,20 @@ export const StyledTableContainer = styled(TableContainer, {
       }
     },
     "& .MuiTextField-root": {
-      margin: 0,
-      width: "95%",
-      "& .MuiInputBase-root": {
-        height: "40px",
-      },
-      "& .MuiOutlinedInput-input": {
-        padding: "8px 14px",
-      }
-    }
+      width: "100%",
+      display: "flex",
+      alignItems: "center",
+    },
+  
+    "& .MuiInputBase-root": {
+      height: "40px",
+    },
+  
+    "& .MuiFormHelperText-root": {
+      position: "absolute",
+      bottom: "-1.7em",
+      left: "0px"
+    },
+  
+    position: "relative",
   }));

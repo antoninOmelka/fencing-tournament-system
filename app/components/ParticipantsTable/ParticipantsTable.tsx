@@ -1,7 +1,7 @@
 import "./../../styles/global/global.css";
 
 import React, { useMemo } from "react";
-import { Table, TableBody, TextField, TableHead, TableRow, Paper, IconButton } from "@mui/material";
+import { Table, TableBody, TableHead, TableRow, Paper, IconButton, Tooltip, TextField } from "@mui/material";
 import { StyledTableContainer, StyledTableRow, StyledTableCell } from "../../styles/shared/tables";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -16,6 +16,7 @@ type ParticipantsTableProps = {
   newParticipant: Omit<Participant, "id">;
   onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onSaveEdit: () => void;
+  errors: Record<string, string>;
 };
 
 function ParticipantsTable({
@@ -25,7 +26,8 @@ function ParticipantsTable({
   editingId,
   newParticipant,
   onInputChange,
-  onSaveEdit
+  onSaveEdit,
+  errors
 }: ParticipantsTableProps) {
 
   const isActionDisabled = (editingId: number | null) => Number.isInteger(editingId);
@@ -52,16 +54,50 @@ function ParticipantsTable({
             <StyledTableRow key={participant.id}>
               {editingId === participant.id ? (
                 <>
-                  <StyledTableCell className="name"><TextField name="name" value={newParticipant.name} onChange={onInputChange} /></StyledTableCell>
-                  <StyledTableCell className="year"><TextField type="number" name="year" value={newParticipant.year} onChange={onInputChange} inputProps={{
-                    min: 0,
-                    step: 1
-                  }} /></StyledTableCell>
-                  <StyledTableCell className="club"><TextField name="club" value={newParticipant.club} onChange={onInputChange} /></StyledTableCell>
-                  <StyledTableCell className="ranking"><TextField type="number" name="ranking" value={newParticipant.ranking} onChange={onInputChange} inputProps={{
-                    min: 0,
-                    step: 1
-                  }} /></StyledTableCell>
+                  <StyledTableCell className="name">
+                    <Tooltip title={errors.name ? "Name must have length from 1 to 25" : ""} arrow>
+                      <TextField
+                        name="name"
+                        value={newParticipant.name}
+                        onChange={onInputChange}
+                        error={!!errors.name}
+                        helperText={errors.name ? "Invalid value" : ""}
+                      />
+                    </Tooltip>
+                  </StyledTableCell>
+                  <StyledTableCell className="year">
+                    <Tooltip title={errors.year ? "Year must be in range from 1900 to 2025" : ""} arrow>
+                      <TextField
+                        name="year"
+                        value={newParticipant.year}
+                        onChange={onInputChange}
+                        error={!!errors.year}
+                        helperText={errors.year ? "Invalid value" : ""}
+                      />
+                    </Tooltip>
+                  </StyledTableCell>
+                  <StyledTableCell className="club">
+                    <Tooltip title={errors.club ? "Club must have length from 1 to 25" : ""} arrow>
+                      <TextField
+                        name="club"
+                        value={newParticipant.club}
+                        onChange={onInputChange}
+                        error={!!errors.club}
+                        helperText={errors.club ? "Invalid value" : ""}
+                      />
+                    </Tooltip>
+                  </StyledTableCell>
+                  <StyledTableCell className="ranking">
+                    <Tooltip title={errors.ranking ? "Ranking must be in range from 1 to 999" : ""} arrow>
+                      <TextField
+                        name="ranking"
+                        value={newParticipant.ranking}
+                        onChange={onInputChange}
+                        error={!!errors.ranking}
+                        helperText={errors.ranking ? "Invalid value" : ""}
+                      />
+                    </Tooltip>
+                  </StyledTableCell>
                   <StyledTableCell className="actions">
                     <IconButton aria-label="save" onClick={onSaveEdit}>
                       <SaveIcon />

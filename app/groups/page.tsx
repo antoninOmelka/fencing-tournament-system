@@ -85,7 +85,7 @@ function GroupTablesView() {
         groups.forEach((group => {
             const groupSize = group.participants.length;
             group.results = Array.from({ length: groupSize }, () => Array(groupSize));
-            group.participants.sort((a, b) => a.ranking - b.ranking);
+            group.participants.sort((a, b) => Number(a.ranking) - Number(b.ranking));
             group.participants.forEach((participant, index) => {
                 participant.groupRanking = index + 1;
             });
