@@ -42,3 +42,5 @@ next-env.d.ts
 
 # stored data
 app/data
+
+!app/data/participants.json
