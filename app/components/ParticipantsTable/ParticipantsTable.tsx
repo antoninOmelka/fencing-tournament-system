@@ -4,7 +4,7 @@ import React from "react";
 import { Table, TableBody, TableHead, TableRow, Paper } from "@mui/material";
 import { StyledTableContainer, StyledTableCell } from "../../styles/shared/tables";
 import { Participant } from "../../types/participant";
-import ParticipantsTableRow from "./ParticipantsTableRow";
+import ParticipantsTableRow from "../ParticipantRow/ParticipantsTableRow";
 
 type ParticipantsTableProps = {
   participants: Participant[];
