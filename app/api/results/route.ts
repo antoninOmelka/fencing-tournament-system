@@ -78,3 +78,18 @@ export async function POST(): Promise<NextResponse> {
         return NextResponse.json({ error: `Failed to generate results: ${error}` }, { status: 500 });
     }
 }
+
+export async function DELETE(): Promise<NextResponse> {
+    console.log("lets delete")
+    try {
+        fs.unlink(resultsFilePath, (error) => {
+            if (error) {
+                console.error(`Failed to delete results: ${error}`);
+                throw(error);
+            }
+        });
+        return NextResponse.json({ message: "Results deleted successfully" }, { status: 200 });
+    } catch(error) {
+        return NextResponse.json({error: `Failed to delete results: ${error}`})
+    }
+}
