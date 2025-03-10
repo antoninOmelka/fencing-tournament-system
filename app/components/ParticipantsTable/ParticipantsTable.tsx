@@ -1,12 +1,10 @@
 import "./../../styles/global/global.css";
 
-import React, { useMemo } from "react";
-import { Table, TableBody, TableHead, TableRow, Paper, IconButton, Tooltip, TextField } from "@mui/material";
-import { StyledTableContainer, StyledTableRow, StyledTableCell } from "../../styles/shared/tables";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import SaveIcon from "@mui/icons-material/Save";
+import React from "react";
+import { Table, TableBody, TableHead, TableRow, Paper } from "@mui/material";
+import { StyledTableContainer, StyledTableCell } from "../../styles/shared/tables";
 import { Participant } from "../../types/participant";
+import ParticipantsTableRow from "./ParticipantsTableRow";
 
 type ParticipantsTableProps = {
   participants: Participant[];
@@ -30,13 +28,8 @@ function ParticipantsTable({
   errors
 }: ParticipantsTableProps) {
 
-  const isActionDisabled = (editingId: number | null) => Number.isInteger(editingId);
-
-  const sortedParticipants = useMemo(() =>
-    [...participants].sort((a, b) => a.name.localeCompare(b.name)),
-    [participants]
-  );
-
+  const isActionDisabled = Boolean(editingId);
+  
   return (
     <StyledTableContainer component={Paper}>
       <Table>
@@ -50,87 +43,19 @@ function ParticipantsTable({
           </TableRow>
         </TableHead>
         <TableBody>
-          {sortedParticipants.map((participant) => (
-            <StyledTableRow key={participant.id}>
-              {editingId === participant.id ? (
-                <>
-                  <StyledTableCell className="name">
-                    <Tooltip title={errors.name ? "Name must have length from 1 to 25" : ""} arrow>
-                      <TextField
-                        name="name"
-                        value={newParticipant.name}
-                        onChange={onInputChange}
-                        error={!!errors.name}
-                        helperText={errors.name ? "Invalid value" : ""}
-                      />
-                    </Tooltip>
-                  </StyledTableCell>
-                  <StyledTableCell className="year">
-                    <Tooltip title={errors.year ? "Year must be in range from 1900 to 2025" : ""} arrow>
-                      <TextField
-                        name="year"
-                        value={newParticipant.year}
-                        onChange={onInputChange}
-                        error={!!errors.year}
-                        helperText={errors.year ? "Invalid value" : ""}
-                      />
-                    </Tooltip>
-                  </StyledTableCell>
-                  <StyledTableCell className="club">
-                    <Tooltip title={errors.club ? "Club must have length from 1 to 25" : ""} arrow>
-                      <TextField
-                        name="club"
-                        value={newParticipant.club}
-                        onChange={onInputChange}
-                        error={!!errors.club}
-                        helperText={errors.club ? "Invalid value" : ""}
-                      />
-                    </Tooltip>
-                  </StyledTableCell>
-                  <StyledTableCell className="ranking">
-                    <Tooltip title={errors.ranking ? "Ranking must be in range from 1 to 999" : ""} arrow>
-                      <TextField
-                        name="ranking"
-                        value={newParticipant.ranking}
-                        onChange={onInputChange}
-                        error={!!errors.ranking}
-                        helperText={errors.ranking ? "Invalid value" : ""}
-                      />
-                    </Tooltip>
-                  </StyledTableCell>
-                  <StyledTableCell className="actions">
-                    <IconButton aria-label="save" onClick={onSaveEdit}>
-                      <SaveIcon />
-                    </IconButton>
-                  </StyledTableCell>
-                </>
-              ) : (
-                <>
-                  <StyledTableCell className="name">{participant.name}</StyledTableCell>
-                  <StyledTableCell className="year">{participant.year}</StyledTableCell>
-                  <StyledTableCell className="club">{participant.club}</StyledTableCell>
-                  <StyledTableCell className="ranking">{participant.ranking}</StyledTableCell>
-                  <StyledTableCell className="actions">
-                    <div className="action-buttons">
-                      <IconButton
-                        aria-label="edit"
-                        disabled={isActionDisabled(editingId)}
-                        onClick={() => onEditParticipant(participant.id)}
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-label="delete"
-                        disabled={isActionDisabled(editingId)}
-                        onClick={() => onDeleteParticipant(participant.id)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </div>
-                  </StyledTableCell>
-                </>
-              )}
-            </StyledTableRow>
+          {participants.map((participant) => (
+              <ParticipantsTableRow
+                key={participant.id}
+                participant={participant}
+                isEditing={editingId === participant.id}
+                newParticipant={newParticipant}
+                onInputChange={onInputChange}
+                onSaveEdit={onSaveEdit}
+                onEditParticipant={onEditParticipant}
+                onDeleteParticipant={onDeleteParticipant}
+                isActionDisabled={isActionDisabled}
+                errors={errors}
+              />
           ))}
         </TableBody>
       </Table>
@@ -138,4 +63,4 @@ function ParticipantsTable({
   );
 }
 
-export default ParticipantsTable;
+export default React.memo(ParticipantsTable);

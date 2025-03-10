@@ -2,7 +2,7 @@
 
 import "@/app/styles/global/global.css";
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { deleteParticipant, getParticipants, updateParticipant } from "../services/participants";
 import ParticipantsTable from "../components/ParticipantsTable/ParticipantsTable";
 import Loading from "../components/Loading/Loading";
@@ -41,12 +41,12 @@ function ParticipantsView() {
     fetchParticipants();
   }, []);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setNewParticipant(prev => ({ ...prev, [name]: value }));
-  };
+  }, []);
 
-  const handleAddParticipant = () => {
+  const handleAddParticipant = useCallback(() => {
     const participant: Participant = {
       id: Date.now(), // Use timestamp as a simple unique id
       ...newParticipant
@@ -55,17 +55,17 @@ function ParticipantsView() {
     setParticipants(prev => [participant, ...prev]);
     setNewParticipant({ name: "", year: "", club: "", ranking: "" });
     setErrors({});
-  }
+  }, [newParticipant]);
 
-  const handleEditParticipant = (id: number) => {
+  const handleEditParticipant = useCallback((id: number) => {
     setEditingId(id);
     const participantToEdit = participants.find(p => p.id === id);
     if (participantToEdit) {
       setNewParticipant(participantToEdit);
     }
-  };
+  }, [participants]);
 
-  const handleSaveEdit = async () => {
+  const handleSaveEdit = useCallback(async () => {
     try {
       const updatedParticipants = participants.map(p =>
         p.id === editingId ? { ...newParticipant, id: p.id } : p
@@ -92,9 +92,9 @@ function ParticipantsView() {
         console.error(error);
       }
     }
-  };
+  }, [participants, editingId, newParticipant]);
 
-  const handleDeleteParticipant = async (id: number) => {
+  const handleDeleteParticipant = useCallback(async (id: number) => {
     try {
       await deleteParticipant(String(id));
       const updatedParticipants = participants.filter(participant => participant.id !== id);
@@ -103,7 +103,7 @@ function ParticipantsView() {
       console.error(error);
       throw new Error("Failed to delete participant");
     }
-  };
+  }, [participants]);
   
   const participantsByAlphabet = useMemo(() =>
     participants.length > 0 ?
@@ -111,7 +111,7 @@ function ParticipantsView() {
     [participants]
   );
 
-  const generatePDF = (participants: Participant[]) => {
+  const generatePDF = useCallback((participants: Participant[]) => {
     const doc = new jsPDF();
     const tableData = {
       head: [["Name", "Year", "Club", "Ranking"]],
@@ -122,7 +122,7 @@ function ParticipantsView() {
     const pdfOutput = doc.output("blob");
     const pdfUrl = URL.createObjectURL(pdfOutput);
     window.open(pdfUrl, "_blank");
-  };
+  }, []);
 
   if (isLoading) {
     return <Loading />
@@ -137,7 +137,7 @@ function ParticipantsView() {
       </div>
       <div className="group-table">
         <div className="table-button-container">
-          <StyledButton variant="contained" onClick={handleAddParticipant} disabled={editingId ? true : false }>
+          <StyledButton variant="contained" onClick={handleAddParticipant} disabled={editingId ? true : false}>
             Add New
           </StyledButton>
         </div>
@@ -155,4 +155,4 @@ function ParticipantsView() {
   );
 }
 
-export default ParticipantsView;
+export default React.memo(ParticipantsView);
