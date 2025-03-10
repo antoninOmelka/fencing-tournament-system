@@ -20,8 +20,8 @@ To get started with DuelBoard, follow these steps:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/duelboard.git
-   cd duelboard
+   git clone https://github.com/antoninOmelka/fencing-tournament-system.git
+   cd fencing-tournament-system
    ```
 
 2. Install the dependencies:
