@@ -7,7 +7,7 @@ const groupsFilePath = path.join(process.cwd(), "app/data/groups.json");
 function ensureFileExists() {
   if (!fs.existsSync(groupsFilePath)) {
     console.log("File doesn't exist, creating it...");
-    fs.writeFileSync(groupsFilePath, JSON.stringify({ groups: [] }, null, 2));
+    fs.writeFileSync(groupsFilePath, JSON.stringify([], null, 2));
   }
 }
 
