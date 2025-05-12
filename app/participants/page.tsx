@@ -9,7 +9,7 @@ import Loading from "../components/Loading/Loading";
 import { Participant } from "../types/participant";
 import { StyledButton } from "../styles/shared/buttons";
 import jsPDF from "jspdf";
-import "jspdf-autotable";
+import autoTable from "jspdf-autotable";
 
 function ParticipantsView() {
   const [participants, setParticipants] = useState<Participant[]>([]);
@@ -44,9 +44,8 @@ function ParticipantsView() {
       body: participants.map(p => [p.name, p.year, p.club, p.ranking]),
     };
 
-    doc.autoTable(tableData);
-    const pdfOutput = doc.output("blob");
-    const pdfUrl = URL.createObjectURL(pdfOutput);
+    autoTable(doc, tableData);
+    const pdfUrl = doc.output("bloburl");
     window.open(pdfUrl, "_blank");
   }, []);
 
