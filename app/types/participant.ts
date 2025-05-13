@@ -1,9 +1,9 @@
 export interface Participant {
     id: number;
     name: string;
-    year: string;
+    year: number;
     club: string;
-    ranking: string;
+    ranking: number;
     groupRanking?: number;
     wins?: number;
     winsRate?: number;

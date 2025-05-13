@@ -4,7 +4,7 @@ import React, { useCallback, useState } from "react";
 import { Table, TableBody, TableHead, TableRow, Paper } from "@mui/material";
 import { StyledTableContainer, StyledTableCell } from "../../styles/shared/tables";
 import { Participant } from "../../types/participant";
-import ParticipantsTableRow from "../ParticipantRow/ParticipantsTableRow";
+import ParticipantsTableRow, { ParticipantInputs, ParaticipantInputsRaw } from "../ParticipantRow/ParticipantsTableRow";
 import { StyledButton } from "@/app/styles/shared/buttons";
 import { z } from "zod";
 import { deleteParticipant, updateParticipant } from "@/app/services/participants";
@@ -13,7 +13,7 @@ type ParticipantsTableProps = {
   inicialParticipants: Participant[];
 };
 
-const participantSchema = z.object({
+export const participantSchema = z.object({
   name: z.string().min(1).max(25),
   year: z.coerce.number().min(1900).max(2025).refine(val => Number.isInteger(val)),
   club: z.string().min(1).max(25),
@@ -22,7 +22,7 @@ const participantSchema = z.object({
 
 function ParticipantsTable({ inicialParticipants }: ParticipantsTableProps) {
   const [participants, setParticipants] = useState<Participant[]>(inicialParticipants);
-  const [newParticipant, setNewParticipant] = useState({ name: "", year: "", club: "", ranking: '' });
+  const [newParticipant, setNewParticipant] = useState<ParaticipantInputsRaw>({ name: "", year: "", club: "", ranking: "" });
   const [editingId, setEditingId] = useState<number | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -36,7 +36,10 @@ function ParticipantsTable({ inicialParticipants }: ParticipantsTableProps) {
   const handleAddParticipant = useCallback(() => {
     const participant: Participant = {
       id: Date.now(), // Use timestamp as a simple unique id
-      ...newParticipant
+      name: newParticipant.name,
+      year: Number(newParticipant.year),
+      club: newParticipant.club,
+      ranking: Number(newParticipant.ranking)
     };
     setEditingId(participant.id);
     setParticipants(prev => [participant, ...prev]);
@@ -48,23 +51,24 @@ function ParticipantsTable({ inicialParticipants }: ParticipantsTableProps) {
     setEditingId(id);
     const participantToEdit = participants.find(p => p.id === id);
     if (participantToEdit) {
-      setNewParticipant(participantToEdit);
+        setNewParticipant({
+          name: participantToEdit.name,
+          year: participantToEdit.year.toString(),
+          club: participantToEdit.club,
+          ranking: participantToEdit.ranking.toString()
+      });
     }
   }, [participants]);
 
-  const handleSaveEdit = useCallback(async () => {
+  const handleSaveEdit = useCallback(async (id: number, data: ParticipantInputs) => {
     try {
-      const updatedParticipants = participants.map(p =>
-        p.id === editingId ? { ...newParticipant, id: p.id } : p
+      const updatedParticipant = { ...data, id };
+      participantSchema.parse(updatedParticipant);
+      await updateParticipant(updatedParticipant);
+
+      setParticipants(prev =>
+        prev.map(p => (p.id === id ? updatedParticipant : p))
       );
-
-      const participantToSave = updatedParticipants.find(p => p.id === editingId);
-      if (participantToSave) {
-        participantSchema.parse(participantToSave);
-        await updateParticipant(participantToSave);
-      }
-
-      setParticipants(updatedParticipants);
       setEditingId(null);
       setNewParticipant({ name: "", year: "", club: "", ranking: "" });
       setErrors({});
@@ -79,7 +83,7 @@ function ParticipantsTable({ inicialParticipants }: ParticipantsTableProps) {
         console.error(error);
       }
     }
-  }, [editingId, newParticipant, participants]);
+  }, []);
 
   const handleDeleteParticipant = useCallback(async (id: number) => {
     try {
