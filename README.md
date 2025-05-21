@@ -6,10 +6,12 @@ Participants are distributed into groups using a snake distribution algorithm wi
 ## Technologies Used
 
 - **Frontend**: 
-  - React
   - Next.js
-  - Material-UI
+  - React
   - TypeScript
+  - React Hook Form
+  - Zod
+  - Material-UI
 - **Backend**:
   - Next.js
   - Node.js
