@@ -1,13 +1,18 @@
 import "./../../styles/global/global.css";
 
-import React, { useCallback, useState } from "react";
-import { Table, TableBody, TableHead, TableRow, Paper } from "@mui/material";
+import { memo, useCallback, useState } from "react";
+import { Table, TableBody, TableHead, TableRow, Paper, Modal, Box, Tooltip, TextField, Typography } from "@mui/material";
 import { StyledTableContainer, StyledTableCell } from "../../styles/shared/tables";
 import { Participant } from "../../types/participant";
-import ParticipantsTableRow, { ParticipantInputs, ParaticipantInputsRaw } from "../ParticipantRow/ParticipantsTableRow";
+import ParticipantsTableRow, { ParticipantInputs } from "../ParticipantRow/ParticipantsTableRow";
 import { StyledButton } from "@/app/styles/shared/buttons";
 import { z } from "zod";
 import { deleteParticipant, updateParticipant } from "@/app/services/participants";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import SaveIcon from "@mui/icons-material/Save";
+import { StyledDialog } from "@/app/styles/shared/dialogs";
+
 
 type ParticipantsTableProps = {
   inicialParticipants: Participant[];
@@ -22,68 +27,70 @@ export const participantSchema = z.object({
 
 function ParticipantsTable({ inicialParticipants }: ParticipantsTableProps) {
   const [participants, setParticipants] = useState<Participant[]>(inicialParticipants);
-  const [newParticipant, setNewParticipant] = useState<ParaticipantInputsRaw>({ name: "", year: "", club: "", ranking: "" });
   const [editingId, setEditingId] = useState<number | null>(null);
-  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const isActionDisabled = Boolean(editingId);
+  const [open, setOpen] = useState(false);
+  const handleClose = () => setOpen(false);
 
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setNewParticipant(prev => ({ ...prev, [name]: value }));
-  }, []);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ParticipantInputs>({
+    resolver: zodResolver(participantSchema)
+  });
 
   const handleAddParticipant = useCallback(() => {
-    const participant: Participant = {
-      id: Date.now(), // Use timestamp as a simple unique id
-      name: newParticipant.name,
-      year: Number(newParticipant.year),
-      club: newParticipant.club,
-      ranking: Number(newParticipant.ranking)
-    };
-    setEditingId(participant.id);
-    setParticipants(prev => [participant, ...prev]);
-    setNewParticipant({ name: "", year: "", club: "", ranking: "" });
-    setErrors({});
-  }, [newParticipant, setParticipants]);
+    setEditingId(null);
+    reset({
+      name: "",
+      year: 1990,
+      club: "",
+      ranking: 999
+    });
+    setOpen(true);
+
+  }, [reset]);
 
   const handleEditParticipant = useCallback((id: number) => {
-    setEditingId(id);
     const participantToEdit = participants.find(p => p.id === id);
     if (participantToEdit) {
-        setNewParticipant({
-          name: participantToEdit.name,
-          year: participantToEdit.year.toString(),
-          club: participantToEdit.club,
-          ranking: participantToEdit.ranking.toString()
+      setEditingId(id);
+      reset({
+        name: participantToEdit.name,
+        year: participantToEdit.year,
+        club: participantToEdit.club,
+        ranking: participantToEdit.ranking
       });
+      setOpen(true);
     }
-  }, [participants]);
+  }, [participants, reset]);
 
-  const handleSaveEdit = useCallback(async (id: number, data: ParticipantInputs) => {
+  const handleSaveEdit = useCallback(async (data: ParticipantInputs) => {
     try {
-      const updatedParticipant = { ...data, id };
-      participantSchema.parse(updatedParticipant);
-      await updateParticipant(updatedParticipant);
-
-      setParticipants(prev =>
-        prev.map(p => (p.id === id ? updatedParticipant : p))
-      );
-      setEditingId(null);
-      setNewParticipant({ name: "", year: "", club: "", ranking: "" });
-      setErrors({});
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const newErrors = error.errors.reduce((acc, err) => {
-          acc[err.path.join(".")] = err.message;
-          return acc;
-        }, {} as Record<string, string>);
-        setErrors(newErrors);
+      if (editingId === null) {
+        const newParticipant: Participant = {
+          id: Date.now(),
+          ...data
+        };
+        await updateParticipant(newParticipant)
+        setParticipants(prev => [newParticipant, ...prev]);
       } else {
-        console.error(error);
+        const updatedParticipant = { ...data, id: editingId };
+        await updateParticipant(updatedParticipant);
+        setParticipants(prev =>
+          prev.map(p => (p.id === editingId ? updatedParticipant : p))
+        );
       }
+
+      setOpen(false);
+      setEditingId(null);
+      reset();
+    } catch (error) {
+      console.error(error);
     }
-  }, []);
+  }, [editingId, reset]);
 
   const handleDeleteParticipant = useCallback(async (id: number) => {
     try {
@@ -99,7 +106,7 @@ function ParticipantsTable({ inicialParticipants }: ParticipantsTableProps) {
   return (
     <>
       <div className="table-button-container">
-        <StyledButton variant="contained" onClick={handleAddParticipant} disabled={editingId ? true : false}>
+        <StyledButton variant="contained" onClick={handleAddParticipant}>
           Add New
         </StyledButton>
       </div>
@@ -120,22 +127,73 @@ function ParticipantsTable({ inicialParticipants }: ParticipantsTableProps) {
               <ParticipantsTableRow
                 key={participant.id}
                 participant={participant}
-                isEditing={editingId === participant.id}
-                newParticipant={newParticipant}
-                onInputChange={handleInputChange}
-                onSaveEdit={handleSaveEdit}
                 onEditParticipant={handleEditParticipant}
                 onDeleteParticipant={handleDeleteParticipant}
-                isActionDisabled={isActionDisabled}
-                errors={errors}
               />
             ))}
           </TableBody>
         </Table>
       </StyledTableContainer>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <StyledDialog>
+          <Typography id="edit-participant-modal-title" variant="h6" component="h2" sx={{ mb: 3 }}>
+            {editingId === null ? "Add New Participant" : "Edit Participant"}
+          </Typography>
+          <form onSubmit={handleSubmit(handleSaveEdit)} style={{ display: "flex", flexDirection: "column", gap: "35px" }}>
+
+            <Tooltip title={errors.name ? "Name must have length from 1 to 25" : ""} arrow>
+              <TextField
+                {...register("name")}
+                label="Name"
+                error={!!errors.name}
+              />
+            </Tooltip>
+
+            <Tooltip title={errors.year ? "Year must be in range from 1900 to 2025" : ""} arrow>
+              <TextField
+                {...register("year")}
+                type="number"
+                label="Year"
+                error={!!errors.year}
+              />
+            </Tooltip>
+
+            <Tooltip title={errors.club ? "Club must have length from 1 to 25" : ""} arrow>
+              <TextField
+                {...register("club")}
+                label="Club"
+                error={!!errors.club}
+              />
+            </Tooltip>
+
+            <Tooltip title={errors.ranking ? "Ranking must be in range from 1 to 999" : ""} arrow>
+              <TextField
+                {...register("ranking")}
+                type="number"
+                label="Ranking"
+                error={!!errors.ranking}
+              />
+            </Tooltip>
+
+            <Box sx={{ mt: 3, display: "flex", justifyContent: "space-between" }}>
+              <StyledButton variant="outlined" onClick={handleClose}>
+                Cancel
+              </StyledButton>
+              <StyledButton variant="contained" type="submit" startIcon={<SaveIcon />}>
+                Save
+              </StyledButton>
+            </Box>
+          </form>
+        </StyledDialog>
+      </Modal>
     </>
 
   );
 }
 
-export default React.memo(ParticipantsTable);
+export default memo(ParticipantsTable);
