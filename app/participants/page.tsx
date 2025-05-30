@@ -61,7 +61,7 @@ function ParticipantsView() {
         </StyledButton>
       </div>
       <div className="group-table">
-        <ParticipantsTable inicialParticipants={participantsByAlphabet} />
+        <ParticipantsTable initialParticipants={participantsByAlphabet} />
       </div>
     </>
   );

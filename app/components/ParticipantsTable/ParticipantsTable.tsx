@@ -11,11 +11,17 @@ import { deleteParticipant, updateParticipant } from "@/app/services/participant
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SaveIcon from "@mui/icons-material/Save";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { StyledDialog } from "@/app/styles/shared/dialogs";
 
 
 type ParticipantsTableProps = {
-  inicialParticipants: Participant[];
+  initialParticipants: Participant[];
+};
+
+enum DialogType {
+  edit = "edit",
+  delete = "delete"
 };
 
 export const participantSchema = z.object({
@@ -25,12 +31,15 @@ export const participantSchema = z.object({
   ranking: z.coerce.number().min(1).max(999).refine(val => Number.isInteger(val)),
 });
 
-function ParticipantsTable({ inicialParticipants }: ParticipantsTableProps) {
-  const [participants, setParticipants] = useState<Participant[]>(inicialParticipants);
-  const [editingId, setEditingId] = useState<number | null>(null);
+function ParticipantsTable({ initialParticipants }: ParticipantsTableProps) {
+  const [participants, setParticipants] = useState<Participant[]>(initialParticipants);
+  const [modalType, setModalType] = useState<DialogType | null>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  const [open, setOpen] = useState(false);
-  const handleClose = () => setOpen(false);
+  const handleClose = useCallback(() => {
+    setSelectedId(null);
+    setModalType(null);
+  }, []);
 
   const {
     register,
@@ -42,34 +51,42 @@ function ParticipantsTable({ inicialParticipants }: ParticipantsTableProps) {
   });
 
   const handleAddParticipant = useCallback(() => {
-    setEditingId(null);
+    setModalType(DialogType.edit);
+    setSelectedId(null);
     reset({
       name: "",
-      year: 1990,
+      year: undefined,
       club: "",
-      ranking: 999
+      ranking: undefined
     });
-    setOpen(true);
-
   }, [reset]);
 
+  const getParticipantById = useCallback((id: number | null) => {
+      return participants.find(p => p.id === id) ?? null;
+  }, [participants]);
+
   const handleEditParticipant = useCallback((id: number) => {
-    const participantToEdit = participants.find(p => p.id === id);
+    const participantToEdit = getParticipantById(id);
     if (participantToEdit) {
-      setEditingId(id);
+      setModalType(DialogType.edit);
+      setSelectedId(id);
       reset({
         name: participantToEdit.name,
         year: participantToEdit.year,
         club: participantToEdit.club,
         ranking: participantToEdit.ranking
       });
-      setOpen(true);
     }
-  }, [participants, reset]);
+  }, [getParticipantById, reset]);
 
-  const handleSaveEdit = useCallback(async (data: ParticipantInputs) => {
+  const handleDeleteParticipant = useCallback((id: number) => {
+    setModalType(DialogType.delete);
+    setSelectedId(id);
+  }, []);
+
+  const handleConfirmSave = useCallback(async (data: ParticipantInputs) => {
     try {
-      if (editingId === null) {
+      if (selectedId === null) {
         const newParticipant: Participant = {
           id: Date.now(),
           ...data
@@ -77,31 +94,38 @@ function ParticipantsTable({ inicialParticipants }: ParticipantsTableProps) {
         await updateParticipant(newParticipant)
         setParticipants(prev => [newParticipant, ...prev]);
       } else {
-        const updatedParticipant = { ...data, id: editingId };
+        const updatedParticipant = { ...data, id: selectedId };
         await updateParticipant(updatedParticipant);
         setParticipants(prev =>
-          prev.map(p => (p.id === editingId ? updatedParticipant : p))
+          prev.map(p => (p.id === selectedId ? updatedParticipant : p))
         );
       }
 
-      setOpen(false);
-      setEditingId(null);
+      setSelectedId(null);
+      setModalType(null);
       reset();
     } catch (error) {
       console.error(error);
     }
-  }, [editingId, reset]);
+  }, [selectedId, reset]);
 
-  const handleDeleteParticipant = useCallback(async (id: number) => {
-    try {
-      await deleteParticipant(String(id));
-      const updatedParticipants = participants.filter(participant => participant.id !== id);
-      setParticipants(updatedParticipants);
-    } catch (error) {
-      console.error(error);
-      throw new Error("Failed to delete participant");
+  const handleConfirmDelete = useCallback(async () => {
+    if (selectedId) {
+      try {
+        await deleteParticipant(String(selectedId));
+        const updatedParticipants = participants.filter(participant => participant.id !== selectedId);
+        setParticipants(updatedParticipants);
+
+      } catch (error) {
+        console.error(error);
+        throw new Error("Failed to delete participant");
+      }
+
+      setSelectedId(null);
+      setModalType(null);
     }
-  }, [participants]);
+
+  }, [participants, selectedId]);
 
   return (
     <>
@@ -135,64 +159,91 @@ function ParticipantsTable({ inicialParticipants }: ParticipantsTableProps) {
         </Table>
       </StyledTableContainer>
       <Modal
-        open={open}
+        open={modalType !== null}
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
         <StyledDialog>
-          <Typography id="edit-participant-modal-title" variant="h6" component="h2" sx={{ mb: 3 }}>
-            {editingId === null ? "Add New Participant" : "Edit Participant"}
-          </Typography>
-          <form onSubmit={handleSubmit(handleSaveEdit)} style={{ display: "flex", flexDirection: "column", gap: "35px" }}>
+          {modalType === DialogType.edit ?
+            (
+              <>
+                <Typography id="edit-participant-modal-title" variant="h6" component="h2" sx={{ mb: 3 }}>
+                  {selectedId === null ? "Add New Participant" : "Edit Participant"}
+                </Typography>
+                <form onSubmit={handleSubmit(handleConfirmSave)} style={{ display: "flex", flexDirection: "column", gap: "35px" }}>
 
-            <Tooltip title={errors.name ? "Name must have length from 1 to 25" : ""} arrow>
-              <TextField
-                {...register("name")}
-                label="Name"
-                error={!!errors.name}
-              />
-            </Tooltip>
+                  <Tooltip title={errors.name ? "Name must have length from 1 to 25" : ""} arrow>
+                    <TextField
+                      {...register("name")}
+                      label="Name"
+                      error={!!errors.name}
+                      autoFocus={true}
+                    />
+                  </Tooltip>
 
-            <Tooltip title={errors.year ? "Year must be in range from 1900 to 2025" : ""} arrow>
-              <TextField
-                {...register("year")}
-                type="number"
-                label="Year"
-                error={!!errors.year}
-              />
-            </Tooltip>
+                  <Tooltip title={errors.year ? "Year must be in range from 1900 to 2025" : ""} arrow>
+                    <TextField
+                      {...register("year")}
+                      type="number"
+                      label="Year"
+                      error={!!errors.year}
+                    />
+                  </Tooltip>
 
-            <Tooltip title={errors.club ? "Club must have length from 1 to 25" : ""} arrow>
-              <TextField
-                {...register("club")}
-                label="Club"
-                error={!!errors.club}
-              />
-            </Tooltip>
+                  <Tooltip title={errors.club ? "Club must have length from 1 to 25" : ""} arrow>
+                    <TextField
+                      {...register("club")}
+                      label="Club"
+                      error={!!errors.club}
+                    />
+                  </Tooltip>
 
-            <Tooltip title={errors.ranking ? "Ranking must be in range from 1 to 999" : ""} arrow>
-              <TextField
-                {...register("ranking")}
-                type="number"
-                label="Ranking"
-                error={!!errors.ranking}
-              />
-            </Tooltip>
+                  <Tooltip title={errors.ranking ? "Ranking must be in range from 1 to 999" : ""} arrow>
+                    <TextField
+                      {...register("ranking")}
+                      type="number"
+                      label="Ranking"
+                      error={!!errors.ranking}
+                    />
+                  </Tooltip>
 
-            <Box sx={{ mt: 3, display: "flex", justifyContent: "space-between" }}>
-              <StyledButton variant="outlined" onClick={handleClose}>
-                Cancel
-              </StyledButton>
-              <StyledButton variant="contained" type="submit" startIcon={<SaveIcon />}>
-                Save
-              </StyledButton>
-            </Box>
-          </form>
+                  <Box sx={{ mt: 3, display: "flex", justifyContent: "space-between" }}>
+                    <StyledButton variant="outlined" onClick={handleClose}>
+                      Cancel
+                    </StyledButton>
+                    <StyledButton variant="contained" type="submit" startIcon={<SaveIcon />}>
+                      Save
+                    </StyledButton>
+                  </Box>
+                </form>
+              </>
+            ) : (
+              <>
+                <Typography id="delete-participant-modal-title" variant="h6" component="h2" sx={{ mb: 3}}>
+                  Delete Participant
+                </Typography>
+                 <Typography sx={{ mb: 3 }}>
+                  Are you sure you want to pernamently delete participant{" "}
+                  <Box sx={{ fontWeight: "bold" }} component="span">
+                    {getParticipantById(selectedId)?.name}
+                  </Box>
+                  ? This can not be undone.
+                </Typography>
+                <Box sx={{ mt: 5, display: "flex", justifyContent: "space-between" }}>
+                  <StyledButton variant="outlined" onClick={handleClose}>
+                    Cancel
+                  </StyledButton>
+                  <StyledButton variant="contained" color="error" onClick={handleConfirmDelete} startIcon={<DeleteIcon />}>
+                    Delete
+                  </StyledButton>
+                </Box>
+              </>
+            )
+          }
         </StyledDialog>
       </Modal>
     </>
-
   );
 }
 
