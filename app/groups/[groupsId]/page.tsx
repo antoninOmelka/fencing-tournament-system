@@ -9,6 +9,8 @@ import EditableGroupTable from "@/app/components/EditableGroupTable/EditableGrou
 import Loading from "@/app/components/Loading/Loading";
 import { StyledButton } from "@/app/styles/shared/buttons";
 import { useParams } from "next/navigation";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Link from "next/link";
 
 function EditableGroupTableView() {
     const [group, setGroup] = useState<Group | null>(null);
@@ -65,14 +67,22 @@ function EditableGroupTableView() {
     }
 
     return (
-        <div className="group-table">
-            <div className="table-button-container">
-                <StyledButton variant="contained" onClick={handleSaveButton} disabled={isSaving || !isValid}>
-                    {isSaving ? "Saving..." : "Save"}
-                </StyledButton>
+        <>
+            <div className="back-link-container">
+                <Link className="back-link" href={"/groups"}>
+                    <ArrowBackIcon fontSize="small" />
+                    <span>Back</span>
+                </Link>
             </div>
-            <EditableGroupTable group={group} onGroupChange={handleGroupChange} setIsValid={setIsValid}/>
-        </div>
+            <div className="group-table">
+                <div className="table-button-container">
+                    <StyledButton variant="contained" onClick={handleSaveButton} disabled={isSaving || !isValid}>
+                        {isSaving ? "Saving..." : "Save"}
+                    </StyledButton>
+                </div>
+                <EditableGroupTable group={group} onGroupChange={handleGroupChange} setIsValid={setIsValid} />
+            </div>
+        </>
     );
 }
 

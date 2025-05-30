@@ -118,6 +118,25 @@ main {
   padding-bottom: 30px;
 }
 
+.back-link-container {
+  display: flex;
+  width: 100%;
+  padding-left: 55px;
+  margin-top: 30px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
 .table-button-container {
   display: flex;
   width: 100%;
