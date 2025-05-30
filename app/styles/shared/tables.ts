@@ -77,6 +77,9 @@ export const StyledTableContainer = styled(TableContainer, {
       minWidth: CELL_WIDTHS.ranking,
       maxWidth: CELL_WIDTHS.ranking,
     },
+    "&.center": {
+      textAlign: "center",
+    },
     "&.actions": {
       display: "table-cell",
       textAlign: "center",

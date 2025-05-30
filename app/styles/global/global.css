@@ -132,6 +132,10 @@ main {
   margin-top: 10px;
 }
 
+.group-table-empty-cell {
+  background-color: black;
+}
+
 .groups-container {
   display: flex;
   flex-direction: column;

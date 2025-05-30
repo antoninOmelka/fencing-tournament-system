@@ -61,7 +61,7 @@ function EditableGroupTable({ group, onGroupChange, setIsValid }: EditableGroupT
                             <StyledTableCell>Fencer</StyledTableCell>
                             <StyledTableCell></StyledTableCell>
                             {participants.map((participant: Participant) => (
-                                <StyledTableCell key={participant.id}>{participant.groupRanking}</StyledTableCell>
+                                <StyledTableCell className="center" key={participant.id}>{participant.groupRanking}</StyledTableCell>
                             ))}
                         </StyledTableRow>
                     </TableHead>
@@ -72,12 +72,14 @@ function EditableGroupTable({ group, onGroupChange, setIsValid }: EditableGroupT
                                 <StyledTableCell>{participantIndex + 1}</StyledTableCell>
                                 {results.map((result: string[], resultIndex: number) => (
                                     <StyledTableCell key={`${participant.id}-${resultIndex}`}>
-                                        {participantIndex === resultIndex ? "X" :
+                                        {participantIndex === resultIndex ?
+                                            <TextField className="group-table-empty-cell" disabled>
+                                            </TextField>
+                                            :
                                             <TextField
                                                 value={results[participantIndex]?.[resultIndex] || ""}
                                                 onChange={(e) => handleResultChange(e.target.value.toUpperCase(), participantIndex, resultIndex)}
                                                 error={!!resultErrors?.[participantIndex]?.[resultIndex]}
-
                                             ></TextField>
                                         }
                                     </StyledTableCell>
@@ -86,7 +88,7 @@ function EditableGroupTable({ group, onGroupChange, setIsValid }: EditableGroupT
                         ))}
                     </TableBody>
                 </Table>
-            </TableContainer>           
+            </TableContainer>
             {Object.keys(resultErrors).length > 0 && <Alert className="group-table-error" severity="error" variant="outlined">Invalid format! Please use one of the following formats for the result values: V5, D1.</Alert>}
         </>
     );
