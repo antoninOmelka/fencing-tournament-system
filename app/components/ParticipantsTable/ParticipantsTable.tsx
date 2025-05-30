@@ -1,22 +1,27 @@
 import "./../../styles/global/global.css";
 
 import { memo, useCallback, useState } from "react";
-import { Table, TableBody, TableHead, TableRow, Paper, Modal, Box, Tooltip, TextField, Typography } from "@mui/material";
+import {
+  Table, TableBody, TableHead, TableRow, Paper, Modal, Box,
+  Tooltip, TextField, Typography
+} from "@mui/material";
+
 import { StyledTableContainer, StyledTableCell } from "../../styles/shared/tables";
 import { Participant } from "../../types/participant";
 import ParticipantsTableRow, { ParticipantInputs } from "../ParticipantRow/ParticipantsTableRow";
 import { StyledButton } from "@/app/styles/shared/buttons";
 import { z } from "zod";
-import { deleteParticipant, updateParticipant } from "@/app/services/participants";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import SaveIcon from "@mui/icons-material/Save";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { StyledDialog } from "@/app/styles/shared/dialogs";
 
-
 type ParticipantsTableProps = {
-  initialParticipants: Participant[];
+  participants: Participant[];
+  onAdd: (data: ParticipantInputs) => Promise<void>;
+  onUpdate: (id: number, data: ParticipantInputs) => Promise<void>;
+  onDelete: (id: number) => Promise<void>;
 };
 
 enum DialogType {
@@ -31,15 +36,14 @@ export const participantSchema = z.object({
   ranking: z.coerce.number().min(1).max(999).refine(val => Number.isInteger(val)),
 });
 
-function ParticipantsTable({ initialParticipants }: ParticipantsTableProps) {
-  const [participants, setParticipants] = useState<Participant[]>(initialParticipants);
+function ParticipantsTable({
+  participants,
+  onAdd,
+  onUpdate,
+  onDelete
+}: ParticipantsTableProps) {
   const [modalType, setModalType] = useState<DialogType | null>(null);
   const [selectedId, setSelectedId] = useState<number | null>(null);
-
-  const handleClose = useCallback(() => {
-    setSelectedId(null);
-    setModalType(null);
-  }, []);
 
   const {
     register,
@@ -49,6 +53,11 @@ function ParticipantsTable({ initialParticipants }: ParticipantsTableProps) {
   } = useForm<ParticipantInputs>({
     resolver: zodResolver(participantSchema)
   });
+
+  const handleClose = useCallback(() => {
+    setSelectedId(null);
+    setModalType(null);
+  }, []);
 
   const handleAddParticipant = useCallback(() => {
     setModalType(DialogType.edit);
@@ -62,7 +71,7 @@ function ParticipantsTable({ initialParticipants }: ParticipantsTableProps) {
   }, [reset]);
 
   const getParticipantById = useCallback((id: number | null) => {
-      return participants.find(p => p.id === id) ?? null;
+    return participants.find(p => p.id === id) ?? null;
   }, [participants]);
 
   const handleEditParticipant = useCallback((id: number) => {
@@ -87,18 +96,9 @@ function ParticipantsTable({ initialParticipants }: ParticipantsTableProps) {
   const handleConfirmSave = useCallback(async (data: ParticipantInputs) => {
     try {
       if (selectedId === null) {
-        const newParticipant: Participant = {
-          id: Date.now(),
-          ...data
-        };
-        await updateParticipant(newParticipant)
-        setParticipants(prev => [newParticipant, ...prev]);
+        await onAdd(data);
       } else {
-        const updatedParticipant = { ...data, id: selectedId };
-        await updateParticipant(updatedParticipant);
-        setParticipants(prev =>
-          prev.map(p => (p.id === selectedId ? updatedParticipant : p))
-        );
+        await onUpdate(selectedId, data);
       }
 
       setSelectedId(null);
@@ -107,25 +107,20 @@ function ParticipantsTable({ initialParticipants }: ParticipantsTableProps) {
     } catch (error) {
       console.error(error);
     }
-  }, [selectedId, reset]);
+  }, [selectedId, reset, onAdd, onUpdate]);
 
   const handleConfirmDelete = useCallback(async () => {
-    if (selectedId) {
+    if (selectedId !== null) {
       try {
-        await deleteParticipant(String(selectedId));
-        const updatedParticipants = participants.filter(participant => participant.id !== selectedId);
-        setParticipants(updatedParticipants);
-
+        await onDelete(selectedId);
       } catch (error) {
         console.error(error);
-        throw new Error("Failed to delete participant");
       }
 
       setSelectedId(null);
       setModalType(null);
     }
-
-  }, [participants, selectedId]);
+  }, [selectedId, onDelete]);
 
   return (
     <>
@@ -158,6 +153,7 @@ function ParticipantsTable({ initialParticipants }: ParticipantsTableProps) {
           </TableBody>
         </Table>
       </StyledTableContainer>
+
       <Modal
         open={modalType !== null}
         onClose={handleClose}
