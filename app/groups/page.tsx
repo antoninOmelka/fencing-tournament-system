@@ -11,7 +11,8 @@ import { StyledButton } from "../styles/shared/buttons";
 import { Participant } from "../types/participant";
 import { getParticipants } from "../services/participants";
 import { deleteResults } from "../services/results";
-
+import GroupsIcon from '@mui/icons-material/Groups';
+import { CircularProgress } from "@mui/material";
 
 async function fetchParticipants(): Promise<Participant[]> {
     try {
@@ -109,8 +110,13 @@ function GroupTablesView() {
     return (
         <>
             <div className="secondary-actions-container">
-                <StyledButton variant="contained" onClick={() => distributeIntoGroups()} disabled={isSaving}>
-                    {isSaving ? "Generating..." : "Generate Groups"}
+                <StyledButton 
+                    variant="contained" 
+                    onClick={() => distributeIntoGroups()} 
+                    disabled={isSaving}                    
+                    startIcon={isSaving ? <CircularProgress size={16} color="info" /> : <GroupsIcon />}
+                >
+                   Generate Groups
                 </StyledButton>
             </div>
             <div className="groups-container">
