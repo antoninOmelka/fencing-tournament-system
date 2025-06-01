@@ -7,7 +7,6 @@ import { Participant } from "../types/participant";
 import ResultsTable from "../components/ResultsTable/ResultsTable";
 import Loading from "../components/Loading/Loading";
 import { getResults } from "../services/results";
-import { StyledButton } from "../styles/shared/buttons";
 
 function ResultsView() {
   const [sortedParticipants, setSortedParticipants] = useState<Participant[]>([]);
@@ -36,9 +35,6 @@ function ResultsView() {
   return (
     <>
       <div className="secondary-actions-container">
-        <StyledButton variant="contained">
-          Print Results
-        </StyledButton>
       </div>
       <div className="group-table">
         <ResultsTable participants={sortedParticipants}></ResultsTable>
