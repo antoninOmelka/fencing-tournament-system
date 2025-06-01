@@ -11,6 +11,8 @@ import { StyledButton } from "@/app/styles/shared/buttons";
 import { useParams } from "next/navigation";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Link from "next/link";
+import { CircularProgress } from "@mui/material";
+import SaveIcon from "@mui/icons-material/Save";
 
 function EditableGroupTableView() {
     const [group, setGroup] = useState<Group | null>(null);
@@ -62,9 +64,6 @@ function EditableGroupTableView() {
         }
     }
 
-    function handleGroupChange(updatedGroup: Group) {
-        setGroup(updatedGroup);
-    }
 
     return (
         <>
@@ -76,11 +75,16 @@ function EditableGroupTableView() {
             </div>
             <div className="group-table">
                 <div className="table-button-container">
-                    <StyledButton variant="contained" onClick={handleSaveButton} disabled={isSaving || !isValid}>
-                        {isSaving ? "Saving..." : "Save"}
+                    <StyledButton 
+                        variant="contained" 
+                        onClick={handleSaveButton} 
+                        disabled={isSaving || !isValid}
+                        startIcon={isSaving ? <CircularProgress size={16} color="info" /> : <SaveIcon />}
+                    >
+                    Save
                     </StyledButton>
                 </div>
-                <EditableGroupTable group={group} onGroupChange={handleGroupChange} setIsValid={setIsValid} />
+                <EditableGroupTable group={group} onGroupChange={setGroup} setIsValid={setIsValid} />
             </div>
         </>
     );
