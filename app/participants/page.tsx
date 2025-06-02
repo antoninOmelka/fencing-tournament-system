@@ -36,25 +36,37 @@ function ParticipantsView() {
   );
 
   const handleAdd = useCallback(async (data: ParticipantInputs) => {
-    const newParticipant: Participant = {
-      id: Date.now(),
-      ...data
-    };
-    await updateParticipant(newParticipant);
-    setParticipants(prev => [...prev, newParticipant]);
+    try {
+      const newParticipant: Participant = {
+        id: Date.now(),
+        ...data
+      };
+      await updateParticipant(newParticipant);
+      setParticipants(prev => [...prev, newParticipant]);
+    } catch (error) {
+      console.error("Failed to add participant:", error)
+    }
   }, []);
 
   const handleUpdate = useCallback(async (id: number, data: ParticipantInputs) => {
-    const updatedParticipant = { ...data, id };
-    await updateParticipant(updatedParticipant);
-    setParticipants(prev =>
-      prev.map(p => (p.id === id ? updatedParticipant : p))
-    );
+    try {
+      const updatedParticipant = { ...data, id };
+      await updateParticipant(updatedParticipant);
+      setParticipants(prev =>
+        prev.map(p => (p.id === id ? updatedParticipant : p))
+      );
+    } catch (error) {
+      console.error("Failed to update participant:", error)
+    }
   }, []);
 
   const handleDelete = useCallback(async (id: number) => {
-    await deleteParticipant(String(id));
-    setParticipants(prev => prev.filter(p => p.id !== id));
+    try {
+      await deleteParticipant(String(id));
+      setParticipants(prev => prev.filter(p => p.id !== id));
+    } catch (error) {
+      console.error("Failed to delete participant:", error)
+    }
   }, []);
 
   const generatePDF = useCallback(() => {
