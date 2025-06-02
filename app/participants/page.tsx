@@ -70,15 +70,19 @@ function ParticipantsView() {
   }, []);
 
   const generatePDF = useCallback(() => {
-    const doc = new jsPDF();
-    const tableData = {
-      head: [["Name", "Year", "Club", "Ranking"]],
-      body: participantsByAlphabet.map(p => [p.name, p.year, p.club, p.ranking]),
-    };
+    try {
+      const doc = new jsPDF();
+      const tableData = {
+        head: [["Name", "Year", "Club", "Ranking"]],
+        body: participantsByAlphabet.map(p => [p.name, p.year, p.club, p.ranking]),
+      };
 
-    autoTable(doc, tableData);
-    const pdfUrl = doc.output("bloburl");
-    window.open(pdfUrl, "_blank");
+      autoTable(doc, tableData);
+      const pdfUrl = doc.output("bloburl");
+      window.open(pdfUrl, "_blank");
+    } catch (error) {
+      console.error("Failed to generate PDF:", error);
+    }
   }, [participantsByAlphabet]);
 
   if (isLoading) {
