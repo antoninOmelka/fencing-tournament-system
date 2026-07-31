@@ -25,7 +25,7 @@ const validatParticipantId = (participantId: string): number | null => {
   return isNaN(participantIdNumber) ? null : participantIdNumber;
 };
 
-export async function PUT(req: NextRequest, { params }: { params: { participantId: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ participantId: string }> }) {
   const { participantId } = await params;
   const participantIdNumber = validatParticipantId(participantId);
 
@@ -57,7 +57,7 @@ export async function PUT(req: NextRequest, { params }: { params: { participantI
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { participantId: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ participantId: string }> }) {
   const { participantId } = await params;
   const participantIdNumber = validatParticipantId(participantId);
   if (participantIdNumber === null) {

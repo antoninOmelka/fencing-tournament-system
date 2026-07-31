@@ -84,7 +84,7 @@ function calculateStats({participants, results}: Group ) {
 }
 
 
-export async function GET(req: NextRequest, { params }: { params: { groupId: string } }): Promise<NextResponse> {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ groupId: string }> }): Promise<NextResponse> {
   const { groupId } = await params;
   const groupIdNumber = validateGroupId(groupId);
   if (groupIdNumber === null) {
@@ -107,7 +107,7 @@ export async function GET(req: NextRequest, { params }: { params: { groupId: str
   return NextResponse.json(group);
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: { groupId: string } }) {
+export async function PATCH(req: NextRequest, { params }: { params: Promise<{ groupId: string }> }) {
   const { groupId } = await params;
   const groupIdNumber = validateGroupId(groupId);
   if (groupIdNumber === null) {
