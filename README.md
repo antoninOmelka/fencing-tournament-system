@@ -28,12 +28,12 @@ To get started with DuelBoard, follow these steps:
 
 2. Install the dependencies:
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. Start the development server:
    ```bash
-   npm run dev
+   pnpm run dev
    ```
 
 4. Open your browser and navigate to `http://localhost:3000`.
