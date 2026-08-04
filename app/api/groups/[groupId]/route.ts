@@ -75,7 +75,7 @@ function calculateStats({participants, results}: Group ) {
     return {
       ...participant,
       wins: stat?.wins ?? 0,
-      winsRate: stat?.matches ? (stat.wins / stat.matches).toFixed(2) : "0.00",
+      winsRate: stat?.matches ? stat.wins / stat.matches : 0,
       pointsScored: stat?.pointsScored ?? 0,
       pointsReceived: stat?.pointsReceived ?? 0,
       index: stat?.index ?? 0,

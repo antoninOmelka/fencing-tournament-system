@@ -1,28 +1,20 @@
 import "./../../styles/global/global.css";
 
-import React, { useMemo } from "react";
-import roundRobin from "roundrobin";
 import { Paper, Table, TableBody, TableContainer, TableHead } from "@mui/material";
 import { StyledTableCell, StyledTableRow } from "@/app/styles/shared/tables";
 import { StyledButton } from "@/app/styles/shared/buttons";
-import { Group } from "@/app/types/group";
-import { Participant } from "../../types/participant";
+import { GroupTableView } from "@/app/types/groupTableView";
 
-function generateMatchOrder(participants: Participant[]): string[] {
-    const participantNames = participants.map((p) => p.name);
-    const matches = roundRobin(participants.length, participantNames);
-    return matches.flat();
-}
+type GroupTableProps = {
+    view: GroupTableView;
+};
 
-function GroupTable({ id, participants, results }: Group) {
-    const matchOrder = useMemo(() =>
-        generateMatchOrder(participants), [participants]);
-
+function GroupTable({ view }: GroupTableProps) {
     return (
         <div className="group-table">
             <div className="table-header">
-                <h2 className="group-title">Group {id}</h2>
-                <StyledButton variant="contained" href={`/groups/${id}`}>
+                <h2 className="group-title">Group {view.id}</h2>
+                <StyledButton variant="contained" href={`/groups/${view.id}`}>
                     Edit
                 </StyledButton>
             </div>
@@ -33,10 +25,8 @@ function GroupTable({ id, participants, results }: Group) {
                         <StyledTableRow>
                             <StyledTableCell>Fencer</StyledTableCell>
                             <StyledTableCell></StyledTableCell>
-                            {participants.map((participant) => (
-                                <StyledTableCell key={participant.id}>
-                                    {participant.groupRanking}
-                                </StyledTableCell>
+                            {view.orders.map((order) => (
+                                <StyledTableCell key={order}>{order}</StyledTableCell>
                             ))}
                             <StyledTableCell>Wins</StyledTableCell>
                             <StyledTableCell>Wins Rate</StyledTableCell>
@@ -46,20 +36,18 @@ function GroupTable({ id, participants, results }: Group) {
                         </StyledTableRow>
                     </TableHead>
                     <TableBody>
-                        {participants.map((participant, participantIndex) => (
-                            <StyledTableRow key={participant.id}>
-                                <StyledTableCell>{participant.name}</StyledTableCell>
-                                <StyledTableCell>{participantIndex + 1}</StyledTableCell>
-                                {results.map((result, resultIndex) => (
-                                    <StyledTableCell key={`${participant.id}-${resultIndex}`}>
-                                        {participantIndex === resultIndex ? "X" : results[participantIndex]?.[resultIndex]}
-                                    </StyledTableCell>
+                        {view.rows.map((row) => (
+                            <StyledTableRow key={row.id}>
+                                <StyledTableCell>{row.name}</StyledTableCell>
+                                <StyledTableCell>{row.order}</StyledTableCell>
+                                {row.cells.map((cell, cellIndex) => (
+                                    <StyledTableCell key={cellIndex}>{cell}</StyledTableCell>
                                 ))}
-                                <StyledTableCell>{participant.wins}</StyledTableCell>
-                                <StyledTableCell>{participant.winsRate}</StyledTableCell>
-                                <StyledTableCell>{participant.pointsScored}</StyledTableCell>
-                                <StyledTableCell>{participant.pointsReceived}</StyledTableCell>
-                                <StyledTableCell>{participant.index}</StyledTableCell>
+                                <StyledTableCell>{row.wins}</StyledTableCell>
+                                <StyledTableCell>{row.winsRate}</StyledTableCell>
+                                <StyledTableCell>{row.scored}</StyledTableCell>
+                                <StyledTableCell>{row.received}</StyledTableCell>
+                                <StyledTableCell>{row.index}</StyledTableCell>
                             </StyledTableRow>
                         ))}
                     </TableBody>
@@ -67,18 +55,13 @@ function GroupTable({ id, participants, results }: Group) {
             </TableContainer>
 
             <div className="match-list">
-                {matchOrder.map((match, index) => {
-                    const participant1 = participants.find((p) => p.name === match[0]);
-                    const participant2 = participants.find((p) => p.name === match[1]);
-
-                    return (
-                        <div key={`${match[0]}-${match[1]}-${index}`}>
-                            <p>{participant1?.groupRanking ?? "N/A"} {match[0]}</p>
-                            <p>{participant2?.groupRanking ?? "N/A"} {match[1]}</p>
-                            <br />
-                        </div>
-                    );
-                })}
+                {view.matches.map((match, index) => (
+                    <div key={index}>
+                        <p>{match.firstOrder} {match.firstName}</p>
+                        <p>{match.secondOrder} {match.secondName}</p>
+                        <br />
+                    </div>
+                ))}
             </div>
         </div>
     );
