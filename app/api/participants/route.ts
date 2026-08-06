@@ -2,7 +2,10 @@ import fs from "fs";
 import path from "path";
 import { NextRequest, NextResponse } from "next/server";
 
-const participantsFilePath = path.join(process.cwd(), "app/data/participants.json");
+const participantsFilePath = path.join(
+  process.cwd(),
+  "app/data/participants.json",
+);
 
 function ensureFileExists() {
   if (!fs.existsSync(participantsFilePath)) {
@@ -19,7 +22,10 @@ export async function GET(): Promise<NextResponse> {
     return NextResponse.json(parsedData, { status: 200 });
   } catch (error) {
     console.error(`Failed to read participants: ${error}`);
-    return NextResponse.json({ error: `Failed to read participants: ${error}` }, { status: 500 });
+    return NextResponse.json(
+      { error: `Failed to read participants: ${error}` },
+      { status: 500 },
+    );
   }
 }
 
@@ -28,9 +34,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     ensureFileExists();
     fs.writeFileSync(participantsFilePath, JSON.stringify(data, null, 2));
-    return NextResponse.json({ message: "Participant added", data }, { status: 201 });
+    return NextResponse.json(
+      { message: "Participant added", data },
+      { status: 201 },
+    );
   } catch (error) {
     console.error(`Failed to write participants: ${error}`);
-    return NextResponse.json({ error: `Failed to write participants: ${error}` }, { status: 500 });
+    return NextResponse.json(
+      { error: `Failed to write participants: ${error}` },
+      { status: 500 },
+    );
   }
 }

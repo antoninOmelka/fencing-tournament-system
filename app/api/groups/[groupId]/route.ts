@@ -27,7 +27,7 @@ const validateGroupId = (groupId: string): number | null => {
   return isNaN(groupIdNumber) ? null : groupIdNumber;
 };
 
-function calculateStats({participants, results}: Group ) {
+function calculateStats({ participants, results }: Group) {
   const stats = participants.map((participant) => ({
     id: participant.id,
     wins: 0,
@@ -83,8 +83,10 @@ function calculateStats({participants, results}: Group ) {
   });
 }
 
-
-export async function GET(req: NextRequest, { params }: { params: Promise<{ groupId: string }> }): Promise<NextResponse> {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ groupId: string }> },
+): Promise<NextResponse> {
   const { groupId } = await params;
   const groupIdNumber = validateGroupId(groupId);
   if (groupIdNumber === null) {
@@ -96,7 +98,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ grou
     groups = readGroups();
   } catch (error) {
     console.error(`Failed to read groups: ${error}`);
-    return NextResponse.json({ error: `Failed to read groups: ${error}` }, { status: 500 });
+    return NextResponse.json(
+      { error: `Failed to read groups: ${error}` },
+      { status: 500 },
+    );
   }
 
   const group = groups.find((group) => group.id === groupIdNumber);
@@ -107,7 +112,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ grou
   return NextResponse.json(group);
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ groupId: string }> }) {
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ groupId: string }> },
+) {
   const { groupId } = await params;
   const groupIdNumber = validateGroupId(groupId);
   if (groupIdNumber === null) {
@@ -121,7 +129,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ gr
     groups = readGroups();
   } catch (error) {
     console.error(`Failed to read groups: ${error}`);
-    return NextResponse.json({ error: `Failed to read groups: ${error}` }, { status: 500 });
+    return NextResponse.json(
+      { error: `Failed to read groups: ${error}` },
+      { status: 500 },
+    );
   }
 
   const groupIndex = groups.findIndex((group) => group.id === groupIdNumber);
@@ -137,18 +148,27 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ gr
     writeGroups(groups);
   } catch (error) {
     console.error(`Failed to write group: ${error}`);
-    return NextResponse.json({ error: `Failed to write group: ${error}` }, { status: 500 });
+    return NextResponse.json(
+      { error: `Failed to write group: ${error}` },
+      { status: 500 },
+    );
   }
 
   try {
-    const response = await fetch(RESULTS_URL, {method: "POST"});
+    const response = await fetch(RESULTS_URL, { method: "POST" });
     if (!response.ok) {
       throw new Error(`Failed with status: ${response.status}`);
     }
   } catch (error) {
     console.log(`Failed to trigger results recalculation: ${error}`);
-    return NextResponse.json({ error: `Failed to regenerate results: ${error}` }, { status: 500 });
+    return NextResponse.json(
+      { error: `Failed to regenerate results: ${error}` },
+      { status: 500 },
+    );
   }
 
-  return NextResponse.json({ message: "Group updated successfully", group: updatedGroup }, { status: 200 });
+  return NextResponse.json(
+    { message: "Group updated successfully", group: updatedGroup },
+    { status: 200 },
+  );
 }

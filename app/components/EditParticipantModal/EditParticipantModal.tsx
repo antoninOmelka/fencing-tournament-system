@@ -1,7 +1,5 @@
 import { memo, useCallback, useEffect } from "react";
-import {
-  Modal, Box, Tooltip, TextField, Typography
-} from "@mui/material";
+import { Modal, Box, Tooltip, TextField, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SaveIcon from "@mui/icons-material/Save";
@@ -23,7 +21,7 @@ function EditParticipantModal({
   open,
   participant,
   onClose,
-  onSave
+  onSave,
 }: EditParticipantModalProps) {
   const {
     register,
@@ -31,7 +29,7 @@ function EditParticipantModal({
     reset,
     formState: { errors },
   } = useForm<ParticipantInputs>({
-    resolver: zodResolver(participantSchema)
+    resolver: zodResolver(participantSchema),
   });
 
   const isEditMode = participant !== null;
@@ -43,27 +41,30 @@ function EditParticipantModal({
           name: participant.name,
           year: participant.year,
           club: participant.club,
-          ranking: participant.ranking
+          ranking: participant.ranking,
         });
       } else {
         reset({
           name: "",
           year: undefined,
           club: "",
-          ranking: undefined
+          ranking: undefined,
         });
       }
     }
   }, [open, participant, reset]);
 
-  const handleSave = useCallback(async (data: ParticipantInputs) => {
-    try {
-      await onSave(data);
-      onClose();
-    } catch (error) {
-      console.error(error);
-    }
-  }, [onSave, onClose]);
+  const handleSave = useCallback(
+    async (data: ParticipantInputs) => {
+      try {
+        await onSave(data);
+        onClose();
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    [onSave, onClose],
+  );
 
   return (
     <Modal
@@ -86,7 +87,10 @@ function EditParticipantModal({
           onSubmit={handleSubmit(handleSave)}
           style={{ display: "flex", flexDirection: "column", gap: "35px" }}
         >
-          <Tooltip title={errors.name ? "Name must have length from 1 to 25" : ""} arrow>
+          <Tooltip
+            title={errors.name ? "Name must have length from 1 to 25" : ""}
+            arrow
+          >
             <TextField
               {...register("name")}
               label="Name"
@@ -95,7 +99,10 @@ function EditParticipantModal({
             />
           </Tooltip>
 
-          <Tooltip title={errors.year ? "Year must be in range from 1900 to 2025" : ""} arrow>
+          <Tooltip
+            title={errors.year ? "Year must be in range from 1900 to 2025" : ""}
+            arrow
+          >
             <TextField
               {...register("year")}
               type="number"
@@ -104,7 +111,10 @@ function EditParticipantModal({
             />
           </Tooltip>
 
-          <Tooltip title={errors.club ? "Club must have length from 1 to 25" : ""} arrow>
+          <Tooltip
+            title={errors.club ? "Club must have length from 1 to 25" : ""}
+            arrow
+          >
             <TextField
               {...register("club")}
               label="Club"
@@ -112,7 +122,12 @@ function EditParticipantModal({
             />
           </Tooltip>
 
-          <Tooltip title={errors.ranking ? "Ranking must be in range from 1 to 999" : ""} arrow>
+          <Tooltip
+            title={
+              errors.ranking ? "Ranking must be in range from 1 to 999" : ""
+            }
+            arrow
+          >
             <TextField
               {...register("ranking")}
               type="number"
@@ -125,7 +140,11 @@ function EditParticipantModal({
             <StyledButton variant="outlined" onClick={onClose}>
               Cancel
             </StyledButton>
-            <StyledButton variant="contained" type="submit" startIcon={<SaveIcon />}>
+            <StyledButton
+              variant="contained"
+              type="submit"
+              startIcon={<SaveIcon />}
+            >
               Save
             </StyledButton>
           </Box>

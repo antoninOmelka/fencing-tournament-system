@@ -5,23 +5,23 @@ import { Participant } from "../types/participant";
 import { getResults } from "../services/results";
 
 export function useResults() {
-    const [participants, setParticipants] = useState<Participant[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [participants, setParticipants] = useState<Participant[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    useEffect(() => {
-        async function fetchResults() {
-            try {
-                const data = await getResults();
-                setParticipants(data);
-            } catch (error) {
-                console.error(error);
-            } finally {
-                setIsLoading(false);
-            }
-        }
+  useEffect(() => {
+    async function fetchResults() {
+      try {
+        const data = await getResults();
+        setParticipants(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
 
-        fetchResults();
-    }, []);
+    fetchResults();
+  }, []);
 
-    return { participants, isLoading };
+  return { participants, isLoading };
 }

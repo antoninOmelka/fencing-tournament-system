@@ -5,7 +5,7 @@ Participants are distributed into groups using a snake distribution algorithm wi
 
 ## Technologies Used
 
-- **Frontend**: 
+- **Frontend**:
   - Next.js
   - React
   - TypeScript
@@ -21,20 +21,22 @@ Participants are distributed into groups using a snake distribution algorithm wi
 To get started with DuelBoard, follow these steps:
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/antoninOmelka/fencing-tournament-system.git
    cd fencing-tournament-system
    ```
 
 2. Install the dependencies:
+
    ```bash
    pnpm install
    ```
 
 3. Start the development server:
+
    ```bash
    pnpm run dev
    ```
 
 4. Open your browser and navigate to `http://localhost:3000`.
-

@@ -11,7 +11,11 @@ type ParticipantsTableRowProps = {
   onDelete: (row: ParticipantRowView) => void;
 };
 
-function ParticipantsTableRow({ row, onEdit, onDelete }: ParticipantsTableRowProps) {
+function ParticipantsTableRow({
+  row,
+  onEdit,
+  onDelete,
+}: ParticipantsTableRowProps) {
   return (
     <StyledTableRow>
       <StyledTableCell className="name">{row.name}</StyledTableCell>
@@ -20,16 +24,10 @@ function ParticipantsTableRow({ row, onEdit, onDelete }: ParticipantsTableRowPro
       <StyledTableCell className="ranking">{row.ranking}</StyledTableCell>
       <StyledTableCell className="actions">
         <div className="action-buttons">
-          <IconButton
-            aria-label="edit"
-            onClick={() => onEdit(row)}
-          >
+          <IconButton aria-label="edit" onClick={() => onEdit(row)}>
             <EditIcon />
           </IconButton>
-          <IconButton
-            aria-label="delete"
-            onClick={() => onDelete(row)}
-          >
+          <IconButton aria-label="delete" onClick={() => onDelete(row)}>
             <DeleteIcon />
           </IconButton>
         </div>

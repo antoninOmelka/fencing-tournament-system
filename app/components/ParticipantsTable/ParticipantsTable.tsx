@@ -1,11 +1,12 @@
 import "./../../styles/global/global.css";
 
 import { memo, useCallback, useState } from "react";
-import {
-  Table, TableBody, TableHead, TableRow, Paper
-} from "@mui/material";
+import { Table, TableBody, TableHead, TableRow, Paper } from "@mui/material";
 
-import { StyledTableContainer, StyledTableCell } from "../../styles/shared/tables";
+import {
+  StyledTableContainer,
+  StyledTableCell,
+} from "../../styles/shared/tables";
 import ParticipantsTableRow from "../ParticipantRow/ParticipantsTableRow";
 import { StyledButton } from "@/app/styles/shared/buttons";
 import EditParticipantModal from "../EditParticipantModal/EditParticipantModal";
@@ -24,13 +25,15 @@ function ParticipantsTable({
   rows,
   onAdd,
   onUpdate,
-  onDelete
+  onDelete,
 }: ParticipantsTableProps) {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [rowToEdit, setRowToEdit] = useState<ParticipantRowView | null>(null);
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [rowToDelete, setRowToDelete] = useState<ParticipantRowView | null>(null);
+  const [rowToDelete, setRowToDelete] = useState<ParticipantRowView | null>(
+    null,
+  );
 
   const handleAddClick = useCallback(() => {
     setRowToEdit(null);
@@ -47,13 +50,16 @@ function ParticipantsTable({
     setRowToEdit(null);
   }, []);
 
-  const handleEditModalSave = useCallback(async (data: ParticipantInputs) => {
-    if (rowToEdit) {
-      await onUpdate(rowToEdit.id, data);
-    } else {
-      await onAdd(data);
-    }
-  }, [rowToEdit, onAdd, onUpdate]);
+  const handleEditModalSave = useCallback(
+    async (data: ParticipantInputs) => {
+      if (rowToEdit) {
+        await onUpdate(rowToEdit.id, data);
+      } else {
+        await onAdd(data);
+      }
+    },
+    [rowToEdit, onAdd, onUpdate],
+  );
 
   const handleDeleteClick = useCallback((row: ParticipantRowView) => {
     setRowToDelete(row);

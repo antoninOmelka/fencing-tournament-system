@@ -19,7 +19,10 @@ export async function GET(): Promise<NextResponse> {
     return NextResponse.json(parsedData, { status: 200 });
   } catch (error) {
     console.error(`Failed to read groups: ${error}`);
-    return NextResponse.json({ error: `Failed to read groups: ${error}` }, { status: 500 })
+    return NextResponse.json(
+      { error: `Failed to read groups: ${error}` },
+      { status: 500 },
+    );
   }
 }
 
@@ -28,9 +31,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
     ensureFileExists();
     fs.writeFileSync(groupsFilePath, JSON.stringify(data, null, 2));
-    return NextResponse.json({ message: "Groups added", data }, { status: 201 });
+    return NextResponse.json(
+      { message: "Groups added", data },
+      { status: 201 },
+    );
   } catch (error) {
     console.error(`Failed to write groups: ${error}`);
-    return NextResponse.json({ error: `Failed to write groups: ${error}` }, { status: 500 });
+    return NextResponse.json(
+      { error: `Failed to write groups: ${error}` },
+      { status: 500 },
+    );
   }
 }

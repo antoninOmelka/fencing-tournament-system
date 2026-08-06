@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import "@/app/styles/global/global.css";
 
@@ -11,18 +11,17 @@ function ResultsView() {
   const { participants, isLoading } = useResults();
 
   if (isLoading) {
-    return <Loading />
+    return <Loading />;
   }
 
   return (
     <>
-      <div className="secondary-actions-container">
-      </div>
+      <div className="secondary-actions-container"></div>
       <div className="group-table">
         <ResultsTable rows={toResultsTableRows(participants)} />
       </div>
     </>
-  )
+  );
 }
 
 export default ResultsView;

@@ -16,7 +16,7 @@ function DeleteConfirmationModal({
   open,
   participantName,
   onClose,
-  onConfirm
+  onConfirm,
 }: DeleteConfirmationModalProps) {
   const handleConfirm = useCallback(async () => {
     try {

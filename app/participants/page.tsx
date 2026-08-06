@@ -10,9 +10,18 @@ import { toParticipantRowViews } from "../lib/toParticipantRowViews";
 import { openParticipantsPdf } from "../lib/openParticipantsPdf";
 
 function ParticipantsView() {
-  const { participants, isLoading, addParticipant, editParticipant, removeParticipant } = useParticipants();
+  const {
+    participants,
+    isLoading,
+    addParticipant,
+    editParticipant,
+    removeParticipant,
+  } = useParticipants();
 
-  const rows = useMemo(() => toParticipantRowViews(participants), [participants]);
+  const rows = useMemo(
+    () => toParticipantRowViews(participants),
+    [participants],
+  );
 
   function handlePrint(): void {
     try {
@@ -23,7 +32,7 @@ function ParticipantsView() {
   }
 
   if (isLoading) {
-    return <Loading />
+    return <Loading />;
   }
 
   return (

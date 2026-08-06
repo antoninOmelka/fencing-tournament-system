@@ -30,18 +30,24 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <header className="header-container">
-          <Link href="/"><h1 className="header-logo">⚔️ DuelBoard</h1></Link>
+          <Link href="/">
+            <h1 className="header-logo">⚔️ DuelBoard</h1>
+          </Link>
         </header>
         <nav className="navbar">
           <ul>
-            <li><Link href="/participants">Participants</Link></li>
-            <li><Link href="/groups">Groups</Link></li>
-            <li><Link href="/results">Results</Link></li>
+            <li>
+              <Link href="/participants">Participants</Link>
+            </li>
+            <li>
+              <Link href="/groups">Groups</Link>
+            </li>
+            <li>
+              <Link href="/results">Results</Link>
+            </li>
           </ul>
         </nav>
-        <main>
-          {children}
-        </main>
+        <main>{children}</main>
         <footer className="footer">
           <p>&copy; DuelBoard</p>
         </footer>

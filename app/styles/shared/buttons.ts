@@ -5,4 +5,4 @@ export const StyledButton = styled(Button)(() => ({
   height: "56px",
   marginTop: "16px",
   marginBottom: "8px",
-})); 
+}));
