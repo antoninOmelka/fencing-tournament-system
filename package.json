@@ -33,9 +33,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.12",
     "eslint-config-prettier": "^10.1.8",
-    "postcss": "^8",
     "prettier": "^3.9.6",
-    "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
 }
