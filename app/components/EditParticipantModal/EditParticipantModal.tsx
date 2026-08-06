@@ -8,19 +8,13 @@ import SaveIcon from "@mui/icons-material/Save";
 
 import { StyledButton } from "@/app/styles/shared/buttons";
 import { StyledDialog } from "@/app/styles/shared/dialogs";
-import { participantSchema } from "../ParticipantsTable/ParticipantsTable";
-import { Participant } from "../../types/participant";
-
-export type ParticipantInputs = {
-  name: string;
-  year: number;
-  club: string;
-  ranking: number;
-};
+import { participantSchema } from "@/app/lib/participantSchema";
+import { ParticipantInputs } from "@/app/types/participantInputs";
+import { ParticipantRowView } from "@/app/types/participantRowView";
 
 type EditParticipantModalProps = {
   open: boolean;
-  participant?: Participant | null;
+  participant: ParticipantRowView | null;
   onClose: () => void;
   onSave: (data: ParticipantInputs) => Promise<void>;
 };
@@ -40,11 +34,11 @@ function EditParticipantModal({
     resolver: zodResolver(participantSchema)
   });
 
-  const isEditMode = participant !== null && participant !== undefined;
+  const isEditMode = participant !== null;
 
   useEffect(() => {
     if (open) {
-      if (isEditMode && participant) {
+      if (participant) {
         reset({
           name: participant.name,
           year: participant.year,
@@ -60,7 +54,7 @@ function EditParticipantModal({
         });
       }
     }
-  }, [open, participant, isEditMode, reset]);
+  }, [open, participant, reset]);
 
   const handleSave = useCallback(async (data: ParticipantInputs) => {
     try {
@@ -79,17 +73,17 @@ function EditParticipantModal({
       aria-describedby="edit-participant-modal-description"
     >
       <StyledDialog>
-        <Typography 
-          id="edit-participant-modal-title" 
-          variant="h6" 
-          component="h2" 
+        <Typography
+          id="edit-participant-modal-title"
+          variant="h6"
+          component="h2"
           sx={{ mb: 3 }}
         >
           {isEditMode ? "Edit Participant" : "Add New Participant"}
         </Typography>
-        
-        <form 
-          onSubmit={handleSubmit(handleSave)} 
+
+        <form
+          onSubmit={handleSubmit(handleSave)}
           style={{ display: "flex", flexDirection: "column", gap: "35px" }}
         >
           <Tooltip title={errors.name ? "Name must have length from 1 to 25" : ""} arrow>

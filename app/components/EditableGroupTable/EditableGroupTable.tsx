@@ -2,17 +2,16 @@ import "@/app/styles/global/global.css";
 import { StyledTableRow, StyledTableCell } from "@/app/styles/shared/tables";
 import { Group } from "@/app/types/group";
 import { Participant } from "@/app/types/participant";
+import { resultSchema } from "@/app/lib/resultSchema";
+import { updateResultCell } from "@/app/lib/updateResultCell";
 import { Alert, Paper, Table, TableBody, TableContainer, TableHead, TextField } from "@mui/material";
 import { useState } from "react";
-import { z } from "zod";
 
 type EditableGroupTableProps = {
     group: Group;
     onGroupChange: (updatedGroup: Group) => void;
     setIsValid: (isValid: boolean) => void;
 };
-
-const resultsSchema = z.string().regex(new RegExp("^[VD][0-5]$"));
 
 function EditableGroupTable({ group, onGroupChange, setIsValid }: EditableGroupTableProps) {
     const [resultErrors, setResultErrors] = useState<Record<number, Record<number, string>>>({});
@@ -21,35 +20,23 @@ function EditableGroupTable({ group, onGroupChange, setIsValid }: EditableGroupT
     const handleResultChange = (value: string, rowIndex: number, colIndex: number) => {
         const newErrors: Record<number, Record<number, string>> = { ...resultErrors };
 
-        try {
-            resultsSchema.parse(value);
+        if (resultSchema.safeParse(value).success) {
             if (newErrors[rowIndex]) {
                 delete newErrors[rowIndex][colIndex];
                 if (Object.keys(newErrors[rowIndex]).length === 0) {
                     delete newErrors[rowIndex];
                 }
             }
-        } catch (error) {
-            if (error instanceof z.ZodError) {
-                newErrors[rowIndex] = {
-                    ...newErrors[rowIndex],
-                    [colIndex]: error.errors[0]?.message || "Invalid input",
-                };
-            } else {
-                console.error("Unexpected error:", error);
-            }
+        } else {
+            newErrors[rowIndex] = {
+                ...newErrors[rowIndex],
+                [colIndex]: "Invalid format",
+            };
         }
 
-        const updatedResults = results.map((row, rIndex) =>
-            rIndex === rowIndex
-                ? row.map((cell, cIndex) => (cIndex === colIndex ? value : cell))
-                : row
-        );
-
-        onGroupChange({ ...group, results: updatedResults });
+        onGroupChange({ ...group, results: updateResultCell(results, rowIndex, colIndex, value) });
         setResultErrors(newErrors);
-        const hasErrors = Object.keys(newErrors).length > 0;
-        setIsValid(!hasErrors);
+        setIsValid(Object.keys(newErrors).length === 0);
     };
 
     return (

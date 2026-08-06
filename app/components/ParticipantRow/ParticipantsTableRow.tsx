@@ -1,75 +1,41 @@
-import React from "react";
+import { memo } from "react";
 import { IconButton } from "@mui/material";
 import { StyledTableRow, StyledTableCell } from "../../styles/shared/tables";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import { Participant } from "../../types/participant";
+import { ParticipantRowView } from "../../types/participantRowView";
 
-
-export type ParaticipantInputsRaw = {
-  name: string
-  year: string
-  club: string
-  ranking: string
+type ParticipantsTableRowProps = {
+  row: ParticipantRowView;
+  onEdit: (row: ParticipantRowView) => void;
+  onDelete: (row: ParticipantRowView) => void;
 };
 
-export type ParticipantInputs = {
-  name: string
-  year: number
-  club: string
-  ranking: number
-};
-
-interface ParticipantsTableRowProps {
-  participant: Participant;
-  onEditParticipant: (id: number) => void;
-  onDeleteParticipant: (id: number) => void;
-}
-
-const ParticipantsTableRow = ({
-  participant,
-  onEditParticipant,
-  onDeleteParticipant,
-}: ParticipantsTableRowProps) => {
-
-
-
+function ParticipantsTableRow({ row, onEdit, onDelete }: ParticipantsTableRowProps) {
   return (
     <StyledTableRow>
-      <StyledTableCell className="name">{participant.name}</StyledTableCell>
-      <StyledTableCell className="year">{participant.year}</StyledTableCell>
-      <StyledTableCell className="club">{participant.club}</StyledTableCell>
-      <StyledTableCell className="ranking">{participant.ranking}</StyledTableCell>
+      <StyledTableCell className="name">{row.name}</StyledTableCell>
+      <StyledTableCell className="year">{row.year}</StyledTableCell>
+      <StyledTableCell className="club">{row.club}</StyledTableCell>
+      <StyledTableCell className="ranking">{row.ranking}</StyledTableCell>
       <StyledTableCell className="actions">
         <div className="action-buttons">
           <IconButton
             aria-label="edit"
-            onClick={() => onEditParticipant(participant.id)}
+            onClick={() => onEdit(row)}
           >
             <EditIcon />
           </IconButton>
           <IconButton
             aria-label="delete"
-            onClick={() => onDeleteParticipant(participant.id)}
+            onClick={() => onDelete(row)}
           >
             <DeleteIcon />
           </IconButton>
         </div>
       </StyledTableCell>
-    </StyledTableRow >
+    </StyledTableRow>
   );
-};
+}
 
-export default React.memo(ParticipantsTableRow, (prevProps, nextProps) => {
-  const prevParticipant = prevProps.participant;
-  const nextParticipant = nextProps.participant;
-  
-  const isSameParticipant = 
-    prevParticipant.id === nextParticipant.id &&
-    prevParticipant.name === nextParticipant.name &&
-    prevParticipant.year === nextParticipant.year &&
-    prevParticipant.club === nextParticipant.club &&
-    prevParticipant.ranking === nextParticipant.ranking;
-
-  return isSameParticipant;
-});
+export default memo(ParticipantsTableRow);

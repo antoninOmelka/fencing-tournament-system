@@ -5,7 +5,7 @@ import "@/app/styles/global/global.css";
 import GroupTable from "../components/GroupTable/GroupTable";
 import Loading from "../components/Loading/Loading";
 import { StyledButton } from "../styles/shared/buttons";
-import { toGroupTableView } from "../lib/groupTableView";
+import { toGroupTableView } from "../lib/toGroupTableView";
 import { useGroups } from "../hooks/useGroups";
 import GroupsIcon from '@mui/icons-material/Groups';
 import { CircularProgress } from "@mui/material";

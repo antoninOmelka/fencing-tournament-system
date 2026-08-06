@@ -2,31 +2,13 @@
 
 import "@/app/styles/global/global.css";
 
-import { useEffect, useState } from "react";
-import { Participant } from "../types/participant";
 import ResultsTable from "../components/ResultsTable/ResultsTable";
 import Loading from "../components/Loading/Loading";
-import { getResults } from "../services/results";
+import { useResults } from "../hooks/useResults";
+import { toResultsTableRows } from "../lib/toResultsTableRows";
 
 function ResultsView() {
-  const [sortedParticipants, setSortedParticipants] = useState<Participant[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    async function fetchResults() {
-      try {
-        const data = await getResults();
-        setSortedParticipants(data);
-      } catch (error) {
-        console.error(error);
-        throw new Error("Failed to load results data.");
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchResults();
-  }, []);
+  const { participants, isLoading } = useResults();
 
   if (isLoading) {
     return <Loading />
@@ -37,7 +19,7 @@ function ResultsView() {
       <div className="secondary-actions-container">
       </div>
       <div className="group-table">
-        <ResultsTable participants={sortedParticipants}></ResultsTable>
+        <ResultsTable rows={toResultsTableRows(participants)} />
       </div>
     </>
   )

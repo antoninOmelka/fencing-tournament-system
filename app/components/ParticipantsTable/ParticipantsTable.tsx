@@ -4,94 +4,77 @@ import { memo, useCallback, useState } from "react";
 import {
   Table, TableBody, TableHead, TableRow, Paper
 } from "@mui/material";
-import { z } from "zod";
 
 import { StyledTableContainer, StyledTableCell } from "../../styles/shared/tables";
-import { Participant } from "../../types/participant";
 import ParticipantsTableRow from "../ParticipantRow/ParticipantsTableRow";
 import { StyledButton } from "@/app/styles/shared/buttons";
-import EditParticipantModal, { ParticipantInputs } from "../EditParticipantModal/EditParticipantModal";
+import EditParticipantModal from "../EditParticipantModal/EditParticipantModal";
 import DeleteConfirmationModal from "../DeleteParticipantModal/DeleteParticipantModal";
+import { ParticipantInputs } from "../../types/participantInputs";
+import { ParticipantRowView } from "../../types/participantRowView";
 
 type ParticipantsTableProps = {
-  participants: Participant[];
+  rows: ParticipantRowView[];
   onAdd: (data: ParticipantInputs) => Promise<void>;
   onUpdate: (id: number, data: ParticipantInputs) => Promise<void>;
   onDelete: (id: number) => Promise<void>;
 };
 
-export const participantSchema = z.object({
-  name: z.string().min(1).max(25),
-  year: z.coerce.number().min(1900).max(2025).refine(val => Number.isInteger(val)),
-  club: z.string().min(1).max(25),
-  ranking: z.coerce.number().min(1).max(999).refine(val => Number.isInteger(val)),
-});
-
 function ParticipantsTable({
-  participants,
+  rows,
   onAdd,
   onUpdate,
   onDelete
 }: ParticipantsTableProps) {
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [participantToEdit, setParticipantToEdit] = useState<Participant | null>(null);
-  
+  const [rowToEdit, setRowToEdit] = useState<ParticipantRowView | null>(null);
+
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [participantToDelete, setParticipantToDelete] = useState<Participant | null>(null);
+  const [rowToDelete, setRowToDelete] = useState<ParticipantRowView | null>(null);
 
-  const getParticipantById = useCallback((id: number) => {
-    return participants.find(p => p.id === id) ?? null;
-  }, [participants]);
-
-  const handleAddParticipant = useCallback(() => {
-    setParticipantToEdit(null);
+  const handleAddClick = useCallback(() => {
+    setRowToEdit(null);
     setEditModalOpen(true);
   }, []);
 
-  const handleEditParticipant = useCallback((id: number) => {
-    const participant = getParticipantById(id);
-    if (participant) {
-      setParticipantToEdit(participant);
-      setEditModalOpen(true);
-    }
-  }, [getParticipantById]);
+  const handleEditClick = useCallback((row: ParticipantRowView) => {
+    setRowToEdit(row);
+    setEditModalOpen(true);
+  }, []);
 
   const handleEditModalClose = useCallback(() => {
     setEditModalOpen(false);
-    setParticipantToEdit(null);
+    setRowToEdit(null);
   }, []);
 
   const handleEditModalSave = useCallback(async (data: ParticipantInputs) => {
-    if (participantToEdit) {
-      await onUpdate(participantToEdit.id, data);
+    if (rowToEdit) {
+      await onUpdate(rowToEdit.id, data);
     } else {
       await onAdd(data);
     }
-  }, [participantToEdit, onAdd, onUpdate]);
+  }, [rowToEdit, onAdd, onUpdate]);
 
-  const handleDeleteParticipant = useCallback((id: number) => {
-    const participant = getParticipantById(id);
-    if (participant) {
-      setParticipantToDelete(participant);
-      setDeleteModalOpen(true);
-    }
-  }, [getParticipantById]);
+  const handleDeleteClick = useCallback((row: ParticipantRowView) => {
+    setRowToDelete(row);
+    setDeleteModalOpen(true);
+  }, []);
 
   const handleDeleteModalClose = useCallback(() => {
     setDeleteModalOpen(false);
-    setParticipantToDelete(null);
+    setRowToDelete(null);
   }, []);
 
   const handleDeleteModalConfirm = useCallback(async () => {
-    if (participantToDelete) {
-      await onDelete(participantToDelete.id);
+    if (rowToDelete) {
+      await onDelete(rowToDelete.id);
     }
-  }, [participantToDelete, onDelete]);
+  }, [rowToDelete, onDelete]);
 
   return (
     <>
       <div className="table-button-container">
-        <StyledButton variant="contained" onClick={handleAddParticipant}>
+        <StyledButton variant="contained" onClick={handleAddClick}>
           Add New
         </StyledButton>
       </div>
@@ -108,12 +91,12 @@ function ParticipantsTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {participants.map((participant) => (
+            {rows.map((row) => (
               <ParticipantsTableRow
-                key={participant.id}
-                participant={participant}
-                onEditParticipant={handleEditParticipant}
-                onDeleteParticipant={handleDeleteParticipant}
+                key={row.id}
+                row={row}
+                onEdit={handleEditClick}
+                onDelete={handleDeleteClick}
               />
             ))}
           </TableBody>
@@ -122,14 +105,14 @@ function ParticipantsTable({
 
       <EditParticipantModal
         open={editModalOpen}
-        participant={participantToEdit}
+        participant={rowToEdit}
         onClose={handleEditModalClose}
         onSave={handleEditModalSave}
       />
 
       <DeleteConfirmationModal
         open={deleteModalOpen}
-        participant={participantToDelete}
+        participantName={rowToDelete ? rowToDelete.name : ""}
         onClose={handleDeleteModalClose}
         onConfirm={handleDeleteModalConfirm}
       />
