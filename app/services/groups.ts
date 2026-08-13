@@ -1,6 +1,6 @@
 import { Group } from "../types/group";
 
-const GROUPS_URL = "http://localhost:3000/api/groups";
+const GROUPS_URL = "/api/groups";
 
 async function apiRequest<T>(
   url: string,

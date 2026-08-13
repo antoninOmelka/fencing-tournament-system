@@ -2,7 +2,7 @@ import { Participant } from "../types/participant";
 
 export async function getParticipants() {
   try {
-    const response = await fetch("api/participants");
+    const response = await fetch("/api/participants");
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.error || "Failed to load participants");

@@ -1,29 +1,10 @@
-import fs from "fs";
-import path from "path";
 import { NextRequest, NextResponse } from "next/server";
-import { Participant } from "@/app/types/participant";
+import {
+  readParticipants,
+  writeParticipants,
+} from "@/app/server/repositories/participants";
 
-const participantsFilePath = path.join(
-  process.cwd(),
-  "app/data/participants.json",
-);
-
-function ensureFileExists() {
-  if (!fs.existsSync(participantsFilePath)) {
-    throw new Error("Participants data file not found");
-  }
-}
-
-const readParticipants = (): Participant[] => {
-  ensureFileExists();
-  return JSON.parse(fs.readFileSync(participantsFilePath, "utf8"));
-};
-
-const writeParticipants = (participants: Participant[]): void => {
-  fs.writeFileSync(participantsFilePath, JSON.stringify(participants, null, 2));
-};
-
-const validatParticipantId = (participantId: string): number | null => {
+const validateParticipantId = (participantId: string): number | null => {
   const participantIdNumber = Number(participantId);
   return isNaN(participantIdNumber) ? null : participantIdNumber;
 };
@@ -33,7 +14,7 @@ export async function PUT(
   { params }: { params: Promise<{ participantId: string }> },
 ) {
   const { participantId } = await params;
-  const participantIdNumber = validatParticipantId(participantId);
+  const participantIdNumber = validateParticipantId(participantId);
 
   if (participantIdNumber === null) {
     return NextResponse.json(
@@ -88,7 +69,7 @@ export async function DELETE(
   { params }: { params: Promise<{ participantId: string }> },
 ) {
   const { participantId } = await params;
-  const participantIdNumber = validatParticipantId(participantId);
+  const participantIdNumber = validateParticipantId(participantId);
   if (participantIdNumber === null) {
     return NextResponse.json(
       { error: "Invalid participant ID" },

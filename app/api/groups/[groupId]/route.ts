@@ -1,26 +1,7 @@
-import fs from "fs";
-import path from "path";
 import { NextRequest, NextResponse } from "next/server";
 import { Group } from "@/app/types/group";
-
-const RESULTS_URL = "http://localhost:3000/api/results";
-
-const groupsFilePath = path.join(process.cwd(), "app/data/groups.json");
-
-function ensureFileExists() {
-  if (!fs.existsSync(groupsFilePath)) {
-    throw new Error("Groups data file not found");
-  }
-}
-
-const readGroups = (): Group[] => {
-  ensureFileExists();
-  return JSON.parse(fs.readFileSync(groupsFilePath, "utf8"));
-};
-
-const writeGroups = (groups: Group[]): void => {
-  fs.writeFileSync(groupsFilePath, JSON.stringify(groups, null, 2));
-};
+import { readGroups, writeGroups } from "@/app/server/repositories/groups";
+import { regenerateResults } from "@/app/server/regenerateResults";
 
 const validateGroupId = (groupId: string): number | null => {
   const groupIdNumber = Number(groupId);
@@ -155,12 +136,9 @@ export async function PATCH(
   }
 
   try {
-    const response = await fetch(RESULTS_URL, { method: "POST" });
-    if (!response.ok) {
-      throw new Error(`Failed with status: ${response.status}`);
-    }
+    regenerateResults();
   } catch (error) {
-    console.log(`Failed to trigger results recalculation: ${error}`);
+    console.error(`Failed to regenerate results: ${error}`);
     return NextResponse.json(
       { error: `Failed to regenerate results: ${error}` },
       { status: 500 },
