@@ -2,6 +2,7 @@ import "@/app/styles/global/global.css";
 import { StyledTableRow, StyledTableCell } from "@/app/styles/shared/tables";
 import { Group } from "@/app/types/group";
 import { Participant } from "@/app/types/participant";
+import { mirrorResultValue } from "@/app/lib/mirrorResultValue";
 import { resultSchema } from "@/app/lib/resultSchema";
 import { updateResultCell } from "@/app/lib/updateResultCell";
 import {
@@ -31,6 +32,29 @@ function EditableGroupTable({
   >({});
   const { participants, results } = group;
 
+  const setCellError = (
+    errors: Record<number, Record<number, string>>,
+    rowIndex: number,
+    colIndex: number,
+    value: string,
+  ) => {
+    // an empty cell means the bout was not fenced yet, which is fine
+    if (value === "" || resultSchema.safeParse(value).success) {
+      if (errors[rowIndex]) {
+        errors[rowIndex] = { ...errors[rowIndex] };
+        delete errors[rowIndex][colIndex];
+        if (Object.keys(errors[rowIndex]).length === 0) {
+          delete errors[rowIndex];
+        }
+      }
+    } else {
+      errors[rowIndex] = {
+        ...errors[rowIndex],
+        [colIndex]: "Invalid format",
+      };
+    }
+  };
+
   const handleResultChange = (
     value: string,
     rowIndex: number,
@@ -40,24 +64,17 @@ function EditableGroupTable({
       ...resultErrors,
     };
 
-    if (resultSchema.safeParse(value).success) {
-      if (newErrors[rowIndex]) {
-        delete newErrors[rowIndex][colIndex];
-        if (Object.keys(newErrors[rowIndex]).length === 0) {
-          delete newErrors[rowIndex];
-        }
-      }
-    } else {
-      newErrors[rowIndex] = {
-        ...newErrors[rowIndex],
-        [colIndex]: "Invalid format",
-      };
+    let newResults = updateResultCell(results, rowIndex, colIndex, value);
+    setCellError(newErrors, rowIndex, colIndex, value);
+
+    const mirrorBefore = results[colIndex]?.[rowIndex] || "";
+    const mirrorAfter = mirrorResultValue(value, mirrorBefore);
+    if (mirrorAfter !== mirrorBefore) {
+      newResults = updateResultCell(newResults, colIndex, rowIndex, mirrorAfter);
+      setCellError(newErrors, colIndex, rowIndex, mirrorAfter);
     }
 
-    onGroupChange({
-      ...group,
-      results: updateResultCell(results, rowIndex, colIndex, value),
-    });
+    onGroupChange({ ...group, results: newResults });
     setResultErrors(newErrors);
     setIsValid(Object.keys(newErrors).length === 0);
   };
@@ -119,8 +136,8 @@ function EditableGroupTable({
           severity="error"
           variant="outlined"
         >
-          Invalid format! Please use one of the following formats for the result
-          values: V5, D1.
+          Invalid or incomplete result values! Please use one of the following
+          formats: V5, D1. Pre-filled letters need the score filled in.
         </Alert>
       )}
     </>
