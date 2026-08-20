@@ -2,15 +2,12 @@ import { Group } from "../types/group";
 import { Participant } from "../types/participant";
 import { generateMatches } from "./generateMatches";
 
-const TARGET_GROUP_SIZE = 6;
+const MAX_GROUP_SIZE = 7;
 
+// The smallest number of groups such that no group exceeds MAX_GROUP_SIZE;
+// the base/extra distribution below keeps sizes within 1 of each other.
 function computeGroupCount(participantCount: number): number {
-  let count = Math.max(1, Math.round(participantCount / TARGET_GROUP_SIZE));
-  // Size-balancing adjustments only make sense with 2+ groups; with count = 1
-  // participantCount % count is always 0 and the second branch would drop count to 0.
-  if (count > 1 && participantCount % count === 1) count++;
-  if (count > 1 && participantCount % count === count - 1) count--;
-  return count;
+  return Math.ceil(participantCount / MAX_GROUP_SIZE);
 }
 
 export function distributeIntoGroups(participants: Participant[]): Group[] {

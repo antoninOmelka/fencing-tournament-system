@@ -123,6 +123,21 @@ describe("calculateStats", () => {
     });
   });
 
+  it("ignores a match entered only in the lower triangle", () => {
+    const participants = [makeParticipant(1, "A"), makeParticipant(2, "B")];
+    // Only the mirror (lower-triangle) cell is filled in — the match
+    // is not counted at all by the current implementation
+    const results = [
+      ["", ""],
+      ["D3", ""],
+    ];
+
+    const [a, b] = calculateStats(makeGroup(participants, results));
+
+    expect(a).toMatchObject({ wins: 0, winsRate: 0, pointsScored: 0 });
+    expect(b).toMatchObject({ wins: 0, winsRate: 0, pointsReceived: 0 });
+  });
+
   it("preserves participant order and existing fields", () => {
     const participants = [
       { ...makeParticipant(1, "A"), groupRanking: 1 },

@@ -4,7 +4,7 @@ import nextTypescript from "eslint-config-next/typescript";
 import prettier from "eslint-config-prettier/flat";
 
 export default defineConfig([
-  globalIgnores([".next/", "out/", "build/", "next-env.d.ts"]),
+  globalIgnores([".next/", "out/", "build/", "coverage/", "next-env.d.ts"]),
   ...nextCoreWebVitals,
   ...nextTypescript,
   prettier,
