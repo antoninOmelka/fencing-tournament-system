@@ -7,17 +7,20 @@ import { ParticipantRowView } from "../../types/participantRowView";
 
 type ParticipantsTableRowProps = {
   row: ParticipantRowView;
+  order: number;
   onEdit: (row: ParticipantRowView) => void;
   onDelete: (row: ParticipantRowView) => void;
 };
 
 function ParticipantsTableRow({
   row,
+  order,
   onEdit,
   onDelete,
 }: ParticipantsTableRowProps) {
   return (
     <StyledTableRow>
+      <StyledTableCell className="order">{order}</StyledTableCell>
       <StyledTableCell className="name">{row.name}</StyledTableCell>
       <StyledTableCell className="year">{row.year}</StyledTableCell>
       <StyledTableCell className="club">{row.club}</StyledTableCell>

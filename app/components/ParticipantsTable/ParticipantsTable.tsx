@@ -1,11 +1,10 @@
-import "./../../styles/global/global.css";
-
 import { memo, useCallback, useState } from "react";
 import { Table, TableBody, TableHead, TableRow, Paper } from "@mui/material";
 
 import {
   StyledTableContainer,
   StyledTableCell,
+  StyledTableActions,
 } from "../../styles/shared/tables";
 import ParticipantsTableRow from "../ParticipantRow/ParticipantsTableRow";
 import { StyledButton } from "@/app/styles/shared/buttons";
@@ -79,16 +78,17 @@ function ParticipantsTable({
 
   return (
     <>
-      <div className="table-button-container">
+      <StyledTableActions>
         <StyledButton variant="contained" onClick={handleAddClick}>
           Add New
         </StyledButton>
-      </div>
+      </StyledTableActions>
 
       <StyledTableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
+              <StyledTableCell className="order">#</StyledTableCell>
               <StyledTableCell className="name">Name</StyledTableCell>
               <StyledTableCell className="year">Year</StyledTableCell>
               <StyledTableCell className="club">Club</StyledTableCell>
@@ -97,10 +97,11 @@ function ParticipantsTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {rows.map((row, index) => (
               <ParticipantsTableRow
                 key={row.id}
                 row={row}
+                order={index + 1}
                 onEdit={handleEditClick}
                 onDelete={handleDeleteClick}
               />

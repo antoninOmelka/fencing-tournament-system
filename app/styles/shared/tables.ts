@@ -8,6 +8,7 @@ import { styled } from "@mui/material/styles";
 
 const CELL_HEIGHT = "80px";
 const CELL_WIDTHS = {
+  order: "60px",
   name: "250px",
   year: "150px",
   club: "250px",
@@ -28,6 +29,13 @@ export const StyledTableContainer = styled(TableContainer, {
   marginBottom: theme.spacing(3),
   boxShadow: theme.shadows[3],
 }));
+
+export const StyledTableActions = styled("div")({
+  width: `${TOTAL_WIDTH}px`,
+  margin: "auto",
+  display: "flex",
+  justifyContent: "flex-end",
+});
 
 export const StyledTableRow = styled(TableRow)(({ theme }) => ({
   height: CELL_HEIGHT,
@@ -62,6 +70,12 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
+  },
+  "&.order": {
+    textAlign: "center",
+    width: CELL_WIDTHS.order,
+    minWidth: CELL_WIDTHS.order,
+    maxWidth: CELL_WIDTHS.order,
   },
   "&.name": {
     width: CELL_WIDTHS.name,
