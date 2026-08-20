@@ -1,11 +1,11 @@
 import { memo, useCallback, useEffect } from "react";
-import { Modal, Box, Tooltip, TextField, Typography } from "@mui/material";
+import { Modal, Box, Tooltip, TextField } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import SaveIcon from "@mui/icons-material/Save";
 
 import { StyledButton } from "@/app/styles/shared/buttons";
-import { StyledDialog } from "@/app/styles/shared/dialogs";
+import { StyledDialog, StyledDialogTitle } from "@/app/styles/shared/dialogs";
 import { participantSchema } from "@/app/lib/participantSchema";
 import { ParticipantInputs } from "@/app/types/participantInputs";
 import { ParticipantRowView } from "@/app/types/participantRowView";
@@ -74,14 +74,13 @@ function EditParticipantModal({
       aria-describedby="edit-participant-modal-description"
     >
       <StyledDialog>
-        <Typography
+        <StyledDialogTitle
           id="edit-participant-modal-title"
           variant="h6"
           component="h2"
-          sx={{ mb: 3 }}
         >
           {isEditMode ? "Edit Participant" : "Add New Participant"}
-        </Typography>
+        </StyledDialogTitle>
 
         <form
           onSubmit={handleSubmit(handleSave)}

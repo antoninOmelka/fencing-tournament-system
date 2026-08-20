@@ -1,9 +1,13 @@
 import { memo, useCallback } from "react";
-import { Modal, Box, Typography } from "@mui/material";
+import { Modal, Box } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 import { StyledButton } from "@/app/styles/shared/buttons";
-import { StyledDialog } from "@/app/styles/shared/dialogs";
+import {
+  StyledDialog,
+  StyledDialogText,
+  StyledDialogTitle,
+} from "@/app/styles/shared/dialogs";
 
 type DeleteConfirmationModalProps = {
   open: boolean;
@@ -35,22 +39,21 @@ function DeleteConfirmationModal({
       aria-describedby="delete-participant-modal-description"
     >
       <StyledDialog>
-        <Typography
+        <StyledDialogTitle
           id="delete-participant-modal-title"
           variant="h6"
           component="h2"
-          sx={{ mb: 3 }}
         >
           Delete Participant
-        </Typography>
+        </StyledDialogTitle>
 
-        <Typography sx={{ mb: 3 }}>
+        <StyledDialogText>
           Are you sure you want to permanently delete participant{" "}
           <Box sx={{ fontWeight: "bold" }} component="span">
             {participantName}
           </Box>
           ? This cannot be undone.
-        </Typography>
+        </StyledDialogText>
 
         <Box sx={{ mt: 5, display: "flex", justifyContent: "space-between" }}>
           <StyledButton variant="outlined" onClick={onClose}>

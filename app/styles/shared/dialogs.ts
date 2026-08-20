@@ -1,5 +1,15 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
+
+export const StyledDialogTitle = styled(Typography)(({ theme }) => ({
+  color: theme.palette.common.black,
+  marginBottom: theme.spacing(3),
+})) as typeof Typography;
+
+export const StyledDialogText = styled(Typography)(({ theme }) => ({
+  color: theme.palette.common.black,
+  marginBottom: theme.spacing(3),
+})) as typeof Typography;
 
 export const StyledDialog = styled(Box)(({ theme }) => ({
   position: "absolute",
