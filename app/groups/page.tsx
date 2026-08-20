@@ -2,8 +2,10 @@
 
 import "@/app/styles/global/global.css";
 
+import { useState } from "react";
 import GroupTable from "../components/GroupTable/GroupTable";
 import Loading from "../components/Loading/Loading";
+import RegenerateGroupsModal from "../components/RegenerateGroupsModal/RegenerateGroupsModal";
 import { StyledButton } from "../styles/shared/buttons";
 import { toGroupTableView } from "../lib/toGroupTableView";
 import { useGroups } from "../hooks/useGroups";
@@ -12,9 +14,20 @@ import { CircularProgress } from "@mui/material";
 
 function GroupTablesView() {
   const { groups, isLoading, isSaving, generateGroups } = useGroups();
+  const [regenerateModalOpen, setRegenerateModalOpen] = useState(false);
 
   if (isLoading) {
     return <Loading />;
+  }
+
+  function handleGenerateClick(): void {
+    // Regenerating discards entered results — ask first; the initial
+    // generation has nothing to lose
+    if (groups.length === 0) {
+      generateGroups();
+    } else {
+      setRegenerateModalOpen(true);
+    }
   }
 
   return (
@@ -22,7 +35,7 @@ function GroupTablesView() {
       <div className="secondary-actions-container">
         <StyledButton
           variant="contained"
-          onClick={() => generateGroups()}
+          onClick={handleGenerateClick}
           disabled={isSaving}
           startIcon={
             isSaving ? (
@@ -42,6 +55,12 @@ function GroupTablesView() {
           ))}
         </div>
       </div>
+
+      <RegenerateGroupsModal
+        open={regenerateModalOpen}
+        onClose={() => setRegenerateModalOpen(false)}
+        onConfirm={generateGroups}
+      />
     </>
   );
 }
