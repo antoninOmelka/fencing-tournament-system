@@ -122,6 +122,20 @@ describe("sortParticipantsByResults", () => {
     expect(sorted.map((participant) => participant.id)).toEqual([2, 1]);
   });
 
+  it("breaks full stat ties by the drawn lot", () => {
+    const groups = [
+      makeGroup(1, [
+        makeParticipant(1, { drawNumber: 3 }),
+        makeParticipant(2, { drawNumber: 1 }),
+        makeParticipant(3, { drawNumber: 2 }),
+      ]),
+    ];
+
+    const sorted = sortParticipantsByResults(groups);
+
+    expect(sorted.map((participant) => participant.id)).toEqual([2, 3, 1]);
+  });
+
   it("treats victory rates as equal when they differ under one percent", () => {
     // Rates are compared rounded to whole percent, so the index decides here
     const groups = [

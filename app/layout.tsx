@@ -45,6 +45,9 @@ export default function RootLayout({
             <li>
               <Link href="/results">Results</Link>
             </li>
+            <li>
+              <Link href="/playoff">Playoff</Link>
+            </li>
           </ul>
         </nav>
         <main>{children}</main>

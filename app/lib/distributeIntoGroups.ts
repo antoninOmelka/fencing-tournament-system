@@ -19,6 +19,18 @@ export function distributeIntoGroups(participants: Participant[]): Group[] {
     (a, b) => Number(a.ranking) - Number(b.ranking),
   );
 
+  // Draw of lots: the single moment of randomness in the tournament.
+  // The numbers break full stat ties in the results and stay fixed until
+  // the groups are generated again.
+  const lots = Array.from({ length: participants.length }, (_, i) => i + 1);
+  for (let i = lots.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [lots[i], lots[j]] = [lots[j], lots[i]];
+  }
+  sortedParticipants.forEach((participant, index) => {
+    participant.drawNumber = lots[index];
+  });
+
   const numGroups = computeGroupCount(participants.length);
   const baseSize = Math.floor(participants.length / numGroups);
   const extraParticipants = participants.length % numGroups;

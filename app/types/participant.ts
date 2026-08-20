@@ -4,6 +4,7 @@ export interface Participant {
   year: number;
   club: string;
   ranking: number;
+  drawNumber?: number; // lot drawn once when groups are generated
   groupRanking?: number;
   wins?: number;
   winsRate?: number;

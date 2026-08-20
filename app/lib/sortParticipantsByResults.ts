@@ -27,7 +27,8 @@ export function sortParticipantsByResults(groups: Group[]): Participant[] {
       return (b.pointsScored ?? 0) - (a.pointsScored ?? 0);
     }
 
-    // 5. Random as a last resort
-    return Math.random() - 0.5;
+    // 5. Draw of lots — random, but drawn only once (when groups are
+    // generated), so recomputing the results never reshuffles them
+    return (a.drawNumber || 0) - (b.drawNumber || 0);
   });
 }

@@ -112,6 +112,21 @@ describe("distributeIntoGroups", () => {
     }
   });
 
+  it("assigns every participant a draw number forming a permutation of 1..n", () => {
+    const participants = Array.from({ length: 13 }, (_, index) =>
+      makeParticipant(index + 1, index + 1),
+    );
+
+    const groups = distributeIntoGroups(participants);
+
+    const drawNumbers = groups
+      .flatMap((group) => group.participants)
+      .map((participant) => participant.drawNumber);
+    expect([...drawNumbers].sort((a, b) => Number(a) - Number(b))).toEqual(
+      Array.from({ length: 13 }, (_, index) => index + 1),
+    );
+  });
+
   it("spreads clubmates across groups", () => {
     const participants = Array.from({ length: 12 }, (_, index) =>
       makeParticipant(index + 1, index + 1, index % 2 === 0 ? "A" : "B"),
