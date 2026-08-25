@@ -36,9 +36,7 @@ describe("generatePlayoff", () => {
     const playoff = generatePlayoff(makeSeededField(8));
 
     const firstRound = playoff.matches.filter((match) => match.round === 1);
-    expect(
-      firstRound.map((match) => [match.firstId, match.secondId]),
-    ).toEqual([
+    expect(firstRound.map((match) => [match.firstId, match.secondId])).toEqual([
       [1, 8],
       [4, 5],
       [2, 7],
@@ -59,12 +57,10 @@ describe("generatePlayoff", () => {
     );
 
     const semifinals = playoff.matches.filter((match) => match.round === 2);
-    expect(semifinals.map((match) => [match.firstId, match.secondId])).toEqual(
-      [
-        [1, null],
-        [2, null],
-      ],
-    );
+    expect(semifinals.map((match) => [match.firstId, match.secondId])).toEqual([
+      [1, null],
+      [2, null],
+    ]);
   });
 
   it("builds a sound bracket for any field size from 2 to 33", () => {
@@ -95,7 +91,9 @@ describe("generatePlayoff", () => {
       const byeCount = bracketSize - count;
       const byeIds = firstRound
         .filter((match) => match.firstId === null || match.secondId === null)
-        .map((match) => (match.firstId === null ? match.secondId : match.firstId));
+        .map((match) =>
+          match.firstId === null ? match.secondId : match.firstId,
+        );
       expect(byeIds).toHaveLength(byeCount);
       expect([...byeIds].sort((a, b) => Number(a) - Number(b))).toEqual(
         Array.from({ length: byeCount }, (_, index) => index + 1),

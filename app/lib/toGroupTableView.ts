@@ -6,7 +6,8 @@ function formatStat(value: number | undefined): string {
 }
 
 export function toGroupTableView(group: Group): GroupTableView {
-  const { participants, results } = group;
+  const { participants } = group;
+  const results = group.results || [];
 
   const orders = participants.map(
     (participant, index) => participant.groupRanking || index + 1,

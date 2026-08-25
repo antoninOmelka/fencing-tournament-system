@@ -53,9 +53,7 @@ describe("computePlayoffStandings", () => {
 
     const standings = computePlayoffStandings(playoff);
 
-    expect(
-      standings.map((row) => ({ id: row.id, place: row.place })),
-    ).toEqual([
+    expect(standings.map((row) => ({ id: row.id, place: row.place }))).toEqual([
       { id: 1, place: 1 },
       { id: 2, place: 2 },
       { id: 3, place: 3 },
@@ -68,9 +66,7 @@ describe("computePlayoffStandings", () => {
 
     const standings = computePlayoffStandings(playoff);
 
-    expect(
-      standings.map((row) => ({ id: row.id, place: row.place })),
-    ).toEqual([
+    expect(standings.map((row) => ({ id: row.id, place: row.place }))).toEqual([
       { id: 1, place: 1 },
       { id: 2, place: 2 },
       { id: 3, place: 3 },

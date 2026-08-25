@@ -2,6 +2,7 @@ import "@/app/styles/global/global.css";
 import { StyledTableRow, StyledTableCell } from "@/app/styles/shared/tables";
 import { Group } from "@/app/types/group";
 import { Participant } from "@/app/types/participant";
+import { matchesFromResults } from "@/app/lib/matchesFromResults";
 import { mirrorResultValue } from "@/app/lib/mirrorResultValue";
 import { resultSchema } from "@/app/lib/resultSchema";
 import { updateResultCell } from "@/app/lib/updateResultCell";
@@ -30,7 +31,8 @@ function EditableGroupTable({
   const [resultErrors, setResultErrors] = useState<
     Record<number, Record<number, string>>
   >({});
-  const { participants, results } = group;
+  const { participants } = group;
+  const results = group.results || [];
 
   const setCellError = (
     errors: Record<number, Record<number, string>>,
@@ -70,11 +72,23 @@ function EditableGroupTable({
     const mirrorBefore = results[colIndex]?.[rowIndex] || "";
     const mirrorAfter = mirrorResultValue(value, mirrorBefore);
     if (mirrorAfter !== mirrorBefore) {
-      newResults = updateResultCell(newResults, colIndex, rowIndex, mirrorAfter);
+      newResults = updateResultCell(
+        newResults,
+        colIndex,
+        rowIndex,
+        mirrorAfter,
+      );
       setCellError(newErrors, colIndex, rowIndex, mirrorAfter);
     }
 
-    onGroupChange({ ...group, results: newResults });
+    // the matrix is only the edit buffer — match records are what gets saved
+    const newMatches = matchesFromResults(
+      participants,
+      group.matches || [],
+      newResults,
+    );
+
+    onGroupChange({ ...group, results: newResults, matches: newMatches });
     setResultErrors(newErrors);
     setIsValid(Object.keys(newErrors).length === 0);
   };
@@ -136,8 +150,10 @@ function EditableGroupTable({
           severity="error"
           variant="outlined"
         >
-          Invalid or incomplete result values! Please use one of the following
-          formats: V5, D1. Pre-filled letters need the score filled in.
+          Invalid or incomplete result values! Use the FIE notation: V for a
+          full-score victory, V4 for a victory short of 5 touches, D3 for a
+          defeat with 3 touches. A pre-filled D needs the loser&apos;s score
+          filled in.
         </Alert>
       )}
     </>

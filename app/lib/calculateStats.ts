@@ -1,46 +1,66 @@
 import { Group } from "../types/group";
 import { Participant } from "../types/participant";
 
+type Stat = {
+  wins: number;
+  matches: number;
+  pointsScored: number;
+  pointsReceived: number;
+  index: number;
+};
+
+function scoreOf(match: {
+  score: number | undefined;
+  isWinner: boolean;
+}): number {
+  if (match.score !== undefined) {
+    return match.score;
+  }
+  return match.isWinner ? 5 : 0; // "V" = 5; a missing loser score counts as 0
+}
+
 export function calculateStats({
   participants,
-  results,
+  matches,
 }: Group): Participant[] {
-  const stats = participants.map((participant) => ({
-    id: participant.id,
-    wins: 0,
-    matches: 0,
-    pointsScored: 0,
-    pointsReceived: 0,
-    index: 0,
-  }));
+  const stats = new Map<number, Stat>(
+    participants.map((participant) => [
+      participant.id,
+      { wins: 0, matches: 0, pointsScored: 0, pointsReceived: 0, index: 0 },
+    ]),
+  );
 
-  results.forEach((row, rowIndex) => {
-    row.forEach((score, colIndex) => {
-      if (rowIndex >= colIndex || !score) return; // Upper triangle only
+  (matches || []).forEach((match) => {
+    if (match.winnerId === undefined) {
+      return; // bout not fenced yet
+    }
+    const first = stats.get(match.firstId);
+    const second = stats.get(match.secondId);
+    if (!first || !second) {
+      return;
+    }
 
-      const current = stats[rowIndex];
-      const opponent = stats[colIndex];
-
-      const isVictory = score.startsWith("V");
-      const pointsScored = parseInt(score.slice(1), 10);
-      const opponentScore = results[colIndex][rowIndex]?.slice(1);
-      const pointsReceived = parseInt(opponentScore || "0", 10);
-
-      current.matches++;
-      opponent.matches++;
-
-      if (isVictory) {
-        current.wins++;
-      } else {
-        opponent.wins++;
-      }
-
-      current.pointsScored += pointsScored;
-      current.pointsReceived += pointsReceived;
-
-      opponent.pointsScored += pointsReceived;
-      opponent.pointsReceived += pointsScored;
+    const firstScore = scoreOf({
+      score: match.firstScore,
+      isWinner: match.winnerId === match.firstId,
     });
+    const secondScore = scoreOf({
+      score: match.secondScore,
+      isWinner: match.winnerId === match.secondId,
+    });
+
+    first.matches++;
+    second.matches++;
+    if (match.winnerId === match.firstId) {
+      first.wins++;
+    } else {
+      second.wins++;
+    }
+
+    first.pointsScored += firstScore;
+    first.pointsReceived += secondScore;
+    second.pointsScored += secondScore;
+    second.pointsReceived += firstScore;
   });
 
   stats.forEach((stat) => {
@@ -48,14 +68,17 @@ export function calculateStats({
   });
 
   return participants.map((participant) => {
-    const stat = stats.find((s) => s.id === participant.id);
+    const stat = stats.get(participant.id);
+    if (!stat) {
+      return participant;
+    }
     return {
       ...participant,
-      wins: stat?.wins ?? 0,
-      winsRate: stat?.matches ? stat.wins / stat.matches : 0,
-      pointsScored: stat?.pointsScored ?? 0,
-      pointsReceived: stat?.pointsReceived ?? 0,
-      index: stat?.index ?? 0,
+      wins: stat.wins,
+      winsRate: stat.matches ? stat.wins / stat.matches : 0,
+      pointsScored: stat.pointsScored,
+      pointsReceived: stat.pointsReceived,
+      index: stat.index,
     };
   });
 }
