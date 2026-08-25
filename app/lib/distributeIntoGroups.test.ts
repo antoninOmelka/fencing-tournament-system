@@ -127,6 +127,35 @@ describe("distributeIntoGroups", () => {
     );
   });
 
+  it("never exceeds group capacity for uneven club patterns", () => {
+    for (let count = 8; count <= 40; count++) {
+      for (const clubCount of [1, 2, 3, 5]) {
+        const participants = Array.from({ length: count }, (_, index) =>
+          makeParticipant(index + 1, index + 1, `Club${index % clubCount}`),
+        );
+
+        const sizes = distributeIntoGroups(participants).map(
+          (group) => group.participants.length,
+        );
+
+        expect(Math.max(...sizes)).toBeLessThanOrEqual(7);
+        expect(Math.max(...sizes) - Math.min(...sizes)).toBeLessThanOrEqual(1);
+        expect(sizes.reduce((sum, size) => sum + size, 0)).toBe(count);
+      }
+    }
+  });
+
+  it("does not mutate the input participants", () => {
+    const participants = Array.from({ length: 13 }, (_, index) =>
+      makeParticipant(index + 1, index + 1, `Club${index % 3}`),
+    );
+    const snapshot = participants.map((participant) => ({ ...participant }));
+
+    distributeIntoGroups(participants);
+
+    expect(participants).toEqual(snapshot);
+  });
+
   it("spreads clubmates across groups", () => {
     const participants = Array.from({ length: 12 }, (_, index) =>
       makeParticipant(index + 1, index + 1, index % 2 === 0 ? "A" : "B"),

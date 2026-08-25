@@ -15,9 +15,10 @@ export function distributeIntoGroups(participants: Participant[]): Group[] {
     return [];
   }
 
-  const sortedParticipants = [...participants].sort(
-    (a, b) => Number(a.ranking) - Number(b.ranking),
-  );
+  // work on copies — the caller's participant objects must stay untouched
+  const sortedParticipants = participants
+    .map((participant) => ({ ...participant }))
+    .sort((a, b) => Number(a.ranking) - Number(b.ranking));
 
   // Draw of lots: the single moment of randomness in the tournament.
   // The numbers break full stat ties in the results and stay fixed until
@@ -34,6 +35,8 @@ export function distributeIntoGroups(participants: Participant[]): Group[] {
   const numGroups = computeGroupCount(participants.length);
   const baseSize = Math.floor(participants.length / numGroups);
   const extraParticipants = participants.length % numGroups;
+  const capacityOf = (index: number): number =>
+    baseSize + (index < extraParticipants ? 1 : 0);
 
   const groups: Group[] = Array.from({ length: numGroups }, (_, index) => ({
     id: index + 1,
@@ -51,9 +54,9 @@ export function distributeIntoGroups(participants: Participant[]): Group[] {
   let groupIndex = 0;
   for (const [, clubParticipants] of clubMap.entries()) {
     for (const participant of clubParticipants) {
-      const groupSize = baseSize + (groupIndex < extraParticipants ? 1 : 0);
-
-      if (groups[groupIndex].participants.length >= groupSize) {
+      // find the next group with free capacity — the total capacity equals
+      // the number of participants, so one always exists
+      while (groups[groupIndex].participants.length >= capacityOf(groupIndex)) {
         groupIndex = (groupIndex + 1) % numGroups;
       }
 
