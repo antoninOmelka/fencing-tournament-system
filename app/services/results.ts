@@ -1,27 +1,14 @@
-export async function getResults() {
-  try {
-    const response = await fetch("/api/results");
-    const data = await response.json();
-    return data.participants;
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
+import { Participant } from "../types/participant";
+import { Results } from "../types/results";
+import { apiRequest } from "./apiRequest";
+
+const RESULTS_URL = "/api/results";
+
+export async function getResults(): Promise<Participant[]> {
+  const results = await apiRequest<Results>(RESULTS_URL);
+  return results.participants;
 }
 
-export async function deleteResults() {
-  try {
-    const response = await fetch("/api/results", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to delete results");
-    }
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+export async function deleteResults(): Promise<void> {
+  await apiRequest<void>(RESULTS_URL, { method: "DELETE" });
 }

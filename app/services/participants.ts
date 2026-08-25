@@ -1,51 +1,24 @@
 import { Participant } from "../types/participant";
+import { apiRequest } from "./apiRequest";
 
-export async function getParticipants() {
-  try {
-    const response = await fetch("/api/participants");
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to load participants");
-    }
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
+const PARTICIPANTS_URL = "/api/participants";
+
+export async function getParticipants(): Promise<Participant[]> {
+  return apiRequest<Participant[]>(PARTICIPANTS_URL);
 }
 
-export async function updateParticipant(participant: Participant) {
-  try {
-    const response = await fetch(`/api/participants/${participant.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(participant),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to update participant");
-    }
-  } catch (error) {
-    console.error("Error updating participant:", error);
-    throw error;
-  }
+export async function updateParticipant(
+  participant: Participant,
+): Promise<void> {
+  await apiRequest<void>(`${PARTICIPANTS_URL}/${participant.id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(participant),
+  });
 }
 
-export async function deleteParticipant(participantId: string) {
-  try {
-    const response = await fetch(`/api/participants/${participantId}`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || "Failed to delete participant");
-    }
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
+export async function deleteParticipant(participantId: string): Promise<void> {
+  await apiRequest<void>(`${PARTICIPANTS_URL}/${participantId}`, {
+    method: "DELETE",
+  });
 }
