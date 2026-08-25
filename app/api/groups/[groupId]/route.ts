@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { calculateStats } from "@/app/lib/calculateStats";
 import { readGroups, writeGroups } from "@/app/server/repositories/groups";
-import { regenerateResults } from "@/app/server/regenerateResults";
+import { loadGroups } from "@/app/server/loadGroups";
 
 const validateGroupId = (groupId: string): number | null => {
   const groupIdNumber = Number(groupId);
@@ -20,7 +19,7 @@ export async function GET(
 
   let groups;
   try {
-    groups = readGroups();
+    groups = loadGroups();
   } catch (error) {
     console.error(`Failed to read groups: ${error}`);
     return NextResponse.json(
@@ -66,7 +65,6 @@ export async function PATCH(
   }
 
   const updatedGroup = { ...groups[groupIndex], ...groupData };
-  updatedGroup.participants = calculateStats(updatedGroup);
   groups[groupIndex] = updatedGroup;
 
   try {
@@ -75,16 +73,6 @@ export async function PATCH(
     console.error(`Failed to write group: ${error}`);
     return NextResponse.json(
       { error: `Failed to write group: ${error}` },
-      { status: 500 },
-    );
-  }
-
-  try {
-    regenerateResults();
-  } catch (error) {
-    console.error(`Failed to regenerate results: ${error}`);
-    return NextResponse.json(
-      { error: `Failed to regenerate results: ${error}` },
       { status: 500 },
     );
   }

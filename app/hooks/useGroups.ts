@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Group } from "../types/group";
 import { getGroups, postGroups } from "../services/groups";
 import { getParticipants } from "../services/participants";
-import { deleteResults } from "../services/results";
 import { deletePlayoff } from "../services/playoff";
 import { distributeIntoGroups } from "../lib/distributeIntoGroups";
 import { useSnackbar } from "./useSnackbar";
@@ -38,10 +37,10 @@ export function useGroups() {
       if (participants.length === 0) return;
 
       const newGroups = distributeIntoGroups(participants);
-      // Write the new groups first — deleting results/playoff before the
-      // write succeeds could destroy tournament data with nothing to replace it.
+      // Write the new groups first — deleting the playoff before the write
+      // succeeds could destroy tournament data with nothing to replace it.
       await postGroups(newGroups);
-      await Promise.all([deleteResults(), deletePlayoff()]);
+      await deletePlayoff();
       setGroups(newGroups);
       showSnackbar("Groups generated", "success");
     } catch (error) {

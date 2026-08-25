@@ -8,7 +8,3 @@ export async function getResults(): Promise<Participant[]> {
   const results = await apiRequest<Results>(RESULTS_URL);
   return results.participants;
 }
-
-export async function deleteResults(): Promise<void> {
-  await apiRequest<void>(RESULTS_URL, { method: "DELETE" });
-}

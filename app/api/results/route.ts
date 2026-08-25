@@ -1,53 +1,15 @@
 import { NextResponse } from "next/server";
-import { regenerateResults } from "@/app/server/regenerateResults";
-import {
-  deleteResults,
-  readResults,
-  resultsExist,
-} from "@/app/server/repositories/results";
+import { sortParticipantsByResults } from "@/app/lib/sortParticipantsByResults";
+import { loadGroups } from "@/app/server/loadGroups";
 
 export async function GET(): Promise<NextResponse> {
   try {
-    if (!resultsExist()) {
-      regenerateResults();
-    }
-    return NextResponse.json(readResults(), { status: 200 });
+    const participants = sortParticipantsByResults(loadGroups());
+    return NextResponse.json({ participants }, { status: 200 });
   } catch (error) {
-    console.error(`Failed to read results: ${error}`);
+    console.error(`Failed to compute results: ${error}`);
     return NextResponse.json(
-      { error: `Failed to read results: ${error}` },
-      { status: 500 },
-    );
-  }
-}
-
-export async function POST(): Promise<NextResponse> {
-  try {
-    regenerateResults();
-    return NextResponse.json(
-      { message: "Results recalculated successfully." },
-      { status: 200 },
-    );
-  } catch (error) {
-    console.error(`Failed to generate results: ${error}`);
-    return NextResponse.json(
-      { error: `Failed to generate results: ${error}` },
-      { status: 500 },
-    );
-  }
-}
-
-export async function DELETE(): Promise<NextResponse> {
-  try {
-    deleteResults();
-    return NextResponse.json(
-      { message: "Results deleted successfully" },
-      { status: 200 },
-    );
-  } catch (error) {
-    console.error(`Failed to delete results: ${error}`);
-    return NextResponse.json(
-      { error: `Failed to delete results: ${error}` },
+      { error: `Failed to compute results: ${error}` },
       { status: 500 },
     );
   }

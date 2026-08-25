@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readGroups, writeGroups } from "@/app/server/repositories/groups";
+import { writeGroups } from "@/app/server/repositories/groups";
+import { loadGroups } from "@/app/server/loadGroups";
 
 export async function GET(): Promise<NextResponse> {
   try {
-    return NextResponse.json(readGroups(), { status: 200 });
+    return NextResponse.json(loadGroups(), { status: 200 });
   } catch (error) {
     console.error(`Failed to read groups: ${error}`);
     return NextResponse.json(

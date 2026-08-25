@@ -5,6 +5,8 @@ import {
   readPlayoff,
   writePlayoff,
 } from "@/app/server/repositories/playoff";
+import { readParticipants } from "@/app/server/repositories/participants";
+import { syncParticipants } from "@/app/lib/syncParticipants";
 import { Playoff } from "@/app/types/playoff";
 
 export async function GET(): Promise<NextResponse> {
@@ -12,7 +14,12 @@ export async function GET(): Promise<NextResponse> {
     if (!playoffExists()) {
       return NextResponse.json(null, { status: 200 });
     }
-    return NextResponse.json(readPlayoff(), { status: 200 });
+    const playoff = readPlayoff();
+    playoff.participants = syncParticipants(
+      playoff.participants,
+      readParticipants(),
+    );
+    return NextResponse.json(playoff, { status: 200 });
   } catch (error) {
     console.error(`Failed to read playoff: ${error}`);
     return NextResponse.json(
