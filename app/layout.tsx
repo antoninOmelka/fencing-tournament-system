@@ -3,6 +3,7 @@ import "./styles/global/global.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
+import SnackbarProvider from "./components/SnackbarProvider/SnackbarProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -50,7 +51,9 @@ export default function RootLayout({
             </li>
           </ul>
         </nav>
-        <main>{children}</main>
+        <main>
+          <SnackbarProvider>{children}</SnackbarProvider>
+        </main>
         <footer className="footer">
           <p>&copy; DuelBoard</p>
         </footer>

@@ -7,11 +7,13 @@ import { getParticipants } from "../services/participants";
 import { deleteResults } from "../services/results";
 import { deletePlayoff } from "../services/playoff";
 import { distributeIntoGroups } from "../lib/distributeIntoGroups";
+import { useSnackbar } from "./useSnackbar";
 
 export function useGroups() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const { showSnackbar } = useSnackbar();
 
   useEffect(() => {
     async function fetchGroups() {
@@ -20,13 +22,14 @@ export function useGroups() {
         setGroups(data);
       } catch (error) {
         console.error(error);
+        showSnackbar("Failed to load groups", "error");
       } finally {
         setIsLoading(false);
       }
     }
 
     fetchGroups();
-  }, []);
+  }, [showSnackbar]);
 
   async function generateGroups(): Promise<void> {
     try {
@@ -41,8 +44,10 @@ export function useGroups() {
         deletePlayoff(),
       ]);
       setGroups(newGroups);
+      showSnackbar("Groups generated", "success");
     } catch (error) {
       console.error("Failed to generate groups:", error);
+      showSnackbar("Failed to generate groups", "error");
     } finally {
       setIsSaving(false);
     }

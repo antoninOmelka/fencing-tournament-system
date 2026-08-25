@@ -6,11 +6,13 @@ import { Playoff } from "../types/playoff";
 import { deletePlayoff, getPlayoff, postPlayoff } from "../services/playoff";
 import { generatePlayoff } from "../lib/generatePlayoff";
 import { setPlayoffWinner } from "../lib/setPlayoffWinner";
+import { useSnackbar } from "./useSnackbar";
 
 export function usePlayoff() {
   const [playoff, setPlayoff] = useState<Playoff | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const { showSnackbar } = useSnackbar();
 
   useEffect(() => {
     async function fetchPlayoff() {
@@ -19,13 +21,14 @@ export function usePlayoff() {
         setPlayoff(data);
       } catch (error) {
         console.error(error);
+        showSnackbar("Failed to load playoff", "error");
       } finally {
         setIsLoading(false);
       }
     }
 
     fetchPlayoff();
-  }, []);
+  }, [showSnackbar]);
 
   async function createPlayoff(
     seededParticipants: Participant[],
@@ -35,8 +38,10 @@ export function usePlayoff() {
       const newPlayoff = generatePlayoff(seededParticipants);
       await postPlayoff(newPlayoff);
       setPlayoff(newPlayoff);
+      showSnackbar("Playoff generated", "success");
     } catch (error) {
       console.error("Failed to create playoff:", error);
+      showSnackbar("Failed to generate playoff", "error");
     } finally {
       setIsSaving(false);
     }
@@ -52,8 +57,10 @@ export function usePlayoff() {
       setIsSaving(true);
       await postPlayoff(updated);
       setPlayoff(updated);
+      showSnackbar("Match result saved", "success");
     } catch (error) {
       console.error("Failed to save playoff winner:", error);
+      showSnackbar("Failed to save match result", "error");
     } finally {
       setIsSaving(false);
     }
@@ -64,12 +71,21 @@ export function usePlayoff() {
       setIsSaving(true);
       await deletePlayoff();
       setPlayoff(null);
+      showSnackbar("Playoff deleted", "success");
     } catch (error) {
       console.error("Failed to delete playoff:", error);
+      showSnackbar("Failed to delete playoff", "error");
     } finally {
       setIsSaving(false);
     }
   }
 
-  return { playoff, isLoading, isSaving, createPlayoff, markWinner, removePlayoff };
+  return {
+    playoff,
+    isLoading,
+    isSaving,
+    createPlayoff,
+    markWinner,
+    removePlayoff,
+  };
 }
