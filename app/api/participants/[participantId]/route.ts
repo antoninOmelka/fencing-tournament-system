@@ -3,6 +3,8 @@ import {
   readParticipants,
   writeParticipants,
 } from "@/app/server/repositories/participants";
+import { formatValidationIssues } from "@/app/lib/apiSchemas";
+import { participantSchema } from "@/app/lib/participantSchema";
 
 const validateParticipantId = (participantId: string): number | null => {
   const participantIdNumber = Number(participantId);
@@ -23,8 +25,23 @@ export async function PUT(
     );
   }
 
-  const participantData = await req.json();
-  participantData.id = participantIdNumber;
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const parsed = participantSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      {
+        error: `Invalid participant data: ${formatValidationIssues(parsed.error)}`,
+      },
+      { status: 400 },
+    );
+  }
+  const participantData = { ...parsed.data, id: participantIdNumber };
 
   let participants;
   try {

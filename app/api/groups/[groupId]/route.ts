@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readGroups, writeGroups } from "@/app/server/repositories/groups";
 import { loadGroups } from "@/app/server/loadGroups";
+import { formatValidationIssues, groupPatchSchema } from "@/app/lib/apiSchemas";
 
 const validateGroupId = (groupId: string): number | null => {
   const groupIdNumber = Number(groupId);
@@ -46,7 +47,21 @@ export async function PATCH(
     return NextResponse.json({ error: "Invalid group ID" }, { status: 400 });
   }
 
-  const groupData = await req.json();
+  let body;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const parsed = groupPatchSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: `Invalid group data: ${formatValidationIssues(parsed.error)}` },
+      { status: 400 },
+    );
+  }
+  const groupData = parsed.data;
 
   let groups;
   try {

@@ -6,8 +6,8 @@ import {
   writePlayoff,
 } from "@/app/server/repositories/playoff";
 import { readParticipants } from "@/app/server/repositories/participants";
+import { formatValidationIssues, playoffSchema } from "@/app/lib/apiSchemas";
 import { syncParticipants } from "@/app/lib/syncParticipants";
-import { Playoff } from "@/app/types/playoff";
 
 export async function GET(): Promise<NextResponse> {
   try {
@@ -30,9 +30,25 @@ export async function GET(): Promise<NextResponse> {
 }
 
 export async function POST(request: Request): Promise<NextResponse> {
+  let body;
   try {
-    const playoff: Playoff = await request.json();
-    writePlayoff(playoff);
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const parsed = playoffSchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      {
+        error: `Invalid playoff data: ${formatValidationIssues(parsed.error)}`,
+      },
+      { status: 400 },
+    );
+  }
+
+  try {
+    writePlayoff(parsed.data);
     return NextResponse.json(
       { message: "Playoff saved successfully." },
       { status: 200 },

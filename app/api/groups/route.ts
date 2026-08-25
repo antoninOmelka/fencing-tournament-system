@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { writeGroups } from "@/app/server/repositories/groups";
 import { loadGroups } from "@/app/server/loadGroups";
+import { formatValidationIssues, groupsSchema } from "@/app/lib/apiSchemas";
 
 export async function GET(): Promise<NextResponse> {
   try {
@@ -15,13 +16,24 @@ export async function GET(): Promise<NextResponse> {
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
-  const data = await request.json();
+  let body;
   try {
-    writeGroups(data);
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const parsed = groupsSchema.safeParse(body);
+  if (!parsed.success) {
     return NextResponse.json(
-      { message: "Groups added", data },
-      { status: 201 },
+      { error: `Invalid groups data: ${formatValidationIssues(parsed.error)}` },
+      { status: 400 },
     );
+  }
+
+  try {
+    writeGroups(parsed.data);
+    return NextResponse.json({ message: "Groups added" }, { status: 201 });
   } catch (error) {
     console.error(`Failed to write groups: ${error}`);
     return NextResponse.json(
