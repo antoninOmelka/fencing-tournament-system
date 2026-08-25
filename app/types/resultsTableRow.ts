@@ -3,5 +3,7 @@ export type ResultsTableRow = {
   place: number;
   name: string;
   club: string;
+  wins: number;
+  winsRate: string;
   index: string;
 };

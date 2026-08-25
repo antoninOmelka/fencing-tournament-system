@@ -23,6 +23,8 @@ function ResultsTable({ rows }: ResultsTableProps) {
             <StyledTableCell>Place</StyledTableCell>
             <StyledTableCell>Name</StyledTableCell>
             <StyledTableCell>Club</StyledTableCell>
+            <StyledTableCell>V</StyledTableCell>
+            <StyledTableCell>V/M</StyledTableCell>
             <StyledTableCell>Index</StyledTableCell>
           </StyledTableRow>
         </TableHead>
@@ -32,6 +34,8 @@ function ResultsTable({ rows }: ResultsTableProps) {
               <StyledTableCell>{row.place}</StyledTableCell>
               <StyledTableCell>{row.name}</StyledTableCell>
               <StyledTableCell>{row.club}</StyledTableCell>
+              <StyledTableCell>{row.wins}</StyledTableCell>
+              <StyledTableCell>{row.winsRate}</StyledTableCell>
               <StyledTableCell>{row.index}</StyledTableCell>
             </StyledTableRow>
           ))}
