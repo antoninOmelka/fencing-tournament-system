@@ -6,7 +6,10 @@ import SaveIcon from "@mui/icons-material/Save";
 
 import { StyledButton } from "@/app/styles/shared/buttons";
 import { StyledDialog, StyledDialogTitle } from "@/app/styles/shared/dialogs";
-import { participantSchema } from "@/app/lib/participantSchema";
+import {
+  maxParticipantYear,
+  participantSchema,
+} from "@/app/lib/participantSchema";
 import { ParticipantInputs } from "@/app/types/participantInputs";
 import { ParticipantRowView } from "@/app/types/participantRowView";
 
@@ -99,7 +102,11 @@ function EditParticipantModal({
           </Tooltip>
 
           <Tooltip
-            title={errors.year ? "Year must be in range from 1900 to 2025" : ""}
+            title={
+              errors.year
+                ? `Year must be in range from 1900 to ${maxParticipantYear}`
+                : ""
+            }
             arrow
           >
             <TextField

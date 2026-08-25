@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { participantSchema } from "./participantSchema";
+import { maxParticipantYear, participantSchema } from "./participantSchema";
 
 const validParticipant = {
   name: "Novak",
@@ -29,7 +29,7 @@ describe("participantSchema", () => {
 
   it.each([
     ["year at lower bound", { year: 1900 }],
-    ["year at upper bound", { year: 2025 }],
+    ["year at upper bound", { year: maxParticipantYear }],
     ["ranking at lower bound", { ranking: 1 }],
     ["ranking at upper bound", { ranking: 999 }],
     ["name at max length", { name: "X".repeat(25) }],
@@ -47,7 +47,7 @@ describe("participantSchema", () => {
     ["name over 25 characters", { name: "X".repeat(26) }],
     ["empty club", { club: "" }],
     ["year before 1900", { year: 1899 }],
-    ["year after 2025", { year: 2026 }],
+    ["year after current year", { year: maxParticipantYear + 1 }],
     ["non-integer year", { year: 2000.5 }],
     ["ranking below 1", { ranking: 0 }],
     ["ranking above 999", { ranking: 1000 }],
