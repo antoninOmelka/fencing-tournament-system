@@ -10,7 +10,7 @@ function LandingPage() {
       <h1 className="welcome-heading">Welcome to DuelBoard</h1>
       <p className="welcome-details">Add participants to begin.</p>
       <StyledButton variant="contained" href="/participants">
-        Go to Participatns
+        Go to Participants
       </StyledButton>
     </div>
   );
