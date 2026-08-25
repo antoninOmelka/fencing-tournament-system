@@ -38,11 +38,10 @@ export function useGroups() {
       if (participants.length === 0) return;
 
       const newGroups = distributeIntoGroups(participants);
-      await Promise.all([
-        postGroups(newGroups),
-        deleteResults(),
-        deletePlayoff(),
-      ]);
+      // Write the new groups first — deleting results/playoff before the
+      // write succeeds could destroy tournament data with nothing to replace it.
+      await postGroups(newGroups);
+      await Promise.all([deleteResults(), deletePlayoff()]);
       setGroups(newGroups);
       showSnackbar("Groups generated", "success");
     } catch (error) {
