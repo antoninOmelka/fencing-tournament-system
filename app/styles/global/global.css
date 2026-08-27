@@ -93,6 +93,13 @@ body {
   background-color: #f4f4f4;
 }
 
+/* current page tab — underline hugging the text, not the padded box */
+.navbar a.active {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 8px;
+}
+
 main {
   background-color: #f4f4f4;
   color: #333;

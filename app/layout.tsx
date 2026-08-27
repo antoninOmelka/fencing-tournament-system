@@ -3,6 +3,7 @@ import "./styles/global/global.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
+import Navbar from "./components/Navbar/Navbar";
 import SnackbarProvider from "./components/SnackbarProvider/SnackbarProvider";
 
 const geistSans = Geist({
@@ -35,22 +36,7 @@ export default function RootLayout({
             <h1 className="header-logo">⚔️ DuelBoard</h1>
           </Link>
         </header>
-        <nav className="navbar">
-          <ul>
-            <li>
-              <Link href="/participants">Participants</Link>
-            </li>
-            <li>
-              <Link href="/groups">Groups</Link>
-            </li>
-            <li>
-              <Link href="/results">Results</Link>
-            </li>
-            <li>
-              <Link href="/playoff">Playoff</Link>
-            </li>
-          </ul>
-        </nav>
+        <Navbar />
         <main>
           <SnackbarProvider>{children}</SnackbarProvider>
         </main>
