@@ -30,30 +30,40 @@ function GroupTable({ view }: GroupTableProps) {
           <TableHead>
             <StyledTableRow>
               <StyledTableCell>Fencer</StyledTableCell>
-              <StyledTableCell></StyledTableCell>
+              <StyledTableCell className="center"></StyledTableCell>
               {view.orders.map((order) => (
-                <StyledTableCell key={order}>{order}</StyledTableCell>
+                <StyledTableCell className="center" key={order}>
+                  {order}
+                </StyledTableCell>
               ))}
-              <StyledTableCell>Wins</StyledTableCell>
-              <StyledTableCell>Wins Rate</StyledTableCell>
-              <StyledTableCell>Scored</StyledTableCell>
-              <StyledTableCell>Received</StyledTableCell>
-              <StyledTableCell>Index</StyledTableCell>
+              <StyledTableCell className="stat">V</StyledTableCell>
+              <StyledTableCell className="stat">V/M</StyledTableCell>
+              <StyledTableCell className="stat">Scored</StyledTableCell>
+              <StyledTableCell className="stat">Received</StyledTableCell>
+              <StyledTableCell className="stat">Index</StyledTableCell>
             </StyledTableRow>
           </TableHead>
           <TableBody>
             {view.rows.map((row) => (
               <StyledTableRow key={row.id}>
                 <StyledTableCell>{row.name}</StyledTableCell>
-                <StyledTableCell>{row.order}</StyledTableCell>
+                <StyledTableCell className="center">
+                  {row.order}
+                </StyledTableCell>
                 {row.cells.map((cell, cellIndex) => (
-                  <StyledTableCell key={cellIndex}>{cell}</StyledTableCell>
+                  <StyledTableCell className="center" key={cellIndex}>
+                    {cell}
+                  </StyledTableCell>
                 ))}
-                <StyledTableCell>{row.wins}</StyledTableCell>
-                <StyledTableCell>{row.winsRate}</StyledTableCell>
-                <StyledTableCell>{row.scored}</StyledTableCell>
-                <StyledTableCell>{row.received}</StyledTableCell>
-                <StyledTableCell>{row.index}</StyledTableCell>
+                <StyledTableCell className="stat">{row.wins}</StyledTableCell>
+                <StyledTableCell className="stat">
+                  {row.winsRate}
+                </StyledTableCell>
+                <StyledTableCell className="stat">{row.scored}</StyledTableCell>
+                <StyledTableCell className="stat">
+                  {row.received}
+                </StyledTableCell>
+                <StyledTableCell className="stat">{row.index}</StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>

@@ -16,6 +16,14 @@ const CELL_WIDTHS = {
   actions: "200px",
 };
 
+// uniform narrow width for the stat columns (V, V/M, Scored, Received, Index);
+// separate from CELL_WIDTHS, which sums up to the participants table width
+const STAT_CELL_WIDTH = "80px";
+
+// width of one editable result cell in the group matrix — wide enough for
+// a "D3" in the text field without clipping
+const RESULT_CELL_WIDTH = "90px";
+
 const TOTAL_WIDTH = Object.values(CELL_WIDTHS).reduce(
   (sum, width) => sum + parseInt(width),
   0,
@@ -99,6 +107,28 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
   "&.center": {
     textAlign: "center",
+    "& .MuiInputBase-input": {
+      textAlign: "center",
+    },
+  },
+  "&.stat": {
+    textAlign: "center",
+    width: STAT_CELL_WIDTH,
+    minWidth: STAT_CELL_WIDTH,
+    maxWidth: STAT_CELL_WIDTH,
+    padding: theme.spacing(1),
+  },
+  "&.result": {
+    textAlign: "center",
+    width: RESULT_CELL_WIDTH,
+    minWidth: RESULT_CELL_WIDTH,
+    maxWidth: RESULT_CELL_WIDTH,
+    padding: theme.spacing(1),
+    "& .MuiInputBase-input": {
+      textAlign: "center",
+      paddingLeft: theme.spacing(0.5),
+      paddingRight: theme.spacing(0.5),
+    },
   },
   "&.actions": {
     display: "table-cell",

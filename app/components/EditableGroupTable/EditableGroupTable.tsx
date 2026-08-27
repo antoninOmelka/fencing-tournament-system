@@ -2,6 +2,7 @@ import "@/app/styles/global/global.css";
 import { StyledTableRow, StyledTableCell } from "@/app/styles/shared/tables";
 import { Group } from "@/app/types/group";
 import { Participant } from "@/app/types/participant";
+import { calculateStats } from "@/app/lib/calculateStats";
 import { matchesFromResults } from "@/app/lib/matchesFromResults";
 import { mirrorResultValue } from "@/app/lib/mirrorResultValue";
 import { resultSchema } from "@/app/lib/resultSchema";
@@ -33,6 +34,8 @@ function EditableGroupTable({
   >({});
   const { participants } = group;
   const results = group.results || [];
+  // live stats — recomputed from the match records on every edit
+  const stats = calculateStats(group);
 
   const setCellError = (
     errors: Record<number, Record<number, string>>,
@@ -100,12 +103,17 @@ function EditableGroupTable({
           <TableHead>
             <StyledTableRow>
               <StyledTableCell>Fencer</StyledTableCell>
-              <StyledTableCell></StyledTableCell>
+              <StyledTableCell className="center"></StyledTableCell>
               {participants.map((participant: Participant) => (
-                <StyledTableCell className="center" key={participant.id}>
+                <StyledTableCell className="result" key={participant.id}>
                   {participant.groupRanking}
                 </StyledTableCell>
               ))}
+              <StyledTableCell className="stat">V</StyledTableCell>
+              <StyledTableCell className="stat">V/M</StyledTableCell>
+              <StyledTableCell className="stat">Scored</StyledTableCell>
+              <StyledTableCell className="stat">Received</StyledTableCell>
+              <StyledTableCell className="stat">Index</StyledTableCell>
             </StyledTableRow>
           </TableHead>
           <TableBody>
@@ -113,9 +121,14 @@ function EditableGroupTable({
               (participant: Participant, participantIndex: number) => (
                 <StyledTableRow key={participant.id}>
                   <StyledTableCell>{participant.name}</StyledTableCell>
-                  <StyledTableCell>{participantIndex + 1}</StyledTableCell>
+                  <StyledTableCell className="center">
+                    {participantIndex + 1}
+                  </StyledTableCell>
                   {results.map((result: string[], resultIndex: number) => (
-                    <StyledTableCell key={`${participant.id}-${resultIndex}`}>
+                    <StyledTableCell
+                      className="result"
+                      key={`${participant.id}-${resultIndex}`}
+                    >
                       {participantIndex === resultIndex ? (
                         <TextField
                           className="group-table-empty-cell"
@@ -138,6 +151,21 @@ function EditableGroupTable({
                       )}
                     </StyledTableCell>
                   ))}
+                  <StyledTableCell className="stat">
+                    {stats[participantIndex].wins}
+                  </StyledTableCell>
+                  <StyledTableCell className="stat">
+                    {(stats[participantIndex].winsRate || 0).toFixed(2)}
+                  </StyledTableCell>
+                  <StyledTableCell className="stat">
+                    {stats[participantIndex].pointsScored}
+                  </StyledTableCell>
+                  <StyledTableCell className="stat">
+                    {stats[participantIndex].pointsReceived}
+                  </StyledTableCell>
+                  <StyledTableCell className="stat">
+                    {stats[participantIndex].index}
+                  </StyledTableCell>
                 </StyledTableRow>
               ),
             )}

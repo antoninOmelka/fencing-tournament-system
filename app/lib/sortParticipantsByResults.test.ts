@@ -41,7 +41,9 @@ describe("sortParticipantsByResults", () => {
     );
   });
 
-  it("sorts by number of wins first", () => {
+  it("ranks by victory rate first, even against more raw wins (FIE)", () => {
+    // P2 has the most victories, but a perfect V/M from a smaller pool
+    // ranks higher — FIE compares rates, not raw win counts
     const groups = [
       makeGroup(1, [
         makeParticipant(1, { wins: 1, winsRate: 1, index: 20 }),
@@ -52,20 +54,7 @@ describe("sortParticipantsByResults", () => {
 
     const sorted = sortParticipantsByResults(groups);
 
-    expect(sorted.map((participant) => participant.id)).toEqual([2, 3, 1]);
-  });
-
-  it("breaks equal wins by victory rate", () => {
-    const groups = [
-      makeGroup(1, [
-        makeParticipant(1, { wins: 2, winsRate: 0.4 }),
-        makeParticipant(2, { wins: 2, winsRate: 0.75 }),
-      ]),
-    ];
-
-    const sorted = sortParticipantsByResults(groups);
-
-    expect(sorted.map((participant) => participant.id)).toEqual([2, 1]);
+    expect(sorted.map((participant) => participant.id)).toEqual([1, 3, 2]);
   });
 
   it("breaks equal victory rate by index", () => {

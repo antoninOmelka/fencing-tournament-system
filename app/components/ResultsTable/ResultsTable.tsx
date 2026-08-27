@@ -20,23 +20,27 @@ function ResultsTable({ rows }: ResultsTableProps) {
       <Table size="medium">
         <TableHead>
           <StyledTableRow>
-            <StyledTableCell>Place</StyledTableCell>
+            <StyledTableCell className="center">Place</StyledTableCell>
             <StyledTableCell>Name</StyledTableCell>
             <StyledTableCell>Club</StyledTableCell>
-            <StyledTableCell>V</StyledTableCell>
-            <StyledTableCell>V/M</StyledTableCell>
-            <StyledTableCell>Index</StyledTableCell>
+            <StyledTableCell className="stat">V</StyledTableCell>
+            <StyledTableCell className="stat">V/M</StyledTableCell>
+            <StyledTableCell className="stat">Scored</StyledTableCell>
+            <StyledTableCell className="stat">Received</StyledTableCell>
+            <StyledTableCell className="stat">Index</StyledTableCell>
           </StyledTableRow>
         </TableHead>
         <TableBody>
           {rows.map((row) => (
             <StyledTableRow key={row.id}>
-              <StyledTableCell>{row.place}</StyledTableCell>
+              <StyledTableCell className="center">{row.place}</StyledTableCell>
               <StyledTableCell>{row.name}</StyledTableCell>
               <StyledTableCell>{row.club}</StyledTableCell>
-              <StyledTableCell>{row.wins}</StyledTableCell>
-              <StyledTableCell>{row.winsRate}</StyledTableCell>
-              <StyledTableCell>{row.index}</StyledTableCell>
+              <StyledTableCell className="stat">{row.wins}</StyledTableCell>
+              <StyledTableCell className="stat">{row.winsRate}</StyledTableCell>
+              <StyledTableCell className="stat">{row.scored}</StyledTableCell>
+              <StyledTableCell className="stat">{row.received}</StyledTableCell>
+              <StyledTableCell className="stat">{row.index}</StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>
