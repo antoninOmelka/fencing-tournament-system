@@ -198,6 +198,10 @@ main {
 
 .group-table-error {
   margin-top: 10px;
+  /* the wrapper is fit-content — keep the long message from widening it:
+     zero intrinsic width, then stretch to the width set by the table */
+  width: 0;
+  min-width: 100%;
 }
 
 .group-table-empty-cell {
