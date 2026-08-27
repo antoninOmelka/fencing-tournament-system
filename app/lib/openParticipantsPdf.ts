@@ -1,10 +1,13 @@
-import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { createPdfDocument, PDF_FONT } from "./createPdfDocument";
 import { ParticipantRowView } from "../types/participantRowView";
 
-export function openParticipantsPdf(rows: ParticipantRowView[]): void {
-  const doc = new jsPDF();
+export async function openParticipantsPdf(
+  rows: ParticipantRowView[],
+): Promise<void> {
+  const doc = await createPdfDocument();
   autoTable(doc, {
+    styles: { font: PDF_FONT },
     head: [["#", "Name", "Year", "Club", "Ranking"]],
     body: rows.map((row, index) => [
       index + 1,

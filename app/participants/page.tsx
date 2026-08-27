@@ -23,9 +23,9 @@ function ParticipantsView() {
     [participants],
   );
 
-  function handlePrint(): void {
+  async function handlePrint(): Promise<void> {
     try {
-      openParticipantsPdf(rows);
+      await openParticipantsPdf(rows);
     } catch (error) {
       console.error("Failed to generate PDF:", error);
     }
