@@ -33,6 +33,7 @@ function GroupTablesView() {
   return (
     <>
       <div className="secondary-actions-container">
+        <h2 className="page-title">Groups</h2>
         <StyledButton
           variant="contained"
           onClick={handleGenerateClick}

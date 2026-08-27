@@ -10,6 +10,7 @@ import {
 import { StyledTableCell, StyledTableRow } from "@/app/styles/shared/tables";
 import { StyledButton } from "@/app/styles/shared/buttons";
 import { GroupTableView } from "@/app/types/groupTableView";
+import EditIcon from "@mui/icons-material/Edit";
 
 type GroupTableProps = {
   view: GroupTableView;
@@ -20,7 +21,11 @@ function GroupTable({ view }: GroupTableProps) {
     <div className="group-table">
       <div className="table-header">
         <h2 className="group-title">Group {view.id}</h2>
-        <StyledButton variant="contained" href={`/groups/${view.id}`}>
+        <StyledButton
+          variant="contained"
+          href={`/groups/${view.id}`}
+          startIcon={<EditIcon />}
+        >
           Edit
         </StyledButton>
       </div>

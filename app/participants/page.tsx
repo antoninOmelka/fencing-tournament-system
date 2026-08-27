@@ -8,6 +8,7 @@ import { StyledButton } from "../styles/shared/buttons";
 import { useParticipants } from "../hooks/useParticipants";
 import { toParticipantRowViews } from "../lib/toParticipantRowViews";
 import { openParticipantsPdf } from "../lib/openParticipantsPdf";
+import PrintIcon from "@mui/icons-material/Print";
 
 function ParticipantsView() {
   const {
@@ -38,7 +39,12 @@ function ParticipantsView() {
   return (
     <>
       <div className="secondary-actions-container">
-        <StyledButton variant="contained" onClick={handlePrint}>
+        <h2 className="page-title">Participants</h2>
+        <StyledButton
+          variant="contained"
+          onClick={handlePrint}
+          startIcon={<PrintIcon />}
+        >
           Print Participants
         </StyledButton>
       </div>

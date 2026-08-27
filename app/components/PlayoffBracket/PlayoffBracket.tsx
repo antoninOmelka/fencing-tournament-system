@@ -1,7 +1,11 @@
 import "@/app/styles/global/global.css";
 
 import { memo } from "react";
-import { PlayoffMatchView, PlayoffSideView, PlayoffView } from "@/app/types/playoffView";
+import {
+  PlayoffMatchView,
+  PlayoffSideView,
+  PlayoffView,
+} from "@/app/types/playoffView";
 
 type PlayoffBracketProps = {
   view: PlayoffView;

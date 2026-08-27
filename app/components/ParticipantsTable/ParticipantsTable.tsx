@@ -8,6 +8,7 @@ import {
 } from "../../styles/shared/tables";
 import ParticipantsTableRow from "../ParticipantRow/ParticipantsTableRow";
 import { StyledButton } from "@/app/styles/shared/buttons";
+import AddIcon from "@mui/icons-material/Add";
 import EditParticipantModal from "../EditParticipantModal/EditParticipantModal";
 import DeleteConfirmationModal from "../DeleteParticipantModal/DeleteParticipantModal";
 import { ParticipantInputs } from "../../types/participantInputs";
@@ -79,7 +80,11 @@ function ParticipantsTable({
   return (
     <>
       <StyledTableActions>
-        <StyledButton variant="contained" onClick={handleAddClick}>
+        <StyledButton
+          variant="contained"
+          onClick={handleAddClick}
+          startIcon={<AddIcon />}
+        >
           Add New
         </StyledButton>
       </StyledTableActions>

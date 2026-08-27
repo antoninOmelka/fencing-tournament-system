@@ -139,19 +139,40 @@ main {
   font-size: 16px;
 }
 
-.secondary-actions-container {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  padding-right: 30px;
-  padding-bottom: 30px;
+.page-title {
+  font-size: 28px;
+  font-weight: bold;
 }
 
-.back-link-container {
+/* page header band under the navbar — heading on the left, page-level
+   actions on the right; 58px matches the left edge of the navbar link text */
+.secondary-actions-container {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
-  padding-left: 55px;
-  margin-top: 30px;
+  padding: 20px 58px;
+  background-color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+/* header variant with a back link on its own line above the heading row */
+.page-header-stacked {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+
+/* keep the stretched link clickable only over its own text */
+.page-header-stacked .back-link {
+  align-self: flex-start;
+}
+
+.page-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .back-link {
@@ -164,12 +185,6 @@ main {
 
 .back-link:hover {
   text-decoration: underline;
-}
-
-.table-button-container {
-  display: flex;
-  width: 100%;
-  justify-content: flex-end;
 }
 
 .group-table {
@@ -232,7 +247,6 @@ main {
   display: flex;
   align-items: center;
   gap: 24px;
-  margin: 30px 0;
 }
 
 .playoff-preview-title {

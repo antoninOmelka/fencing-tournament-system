@@ -39,15 +39,19 @@ function PlayoffView() {
   if (!playoff) {
     if (participants.length < 2) {
       return (
-        <p className="playoff-empty">
-          At least two ranked participants are needed for a playoff. Generate
-          groups and enter their results first.
-        </p>
+        <>
+          <div className="secondary-actions-container">
+            <h2 className="page-title">Playoff</h2>
+          </div>
+          <p className="playoff-empty">
+            At least two ranked participants are needed for a playoff. Generate
+            groups and enter their results first.
+          </p>
+        </>
       );
     }
 
-    const count =
-      advancerCount === null ? participants.length : advancerCount;
+    const count = advancerCount === null ? participants.length : advancerCount;
     const countOptions = Array.from(
       { length: participants.length - 1 },
       (_, index) => index + 2,
@@ -56,35 +60,38 @@ function PlayoffView() {
 
     return (
       <>
-        <div className="playoff-setup">
-          <TextField
-            select
-            label="Advancing fencers"
-            size="small"
-            sx={{ width: 180 }}
-            value={count}
-            onChange={(event) => setAdvancerCount(Number(event.target.value))}
-          >
-            {countOptions.map((option) => (
-              <MenuItem key={option} value={option}>
-                {option}
-              </MenuItem>
-            ))}
-          </TextField>
-          <StyledButton
-            variant="contained"
-            onClick={() => createPlayoff(participants.slice(0, count))}
-            disabled={isSaving}
-            startIcon={
-              isSaving ? (
-                <CircularProgress size={16} color="info" />
-              ) : (
-                <AccountTreeIcon />
-              )
-            }
-          >
-            Generate Playoff
-          </StyledButton>
+        <div className="secondary-actions-container">
+          <h2 className="page-title">Playoff</h2>
+          <div className="playoff-setup">
+            <TextField
+              select
+              label="Advancing fencers"
+              size="small"
+              sx={{ width: 180 }}
+              value={count}
+              onChange={(event) => setAdvancerCount(Number(event.target.value))}
+            >
+              {countOptions.map((option) => (
+                <MenuItem key={option} value={option}>
+                  {option}
+                </MenuItem>
+              ))}
+            </TextField>
+            <StyledButton
+              variant="contained"
+              onClick={() => createPlayoff(participants.slice(0, count))}
+              disabled={isSaving}
+              startIcon={
+                isSaving ? (
+                  <CircularProgress size={16} color="info" />
+                ) : (
+                  <AccountTreeIcon />
+                )
+              }
+            >
+              Generate Playoff
+            </StyledButton>
+          </div>
         </div>
         <h2 className="playoff-preview-title">Preview</h2>
         <PlayoffBracket view={toPlayoffView(preview)} />
@@ -97,6 +104,7 @@ function PlayoffView() {
   return (
     <>
       <div className="secondary-actions-container">
+        <h2 className="page-title">Playoff</h2>
         <StyledButton
           variant="contained"
           onClick={() => setRegenerateModalOpen(true)}

@@ -9,6 +9,7 @@ import { StyledButton } from "../styles/shared/buttons";
 import { useResults } from "../hooks/useResults";
 import { toResultsTableRows } from "../lib/toResultsTableRows";
 import { openResultsPdf } from "../lib/openResultsPdf";
+import PrintIcon from "@mui/icons-material/Print";
 
 function ResultsView() {
   const { participants, isLoading } = useResults();
@@ -30,7 +31,12 @@ function ResultsView() {
   return (
     <>
       <div className="secondary-actions-container">
-        <StyledButton variant="contained" onClick={handlePrint}>
+        <h2 className="page-title">Results</h2>
+        <StyledButton
+          variant="contained"
+          onClick={handlePrint}
+          startIcon={<PrintIcon />}
+        >
           Print Results
         </StyledButton>
       </div>

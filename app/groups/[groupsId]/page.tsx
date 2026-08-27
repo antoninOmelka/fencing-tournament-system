@@ -46,7 +46,7 @@ function EditableGroupTableView() {
 
   return (
     <>
-      <div className="back-link-container">
+      <div className="secondary-actions-container page-header-stacked">
         <Link
           className="back-link"
           href={"/groups"}
@@ -60,9 +60,8 @@ function EditableGroupTableView() {
           <ArrowBackIcon fontSize="small" />
           <span>Back</span>
         </Link>
-      </div>
-      <div className="group-table">
-        <div className="table-button-container">
+        <div className="page-header-row">
+          <h2 className="page-title">Group {group.id}</h2>
           <StyledButton
             variant="contained"
             onClick={saveGroup}
@@ -78,6 +77,8 @@ function EditableGroupTableView() {
             Save
           </StyledButton>
         </div>
+      </div>
+      <div className="group-table">
         <EditableGroupTable
           group={group}
           onGroupChange={setGroup}
