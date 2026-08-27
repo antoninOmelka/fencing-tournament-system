@@ -203,6 +203,15 @@ main {
   margin-bottom: 30px;
 }
 
+/* card visually separating one group from another in the overview */
+.group-card {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 10px 30px 20px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  margin-bottom: 40px;
+}
+
 .group-table-error {
   margin-top: 10px;
   /* the wrapper is fit-content — keep the long message from widening it:

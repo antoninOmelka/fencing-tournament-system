@@ -18,7 +18,7 @@ type GroupTableProps = {
 
 function GroupTable({ view }: GroupTableProps) {
   return (
-    <div className="group-table">
+    <div className="group-table group-card">
       <div className="table-header">
         <h2 className="group-title">Group {view.id}</h2>
         <StyledButton
