@@ -82,11 +82,17 @@ function GroupTable({ view }: GroupTableProps) {
       <div className="match-list">
         {view.matches.map((match, index) => (
           <div key={index}>
-            <p>
-              {match.firstOrder} {match.firstName}
+            <p className="match-side">
+              <span>
+                {match.firstOrder} {match.firstName}
+              </span>
+              <span className="match-result">{match.firstResult}</span>
             </p>
-            <p>
-              {match.secondOrder} {match.secondName}
+            <p className="match-side">
+              <span>
+                {match.secondOrder} {match.secondName}
+              </span>
+              <span className="match-result">{match.secondResult}</span>
             </p>
             <br />
           </div>

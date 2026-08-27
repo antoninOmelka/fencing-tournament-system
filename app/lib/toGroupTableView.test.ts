@@ -78,8 +78,32 @@ describe("toGroupTableView", () => {
     const view = toGroupTableView(group);
 
     expect(view.matches).toEqual([
-      { firstOrder: 1, firstName: "A", secondOrder: 2, secondName: "B" },
+      {
+        firstOrder: 1,
+        firstName: "A",
+        firstResult: "V5",
+        secondOrder: 2,
+        secondName: "B",
+        secondResult: "D3",
+      },
     ]);
+  });
+
+  it("leaves match results empty when the bout was not fenced yet", () => {
+    const unplayed: Group = {
+      ...group,
+      results: [
+        ["", ""],
+        ["", ""],
+      ],
+    };
+
+    const view = toGroupTableView(unplayed);
+
+    expect(view.matches[0]).toMatchObject({
+      firstResult: "",
+      secondResult: "",
+    });
   });
 
   it("returns no matches for a group without generated matches", () => {

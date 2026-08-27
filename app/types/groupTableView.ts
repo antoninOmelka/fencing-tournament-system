@@ -13,8 +13,10 @@ export type GroupTableRow = {
 export type GroupTableMatch = {
   firstOrder: number;
   firstName: string;
+  firstResult: string;
   secondOrder: number;
   secondName: string;
+  secondResult: string;
 };
 
 export type GroupTableView = {

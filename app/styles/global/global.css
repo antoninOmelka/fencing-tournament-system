@@ -238,6 +238,17 @@ main {
   margin-left: 20px;
 }
 
+/* one fencer line in the match list: name left, entered result right */
+.match-side {
+  display: flex;
+  justify-content: space-between;
+  width: 200px;
+}
+
+.match-result {
+  font-weight: bold;
+}
+
 .table-header {
   display: flex;
   justify-content: space-between;

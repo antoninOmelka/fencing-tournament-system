@@ -29,20 +29,26 @@ export function toGroupTableView(group: Group): GroupTableView {
     index: formatStat(participant.index),
   }));
 
-  const rowsById = new Map(rows.map((row) => [row.id, row]));
+  const indexById = new Map(
+    participants.map((participant, index) => [participant.id, index]),
+  );
 
   const matches = (group.matches || []).flatMap((match) => {
-    const first = rowsById.get(match.firstId);
-    const second = rowsById.get(match.secondId);
-    if (!first || !second) {
+    const firstIndex = indexById.get(match.firstId);
+    const secondIndex = indexById.get(match.secondId);
+    if (firstIndex === undefined || secondIndex === undefined) {
       return [];
     }
     return [
       {
-        firstOrder: first.order,
-        firstName: first.name,
-        secondOrder: second.order,
-        secondName: second.name,
+        firstOrder: orders[firstIndex],
+        firstName: participants[firstIndex].name,
+        firstResult:
+          (results[firstIndex] && results[firstIndex][secondIndex]) || "",
+        secondOrder: orders[secondIndex],
+        secondName: participants[secondIndex].name,
+        secondResult:
+          (results[secondIndex] && results[secondIndex][firstIndex]) || "",
       },
     ];
   });
