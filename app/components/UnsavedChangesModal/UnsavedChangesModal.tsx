@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Modal, Box } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 import { StyledButton } from "@/app/styles/shared/buttons";
 import {
@@ -43,13 +43,13 @@ function UnsavedChangesModal({
 
         <Box sx={{ mt: 5, display: "flex", justifyContent: "space-between" }}>
           <StyledButton variant="outlined" onClick={onClose}>
-            Stay
+            Cancel
           </StyledButton>
           <StyledButton
             variant="contained"
             color="error"
             onClick={onConfirm}
-            startIcon={<ArrowBackIcon />}
+            startIcon={<DeleteIcon />}
           >
             Discard &amp; Leave
           </StyledButton>
