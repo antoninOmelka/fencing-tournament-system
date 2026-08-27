@@ -189,6 +189,13 @@ main {
   background-color: black;
 }
 
+/* diagonal cell in the readonly group table — matches the blacked-out
+   text field in the editable group table */
+.group-table-diagonal {
+  background-color: black;
+  height: 40px;
+}
+
 .groups-container {
   display: flex;
   flex-direction: column;

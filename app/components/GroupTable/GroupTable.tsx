@@ -32,7 +32,7 @@ function GroupTable({ view }: GroupTableProps) {
               <StyledTableCell>Fencer</StyledTableCell>
               <StyledTableCell className="center"></StyledTableCell>
               {view.orders.map((order) => (
-                <StyledTableCell className="center" key={order}>
+                <StyledTableCell className="result" key={order}>
                   {order}
                 </StyledTableCell>
               ))}
@@ -44,15 +44,19 @@ function GroupTable({ view }: GroupTableProps) {
             </StyledTableRow>
           </TableHead>
           <TableBody>
-            {view.rows.map((row) => (
+            {view.rows.map((row, rowIndex) => (
               <StyledTableRow key={row.id}>
                 <StyledTableCell>{row.name}</StyledTableCell>
                 <StyledTableCell className="center">
                   {row.order}
                 </StyledTableCell>
                 {row.cells.map((cell, cellIndex) => (
-                  <StyledTableCell className="center" key={cellIndex}>
-                    {cell}
+                  <StyledTableCell className="result" key={cellIndex}>
+                    {rowIndex === cellIndex ? (
+                      <div className="group-table-diagonal"></div>
+                    ) : (
+                      cell
+                    )}
                   </StyledTableCell>
                 ))}
                 <StyledTableCell className="stat">{row.wins}</StyledTableCell>
