@@ -49,9 +49,11 @@ function PlayoffBracket({ view, onWinnerClick }: PlayoffBracketProps) {
           <h2 className="playoff-round-title">{round.title}</h2>
           <div className="playoff-matches">
             {round.matches.map((match) => (
-              <div key={match.id} className="playoff-match">
-                {renderSide(match, match.first)}
-                {renderSide(match, match.second)}
+              <div key={match.id} className="playoff-slot">
+                <div className="playoff-match">
+                  {renderSide(match, match.first)}
+                  {renderSide(match, match.second)}
+                </div>
               </div>
             ))}
           </div>

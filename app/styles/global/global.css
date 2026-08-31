@@ -318,9 +318,48 @@ main {
 .playoff-matches {
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
   flex: 1;
-  gap: 20px;
+}
+
+/* every match gets an equal share of the column, so a slot in the next
+   round spans exactly the two slots feeding it — the connector lines below
+   rely on that: pair centers meet at the shared slot boundary */
+.playoff-slot {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+/* elbow from a match to the midpoint of the 40px column gap: horizontal
+   from the center, then vertical to the slot edge shared with its pair */
+.playoff-round:not(:last-child) .playoff-slot::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  width: 20px;
+  top: 50%;
+  height: 50%;
+  border-top: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+}
+
+.playoff-round:not(:last-child) .playoff-slot:nth-child(even)::after {
+  top: 0;
+  border-top: none;
+  border-bottom: 1px solid #ccc;
+}
+
+/* stub from the mid-gap joint into the match the pair feeds */
+.playoff-round:not(:first-child) .playoff-slot::before {
+  content: "";
+  position: absolute;
+  right: 100%;
+  width: 20px;
+  top: 50%;
+  border-top: 1px solid #ccc;
 }
 
 .playoff-match {
