@@ -274,6 +274,13 @@ main {
   margin-top: 50px;
 }
 
+/* group of buttons on the right side of the page header band */
+.page-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
 .playoff-setup {
   display: flex;
   align-items: center;
