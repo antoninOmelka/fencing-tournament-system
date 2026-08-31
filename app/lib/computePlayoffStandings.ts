@@ -51,6 +51,7 @@ export function computePlayoffStandings(
       id: participant.id,
       place,
       name: participant.name,
+      year: participant.year,
       club: participant.club,
     });
   }

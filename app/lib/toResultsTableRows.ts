@@ -8,6 +8,7 @@ export function toResultsTableRows(
     id: participant.id,
     place: index + 1,
     name: participant.name,
+    year: participant.year,
     club: participant.club,
     wins: participant.wins || 0,
     winsRate: (participant.winsRate || 0).toFixed(2),

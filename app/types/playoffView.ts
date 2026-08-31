@@ -26,5 +26,6 @@ export type PlayoffStandingRow = {
   id: number;
   place: number;
   name: string;
+  year: number;
   club: string;
 };

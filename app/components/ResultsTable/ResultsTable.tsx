@@ -20,8 +20,9 @@ function ResultsTable({ rows }: ResultsTableProps) {
       <Table size="medium">
         <TableHead>
           <StyledTableRow>
-            <StyledTableCell className="center">Place</StyledTableCell>
+            <StyledTableCell className="order">#</StyledTableCell>
             <StyledTableCell>Name</StyledTableCell>
+            <StyledTableCell>Year</StyledTableCell>
             <StyledTableCell>Club</StyledTableCell>
             <StyledTableCell className="stat">V</StyledTableCell>
             <StyledTableCell className="stat">V/M</StyledTableCell>
@@ -33,8 +34,9 @@ function ResultsTable({ rows }: ResultsTableProps) {
         <TableBody>
           {rows.map((row) => (
             <StyledTableRow key={row.id}>
-              <StyledTableCell className="center">{row.place}</StyledTableCell>
+              <StyledTableCell className="order">{row.place}</StyledTableCell>
               <StyledTableCell>{row.name}</StyledTableCell>
+              <StyledTableCell>{row.year}</StyledTableCell>
               <StyledTableCell>{row.club}</StyledTableCell>
               <StyledTableCell className="stat">{row.wins}</StyledTableCell>
               <StyledTableCell className="stat">{row.winsRate}</StyledTableCell>

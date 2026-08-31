@@ -10,8 +10,8 @@ export async function openPlayoffResultsPdf(
   autoTable(doc, {
     startY: 20,
     styles: { font: PDF_FONT },
-    head: [["Place", "Name", "Club"]],
-    body: rows.map((row) => [row.place, row.name, row.club]),
+    head: [["Place", "Name", "Year", "Club"]],
+    body: rows.map((row) => [row.place, row.name, row.year, row.club]),
   });
   window.open(doc.output("bloburl"), "_blank");
 }

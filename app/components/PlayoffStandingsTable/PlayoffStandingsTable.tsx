@@ -20,16 +20,18 @@ function PlayoffStandingsTable({ rows }: PlayoffStandingsTableProps) {
       <Table size="medium">
         <TableHead>
           <StyledTableRow>
-            <StyledTableCell>Place</StyledTableCell>
+            <StyledTableCell className="order">#</StyledTableCell>
             <StyledTableCell>Name</StyledTableCell>
+            <StyledTableCell>Year</StyledTableCell>
             <StyledTableCell>Club</StyledTableCell>
           </StyledTableRow>
         </TableHead>
         <TableBody>
           {rows.map((row) => (
             <StyledTableRow key={row.id}>
-              <StyledTableCell>{row.place}</StyledTableCell>
+              <StyledTableCell className="order">{row.place}</StyledTableCell>
               <StyledTableCell>{row.name}</StyledTableCell>
+              <StyledTableCell>{row.year}</StyledTableCell>
               <StyledTableCell>{row.club}</StyledTableCell>
             </StyledTableRow>
           ))}

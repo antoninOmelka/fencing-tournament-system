@@ -9,11 +9,22 @@ export async function openResultsPdf(rows: ResultsTableRow[]): Promise<void> {
     startY: 20,
     styles: { font: PDF_FONT },
     head: [
-      ["Place", "Name", "Club", "V", "V/M", "Scored", "Received", "Index"],
+      [
+        "Place",
+        "Name",
+        "Year",
+        "Club",
+        "V",
+        "V/M",
+        "Scored",
+        "Received",
+        "Index",
+      ],
     ],
     body: rows.map((row) => [
       row.place,
       row.name,
+      row.year,
       row.club,
       row.wins,
       row.winsRate,

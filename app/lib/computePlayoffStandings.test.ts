@@ -93,12 +93,12 @@ describe("computePlayoffStandings", () => {
     ]);
   });
 
-  it("includes names and clubs for display", () => {
+  it("includes names, years and clubs for display", () => {
     const playoff = playThrough(generatePlayoff(makeSeededField(2)));
 
     expect(computePlayoffStandings(playoff)).toEqual([
-      { id: 1, place: 1, name: "P1", club: "Club1" },
-      { id: 2, place: 2, name: "P2", club: "Club2" },
+      { id: 1, place: 1, name: "P1", year: 2000, club: "Club1" },
+      { id: 2, place: 2, name: "P2", year: 2000, club: "Club2" },
     ]);
   });
 });
