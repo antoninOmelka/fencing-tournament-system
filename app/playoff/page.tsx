@@ -9,14 +9,12 @@ import ReplayIcon from "@mui/icons-material/Replay";
 
 import Loading from "../components/Loading/Loading";
 import PlayoffBracket from "../components/PlayoffBracket/PlayoffBracket";
-import PlayoffStandingsTable from "../components/PlayoffStandingsTable/PlayoffStandingsTable";
 import RegeneratePlayoffModal from "../components/RegeneratePlayoffModal/RegeneratePlayoffModal";
 import { StyledButton } from "../styles/shared/buttons";
 import { usePlayoff } from "../hooks/usePlayoff";
 import { useResults } from "../hooks/useResults";
 import { generatePlayoff } from "../lib/generatePlayoff";
 import { toPlayoffView } from "../lib/toPlayoffView";
-import { computePlayoffStandings } from "../lib/computePlayoffStandings";
 
 function PlayoffView() {
   const { participants, isLoading: isLoadingResults } = useResults();
@@ -99,8 +97,6 @@ function PlayoffView() {
     );
   }
 
-  const standings = computePlayoffStandings(playoff);
-
   return (
     <>
       <div className="secondary-actions-container">
@@ -118,12 +114,6 @@ function PlayoffView() {
         view={toPlayoffView(playoff)}
         onWinnerClick={isSaving ? undefined : markWinner}
       />
-      {standings.length > 0 && (
-        <>
-          <h2 className="playoff-standings-title">Final Standings</h2>
-          <PlayoffStandingsTable rows={standings} />
-        </>
-      )}
 
       <RegeneratePlayoffModal
         open={regenerateModalOpen}

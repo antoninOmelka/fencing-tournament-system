@@ -8,12 +8,18 @@ import { usePathname } from "next/navigation";
 const NAV_LINKS = [
   { href: "/participants", label: "Participants" },
   { href: "/groups", label: "Groups" },
-  { href: "/results", label: "Results" },
+  { href: "/results", label: "Group Results" },
   { href: "/playoff", label: "Playoff" },
+  { href: "/playoff-results", label: "Playoff Results" },
 ];
 
+// exact match or a nested page like /groups/1 — a plain prefix check would
+// also light up Playoff on /playoff-results
+function isActive(pathname: string, href: string): boolean {
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 function Navbar() {
-  // startsWith keeps the tab active on nested pages like /groups/1
   const pathname = usePathname() || "";
 
   return (
@@ -23,7 +29,7 @@ function Navbar() {
           <li key={link.href}>
             <Link
               href={link.href}
-              className={pathname.startsWith(link.href) ? "active" : ""}
+              className={isActive(pathname, link.href) ? "active" : ""}
             >
               {link.label}
             </Link>

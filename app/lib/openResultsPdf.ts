@@ -4,7 +4,7 @@ import { ResultsTableRow } from "../types/resultsTableRow";
 
 export async function openResultsPdf(rows: ResultsTableRow[]): Promise<void> {
   const doc = await createPdfDocument();
-  doc.text("Results", 14, 15);
+  doc.text("Group Results", 14, 15);
   autoTable(doc, {
     startY: 20,
     styles: { font: PDF_FONT },

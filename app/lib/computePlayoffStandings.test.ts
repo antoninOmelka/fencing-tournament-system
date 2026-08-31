@@ -61,7 +61,7 @@ describe("computePlayoffStandings", () => {
     ]);
   });
 
-  it("places everyone in a field with byes, ordering ties by seed", () => {
+  it("places everyone in a field with byes, ranking early losers by seed", () => {
     const playoff = playThrough(generatePlayoff(makeSeededField(6)));
 
     const standings = computePlayoffStandings(playoff);
@@ -72,7 +72,24 @@ describe("computePlayoffStandings", () => {
       { id: 3, place: 3 },
       { id: 4, place: 3 },
       { id: 5, place: 5 },
-      { id: 6, place: 5 },
+      { id: 6, place: 6 },
+    ]);
+  });
+
+  it("gives quarterfinal losers distinct places 5-8 per FIE ranking", () => {
+    const playoff = playThrough(generatePlayoff(makeSeededField(8)));
+
+    const standings = computePlayoffStandings(playoff);
+
+    expect(standings.map((row) => ({ id: row.id, place: row.place }))).toEqual([
+      { id: 1, place: 1 },
+      { id: 2, place: 2 },
+      { id: 3, place: 3 },
+      { id: 4, place: 3 },
+      { id: 5, place: 5 },
+      { id: 6, place: 6 },
+      { id: 7, place: 7 },
+      { id: 8, place: 8 },
     ]);
   });
 

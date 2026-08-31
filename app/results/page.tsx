@@ -31,13 +31,13 @@ function ResultsView() {
   return (
     <>
       <div className="secondary-actions-container">
-        <h2 className="page-title">Results</h2>
+        <h2 className="page-title">Group Results</h2>
         <StyledButton
           variant="contained"
           onClick={handlePrint}
           startIcon={<PrintIcon />}
         >
-          Print Results
+          Print Group Results
         </StyledButton>
       </div>
       <div className="group-table">
