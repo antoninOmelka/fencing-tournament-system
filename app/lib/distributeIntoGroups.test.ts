@@ -60,6 +60,41 @@ describe("distributeIntoGroups", () => {
     expect(groups.map((group) => group.id)).toEqual([1, 2]);
   });
 
+  it("distributes seeds into two groups in a snake pattern", () => {
+    const participants = Array.from({ length: 12 }, (_, index) =>
+      makeParticipant(index + 1, index + 1),
+    );
+
+    const groups = distributeIntoGroups(participants);
+
+    expect(
+      groups.map((group) =>
+        group.participants.map((participant) => participant.ranking),
+      ),
+    ).toEqual([
+      [1, 4, 5, 8, 9, 12],
+      [2, 3, 6, 7, 10, 11],
+    ]);
+  });
+
+  it("distributes seeds into three groups in a snake pattern", () => {
+    const participants = Array.from({ length: 18 }, (_, index) =>
+      makeParticipant(index + 1, index + 1),
+    );
+
+    const groups = distributeIntoGroups(participants);
+
+    expect(
+      groups.map((group) =>
+        group.participants.map((participant) => participant.ranking),
+      ),
+    ).toEqual([
+      [1, 6, 7, 12, 13, 18],
+      [2, 5, 8, 11, 14, 17],
+      [3, 4, 9, 10, 15, 16],
+    ]);
+  });
+
   it("balances group sizes for a field that does not divide evenly", () => {
     const participants = Array.from({ length: 13 }, (_, index) =>
       makeParticipant(index + 1, index + 1),

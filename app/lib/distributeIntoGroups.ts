@@ -51,17 +51,29 @@ export function distributeIntoGroups(participants: Participant[]): Group[] {
     clubMap.get(participant.club)!.push(participant);
   }
 
+  // Snake distribution: 1,2,3 → groups 1,2,3, then 4,5,6 → groups 3,2,1.
+  // At the edges the direction flips and the edge group receives two
+  // consecutive participants.
   let groupIndex = 0;
+  let direction = 1;
+  const advance = () => {
+    if (groupIndex + direction < 0 || groupIndex + direction >= numGroups) {
+      direction = -direction;
+    } else {
+      groupIndex += direction;
+    }
+  };
+
   for (const [, clubParticipants] of clubMap.entries()) {
     for (const participant of clubParticipants) {
       // find the next group with free capacity — the total capacity equals
       // the number of participants, so one always exists
       while (groups[groupIndex].participants.length >= capacityOf(groupIndex)) {
-        groupIndex = (groupIndex + 1) % numGroups;
+        advance();
       }
 
       groups[groupIndex].participants.push(participant);
-      groupIndex = (groupIndex + 1) % numGroups;
+      advance();
     }
   }
 
