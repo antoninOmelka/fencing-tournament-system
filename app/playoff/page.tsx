@@ -5,6 +5,7 @@ import "@/app/styles/global/global.css";
 import { useState } from "react";
 import { CircularProgress, MenuItem, TextField } from "@mui/material";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import PrintIcon from "@mui/icons-material/Print";
 import ReplayIcon from "@mui/icons-material/Replay";
 
 import Loading from "../components/Loading/Loading";
@@ -15,6 +16,7 @@ import { usePlayoff } from "../hooks/usePlayoff";
 import { useResults } from "../hooks/useResults";
 import { generatePlayoff } from "../lib/generatePlayoff";
 import { toPlayoffView } from "../lib/toPlayoffView";
+import { openPlayoffPdf } from "../lib/openPlayoffPdf";
 
 function PlayoffView() {
   const { participants, isLoading: isLoadingResults } = useResults();
@@ -97,18 +99,36 @@ function PlayoffView() {
     );
   }
 
+  async function handlePrint(): Promise<void> {
+    if (!playoff) return;
+    try {
+      await openPlayoffPdf(toPlayoffView(playoff));
+    } catch (error) {
+      console.error("Failed to generate PDF:", error);
+    }
+  }
+
   return (
     <>
       <div className="secondary-actions-container">
         <h2 className="page-title">Playoff</h2>
-        <StyledButton
-          variant="contained"
-          onClick={() => setRegenerateModalOpen(true)}
-          disabled={isSaving}
-          startIcon={<ReplayIcon />}
-        >
-          Regenerate Playoff
-        </StyledButton>
+        <div className="page-actions">
+          <StyledButton
+            variant="contained"
+            onClick={handlePrint}
+            startIcon={<PrintIcon />}
+          >
+            Print Playoff
+          </StyledButton>
+          <StyledButton
+            variant="contained"
+            onClick={() => setRegenerateModalOpen(true)}
+            disabled={isSaving}
+            startIcon={<ReplayIcon />}
+          >
+            Regenerate Playoff
+          </StyledButton>
+        </div>
       </div>
       <PlayoffBracket
         view={toPlayoffView(playoff)}
